@@ -10,7 +10,7 @@ function makeClient() {
       url: process.env.TURSO_DATABASE_URL!,
       authToken: process.env.TURSO_AUTH_TOKEN,
     });
-    const adapter = new PrismaLibSql(libsql);
+    const adapter = new PrismaLibSql(libsql as any);
     return new PrismaClient({ adapter } as any);
   }
   return new PrismaClient({ log: ["error", "warn"] });
