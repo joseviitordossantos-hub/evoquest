@@ -36,6 +36,7 @@ export default function AchievementIcon({ emoji, title, locked, hint, descriptio
         aria-label={title}
       >
         {rarity === "LEGENDARY" && !locked && <span className="absolute inset-0 pattern-diagonal-stripes pointer-events-none" />}
+        {rarity === "MYTHIC" && !locked && <span className="absolute inset-0 pattern-stars pointer-events-none" />}
         <span className="block w-full aspect-square relative overflow-hidden" style={{ containerType: "inline-size" }}>
           {iconName ? (
             <AppIcon name={iconName} size={128} className="absolute inset-0 !w-full !h-full object-contain" />
