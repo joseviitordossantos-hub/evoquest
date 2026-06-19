@@ -61,11 +61,11 @@ export const ACHIEVEMENTS: Record<string, { title: string; emoji: string; descri
   LEVEL_10: { title: "Lenda em formação", emoji: "👑", description: "Chegou ao nível 10", rarity: "MYTHIC" },
 };
 
-export const RARITY_STYLE: Record<Rarity, { label: string; chip: string; chipText: string; fill: string; shadow: string }> = {
-  RARE:      { label: "RARE",      chip: "bg-[#1B7CC9]", chipText: "text-white", fill: "bg-gradient-to-br from-[#6FC1FA] to-[#1B7CC9]", shadow: "0 5px 0 0 #155F9C" },
-  EPIC:      { label: "EPIC",      chip: "bg-[#5234CC]", chipText: "text-white", fill: "bg-gradient-to-br from-[#9C82FF] to-[#5234CC]", shadow: "0 5px 0 0 #3D2799" },
-  LEGENDARY: { label: "LEGENDARY", chip: "bg-[#D4831A]", chipText: "text-white", fill: "bg-gradient-to-br from-[#FFC25C] to-[#D4831A]", shadow: "0 5px 0 0 #A56514" },
-  MYTHIC:    { label: "MYTHIC",    chip: "bg-[#B82332]", chipText: "text-white", fill: "bg-gradient-to-br from-[#FF6675] to-[#B82332]", shadow: "0 5px 0 0 #8F1A25" },
+export const RARITY_STYLE: Record<Rarity, { label: string; chip: string; chipText: string; fill: string; from: string; to: string }> = {
+  RARE:      { label: "RARE",      chip: "bg-[#1B7CC9]", chipText: "text-white", fill: "bg-gradient-to-br from-[#6FC1FA] to-[#1B7CC9]", from: "#6FC1FA", to: "#1B7CC9" },
+  EPIC:      { label: "EPIC",      chip: "bg-[#5234CC]", chipText: "text-white", fill: "bg-gradient-to-br from-[#9C82FF] to-[#5234CC]", from: "#9C82FF", to: "#5234CC" },
+  LEGENDARY: { label: "LEGENDARY", chip: "bg-[#D4831A]", chipText: "text-white", fill: "bg-gradient-to-br from-[#FFC25C] to-[#D4831A]", from: "#FFC25C", to: "#D4831A" },
+  MYTHIC:    { label: "MYTHIC",    chip: "bg-[#B82332]", chipText: "text-white", fill: "bg-gradient-to-br from-[#FF6675] to-[#B82332]", from: "#FF6675", to: "#B82332" },
 };
 
 export function fmtBRL(cents: number) {

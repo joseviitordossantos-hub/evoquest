@@ -29,9 +29,16 @@ export default function AchievementIcon({ emoji, title, locked, hint, descriptio
       <button
         type="button"
         onClick={() => setOpen(true)}
-        style={style && !locked ? { boxShadow: style.shadow } : undefined}
-        className={`relative rounded-kid-lg p-[18%] flex items-center justify-center aspect-square w-full overflow-hidden transition-all duration-150 hover:-translate-y-0.5 active:translate-y-1 ${
-          style && !locked ? style.fill : "bg-white"
+        style={
+          style && !locked
+            ? {
+                background: `linear-gradient(to bottom right, ${style.from}, ${style.to}) padding-box, linear-gradient(to top left, ${style.from}, ${style.to}) border-box`,
+                border: "3px solid transparent",
+              }
+            : undefined
+        }
+        className={`relative rounded-kid-lg p-[18%] flex items-center justify-center aspect-square w-full overflow-hidden transition-transform duration-150 hover:-translate-y-0.5 ${
+          style && !locked ? "" : "bg-white"
         } ${locked ? "grayscale brightness-50 opacity-40" : ""}`}
         aria-label={title}
       >
