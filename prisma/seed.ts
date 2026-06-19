@@ -63,7 +63,7 @@ async function main() {
       birthDate: new Date("2014-09-22"),
       interests: JSON.stringify(["futebol", "youtube", "matemática", "roblox"]),
       avatarSeed: "theo",
-      streak: { create: { currentDays: 3, longestDays: 8, lastActiveDate: new Date(), freezesAvailable: 2 } },
+      streak: { create: { currentDays: 9, longestDays: 12, lastActiveDate: new Date(), freezesAvailable: 1, freezesUsedThisMonth: 1 } },
     },
   });
 
@@ -76,12 +76,13 @@ async function main() {
     prisma.mission.create({ data: { childId: lila.id, title: "Ler 1 livro inteiro", category: "leitura", difficulty: "BOSS", xpReward: 200, frequency: "ONCE", targetCount: 150, currentProgress: 92, createdById: parent.id, rewardText: "Um livro novo de presente" } }),
   ]);
 
-  // Missões do Théo
+  // Missões do Théo (espelha as da Lila)
   const theoMissions = await Promise.all([
-    prisma.mission.create({ data: { childId: theo.id, title: "Estudar matemática 20min", category: "estudo", difficulty: "MEDIUM", xpReward: 25, frequency: "DAILY", targetCount: 1, currentProgress: 0, createdById: parent.id } }),
-    prisma.mission.create({ data: { childId: theo.id, title: "Treinar futebol no quintal", category: "esporte", difficulty: "EASY", xpReward: 15, frequency: "DAILY", targetCount: 3, currentProgress: 2, createdById: parent.id } }),
-    prisma.mission.create({ data: { childId: theo.id, title: "Tirar nota ≥ 8 na prova", category: "estudo", difficulty: "HARD", xpReward: 80, frequency: "ONCE", targetCount: 1, currentProgress: 0, createdById: parent.id, rewardText: "Robux 100" } }),
+    prisma.mission.create({ data: { childId: theo.id, title: "Ler 10 páginas", category: "leitura", difficulty: "EASY", xpReward: 15, frequency: "DAILY", targetCount: 10, currentProgress: 7, createdById: parent.id, rewardText: "1 episódio extra de série" } }),
     prisma.mission.create({ data: { childId: theo.id, title: "Praticar inglês 15min", category: "idioma", difficulty: "MEDIUM", xpReward: 25, frequency: "DAILY", targetCount: 1, currentProgress: 0, createdById: parent.id } }),
+    prisma.mission.create({ data: { childId: theo.id, title: "Arrumar o quarto", category: "rotina", difficulty: "EASY", xpReward: 10, frequency: "DAILY", targetCount: 1, currentProgress: 1, createdById: parent.id } }),
+    prisma.mission.create({ data: { childId: theo.id, title: "Desenhar 1 página do sketchbook", category: "outro", difficulty: "MEDIUM", xpReward: 20, frequency: "DAILY", targetCount: 5, currentProgress: 3, createdById: parent.id } }),
+    prisma.mission.create({ data: { childId: theo.id, title: "Ler 1 livro inteiro", category: "leitura", difficulty: "BOSS", xpReward: 200, frequency: "ONCE", targetCount: 150, currentProgress: 92, createdById: parent.id, rewardText: "Um livro novo de presente" } }),
   ]);
 
   // Histórico de missões aprovadas (Lila)
@@ -104,15 +105,19 @@ async function main() {
   await prisma.missionLog.create({ data: { missionId: lilaMissions[0].id, childId: lila.id, status: "PENDING", childNote: "Li o capítulo 3 inteiro!" } });
   await prisma.missionLog.create({ data: { missionId: lilaMissions[1].id, childId: lila.id, status: "PENDING" } });
 
-  // Histórico Théo
-  for (const ago of [3, 2, 1]) {
-    const m = theoMissions[ago % 2];
+  // Histórico Théo (mesma série da Lila — 9 dias aprovados + BOSS + 2 pendings)
+  for (const ago of approvedDates) {
+    const m = theoMissions[ago % 3];
     const log = await prisma.missionLog.create({
       data: { missionId: m.id, childId: theo.id, status: "APPROVED", markedAt: daysAgo(ago), approvedAt: daysAgo(ago), approvedBy: parent.id, xpAwarded: m.xpReward },
     });
     await prisma.xpEvent.create({ data: { childId: theo.id, amount: m.xpReward, reason: `mission:${m.id}`, createdAt: log.markedAt } });
   }
-  // 1 pendente do Théo
+  const theoBossLog = await prisma.missionLog.create({
+    data: { missionId: theoMissions[4].id, childId: theo.id, status: "APPROVED", markedAt: daysAgo(5), approvedAt: daysAgo(5), approvedBy: parent.id, xpAwarded: 200 },
+  });
+  await prisma.xpEvent.create({ data: { childId: theo.id, amount: 200, reason: `mission:${theoMissions[4].id}`, createdAt: theoBossLog.markedAt } });
+  await prisma.missionLog.create({ data: { missionId: theoMissions[0].id, childId: theo.id, status: "PENDING", childNote: "Terminei o capítulo!" } });
   await prisma.missionLog.create({ data: { missionId: theoMissions[1].id, childId: theo.id, status: "PENDING" } });
 
   // Catálogo de recompensas — rico para apresentação
@@ -165,7 +170,10 @@ async function main() {
       { childId: lila.id, code: "STREAK_7", title: "Uma semana firme", emoji: "🔥", earnedAt: daysAgo(2) },
       { childId: lila.id, code: "BOSS_HUNTER", title: "Caçador de Boss", emoji: "🐲", earnedAt: daysAgo(5) },
       { childId: lila.id, code: "LEVEL_10", title: "Lenda em formação", emoji: "👑", earnedAt: daysAgo(1) },
-      { childId: theo.id, code: "FIRST_MISSION", title: "Primeira conquista", emoji: "🌱", earnedAt: daysAgo(3) },
+      { childId: theo.id, code: "FIRST_MISSION", title: "Primeira conquista", emoji: "🌱", earnedAt: daysAgo(9) },
+      { childId: theo.id, code: "STREAK_7", title: "Uma semana firme", emoji: "🔥", earnedAt: daysAgo(2) },
+      { childId: theo.id, code: "BOSS_HUNTER", title: "Caçador de Boss", emoji: "🐲", earnedAt: daysAgo(5) },
+      { childId: theo.id, code: "LEVEL_10", title: "Lenda em formação", emoji: "👑", earnedAt: daysAgo(1) },
     ],
   });
 
