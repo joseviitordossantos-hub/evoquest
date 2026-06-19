@@ -58,7 +58,7 @@ export default function RewardCard({
         <div className="mt-auto pt-2 flex items-center justify-between gap-2">
           <span className="inline-flex items-center gap-1.5 bg-kid-tint-gold text-kid-on-gold rounded-pill px-3 py-1.5 font-heading font-extrabold text-[14px] leading-none">
             <AppIcon name="coin" size={16} /> {reward.coinsCost}
-            <span className="font-body font-extrabold text-[10px] uppercase tracking-[0.08em] ml-0.5">moedas</span>
+            <span className="font-body font-extrabold text-[10px] uppercase tracking-[0.08em] ml-0.5">coins</span>
           </span>
           {affordable ? (
             <form action={requestRedemption}>

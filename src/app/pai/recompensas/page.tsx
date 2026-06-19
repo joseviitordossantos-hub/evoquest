@@ -39,7 +39,7 @@ export default async function Recompensas() {
               O que dá pra conquistar
             </h1>
             <p className="font-body text-kid-text-body mt-3 max-w-2xl">
-              Você define o que existe e o custo em moedas. Digitais usam a carteira; experiências e privilégios são grátis.
+              Você define o que existe e o custo em coins. Digitais usam a carteira; experiências e privilégios são grátis.
             </p>
           </div>
           <Link href="/pai/recompensas/nova" className="kid-btn">
@@ -80,7 +80,7 @@ export default async function Recompensas() {
                   )}
                   <div className="flex justify-between items-center mt-4 pt-3 border-t border-kid-sunk">
                     <span className="kid-chip bg-kid-tint-gold text-kid-on-gold">
-                      <AppIcon name="coin" size={14} /> {r.coinsCost} moedas{r.costCents > 0 ? ` · ${fmtBRL(r.costCents)}` : ""}
+                      <AppIcon name="coin" size={14} /> {r.coinsCost} coins{r.costCents > 0 ? ` · ${fmtBRL(r.costCents)}` : ""}
                     </span>
                     <form action={toggleRewardActive}>
                       <input type="hidden" name="id" value={r.id} />

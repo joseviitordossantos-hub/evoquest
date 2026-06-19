@@ -61,7 +61,7 @@ export default function NovaRecompensa() {
                 placeholder="Roblox, Steam…"
               />
             </Field>
-            <Field label="Custo em moedas (criança paga)">
+            <Field label="Custo em coins (criança paga)">
               <input
                 type="number"
                 name="coinsCost"

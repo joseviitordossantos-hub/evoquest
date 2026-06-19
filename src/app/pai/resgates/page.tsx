@@ -46,7 +46,7 @@ export default async function Resgates() {
                     <div>
                       <p className="font-heading font-semibold text-[18px] text-kid-text-strong">{r.reward.title}</p>
                       <p className="font-body text-[13px] text-kid-text-soft mt-1">
-                        {r.child.displayName} · {r.coinsSpent} moedas{r.reward.costCents > 0 ? ` · custa ${fmtBRL(r.reward.costCents)}` : " · sem custo R$"}
+                        {r.child.displayName} · {r.coinsSpent} coins{r.reward.costCents > 0 ? ` · custa ${fmtBRL(r.reward.costCents)}` : " · sem custo R$"}
                       </p>
                       <p className="font-body font-extrabold text-[10px] uppercase tracking-[0.1em] text-kid-text-muted mt-1">
                         PEDIDO {new Date(r.requestedAt).toLocaleString("pt-BR")}
@@ -143,7 +143,7 @@ export default async function Resgates() {
                     </div>
                   </div>
                   <span className="kid-chip bg-kid-tint-gold text-kid-on-gold">
-                    <AppIcon name="coin" size={14} /> {r.coinsSpent} moedas{r.costCentsPaid > 0 ? ` · ${fmtBRL(r.costCentsPaid)}` : ""}
+                    <AppIcon name="coin" size={14} /> {r.coinsSpent} coins{r.costCentsPaid > 0 ? ` · ${fmtBRL(r.costCentsPaid)}` : ""}
                   </span>
                 </li>
               ))}

@@ -120,7 +120,7 @@ export default async function CriancaHeader({ childId }: { childId: string }) {
         <span
           className="inline-flex items-center gap-2 px-4 h-11 rounded-pill bg-kid-gold text-kid-text-on-warm font-heading font-bold text-[18px] leading-none ring-2 ring-white/40"
           style={{ boxShadow: "0 3px 0 0 rgba(120,70,0,0.45), inset 0 1px 0 0 rgba(255,255,255,0.35)" }}
-          aria-label={`${availableCoins} moedas`}
+          aria-label={`${availableCoins} coins`}
         >
           <AppIcon name="coin" size={22} />
           {availableCoins}

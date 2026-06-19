@@ -39,7 +39,7 @@ export default async function Loja({ params }: { params: Promise<{ id: string }>
             Loja
           </p>
           <h1 className="font-heading font-bold text-[24px] text-kid-text-strong leading-tight mt-1">
-            Troque suas moedas por prêmios
+            Troque suas coins por prêmios
           </h1>
         </header>
 
