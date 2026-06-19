@@ -36,9 +36,10 @@ npm run dev
 - `/pai/resgates` — aprovar, rejeitar (com reembolso de XP), marcar como entregue (debita carteira)
 
 ### Criança (estética gamificada)
-- `/crianca/[id]` — jornada do dia, XP, nível, streak com escudos de gelo
+- `/crianca/[id]` — jornada do dia, XP, nível, streak com escudos de gelo + carrossel de últimas conquistas
 - `/crianca/[id]/recompensas` — loja agrupada, com indicação de quanto falta para cada
-- `/crianca/[id]/conquistas` — 8 badges, ganhas e bloqueadas com pista
+- `/crianca/[id]/conquistas` — grid 5-col de troféus coloridos por raridade (Rare/Epic/Legendary/Mythic), bloqueados em silhueta com pista
+- `/crianca/[id]/perfil` — perfil estilo rede social: hero do avatar, stats (missões/seguindo/seguidores), chips de visão geral (streak, XP, liga, nível) e família
 
 ### Sistema
 - Schema Prisma com 12 modelos (família, criança, missões, logs, XP, streak, recompensas, resgates, carteira, transações, conquistas, LGPD)
@@ -46,6 +47,13 @@ npm run dev
 - Engine de conquistas reavaliada após cada aprovação
 - XP reservado quando criança resgata (reembolsado se rejeitado)
 - Carteira parental real (transações com extrato) — pagamento mockado
+- Sistema de raridade de conquistas (Rare, Epic, Legendary, Mythic) com paleta dedicada e tratamento especial (stripes diagonais em Legendary)
+
+## Design system
+
+Tokens centralizados em `tailwind.config.ts` (cores `kid-*`, raios `kid-sm…kid-xl`, animações `wiggle/float/pop`) e utilitários em `src/app/globals.css` (`pattern-diagonal-stripes`, `scrollbar-hide`).
+
+**Raridade de conquistas** — tokens `kid-{rare,epic,legendary,mythic}-{from,to,shadow}` no Tailwind; estilos compostos em `src/lib/enums.ts › RARITY_STYLE` (gradiente + chip + sombra 3D). Ícones PNG resolvidos via `src/lib/iconMap.ts` (emoji → arquivo em `/public/icons`).
 
 ## Recompensas pré-cadastradas
 

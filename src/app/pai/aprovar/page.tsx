@@ -54,14 +54,14 @@ export default async function Aprovar({ searchParams }: { searchParams: Promise<
         ) : (
           <form
             action={approveBatch}
-            className="bg-white rounded-kid-xl p-6"
+            className="bg-white rounded-kid-xl p-4"
           >
             <input type="hidden" name="childId" value={childId} />
             <ul className="space-y-3">
               {logs.map((log) => (
                 <li
                   key={log.id}
-                  className="bg-kid-sunk rounded-kid-lg p-5"
+                  className="bg-kid-sunk rounded-[10px] p-5"
                 >
                   <div className="flex justify-between items-start flex-wrap gap-3">
                     <div>

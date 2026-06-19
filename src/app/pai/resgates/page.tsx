@@ -102,7 +102,7 @@ export default async function Resgates() {
                       <input
                         name="deliveryCode"
                         placeholder={r.reward.kind === "DIGITAL_CODE" ? "Cole o código aqui" : "Como/quando entregou"}
-                        className="flex-1 min-w-[200px] p-3 bg-white rounded-kid-md font-bold text-sm text-kid-text-strong outline-none focus:ring-2 focus:ring-kid-violet/30"
+                        className="flex-1 min-w-[200px] p-3 bg-white rounded-[6px] font-bold text-sm text-kid-text-strong outline-none focus:ring-2 focus:ring-kid-violet/30"
                       />
                       <button className="kid-btn kid-btn-sm">Marcar entregue</button>
                     </form>

@@ -55,9 +55,11 @@ export const ICON_FILE: Record<string, string> = {
   "rw-privilege": "star",
 };
 
+const ICONS_WITHOUT_FILE = new Set(["heart", "warning", "gift", "party", "retry", "ten", "muscle", "volcano"]);
+
 const EMOJI_TO_ICON: Record<string, string> = {};
 for (const [name, emoji] of Object.entries(ICON_EMOJI)) {
-  EMOJI_TO_ICON[emoji] = name;
+  if (!ICONS_WITHOUT_FILE.has(name)) EMOJI_TO_ICON[emoji] = name;
 }
 
 export function emojiToIconName(emoji: string): string | null {

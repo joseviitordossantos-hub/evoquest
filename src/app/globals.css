@@ -214,3 +214,16 @@ html, body {
     transition-duration: 0.01ms !important;
   }
 }
+
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+.pattern-diagonal-stripes {
+  background-image: repeating-linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0) 0px,
+    rgba(255, 255, 255, 0) 18px,
+    rgba(255, 255, 255, 0.12) 18px,
+    rgba(255, 255, 255, 0.12) 38px
+  );
+}

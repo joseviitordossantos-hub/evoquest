@@ -36,7 +36,7 @@ function EmojiBox({ category, badge }: { category: string; badge?: "check" | "cl
   const badgeIcon: Record<string, string> = { check: "check", clock: "hourglass", retry: "retry" };
 
   return (
-    <div className={`w-14 h-14 rounded-kid-lg ${grad} flex items-center justify-center shrink-0 relative`}>
+    <div className={`w-14 h-14 rounded-[10px] ${grad} flex items-center justify-center shrink-0 relative`}>
       <AppIcon name={iconName} size={28} />
       {badge && (
         <span className="absolute -bottom-1.5 -right-1.5">

@@ -48,15 +48,24 @@ export const Difficulty = {
   BOSS: "BOSS",
 } as const;
 
-export const ACHIEVEMENTS: Record<string, { title: string; emoji: string; description: string }> = {
-  FIRST_MISSION: { title: "Primeira conquista", emoji: "🌱", description: "Completou sua primeira missão" },
-  TEN_MISSIONS: { title: "Dez é nada", emoji: "🔟", description: "Completou 10 missões" },
-  THIRTY_MISSIONS: { title: "Constância", emoji: "💪", description: "Completou 30 missões" },
-  STREAK_7: { title: "Uma semana firme", emoji: "🔥", description: "7 dias seguidos" },
-  STREAK_30: { title: "Mês de fogo", emoji: "🌋", description: "30 dias seguidos" },
-  BOSS_HUNTER: { title: "Caçador de Boss", emoji: "🐲", description: "Derrotou uma missão Boss" },
-  LEVEL_5: { title: "Aventureiro experiente", emoji: "⚔️", description: "Chegou ao nível 5" },
-  LEVEL_10: { title: "Lenda em formação", emoji: "👑", description: "Chegou ao nível 10" },
+export type Rarity = "RARE" | "EPIC" | "LEGENDARY" | "MYTHIC";
+
+export const ACHIEVEMENTS: Record<string, { title: string; emoji: string; description: string; rarity: Rarity }> = {
+  FIRST_MISSION: { title: "Primeira conquista", emoji: "🌱", description: "Completou sua primeira missão", rarity: "RARE" },
+  TEN_MISSIONS: { title: "Dez é nada", emoji: "🔟", description: "Completou 10 missões", rarity: "RARE" },
+  THIRTY_MISSIONS: { title: "Constância", emoji: "💪", description: "Completou 30 missões", rarity: "EPIC" },
+  STREAK_7: { title: "Uma semana firme", emoji: "🔥", description: "7 dias seguidos", rarity: "RARE" },
+  STREAK_30: { title: "Mês de fogo", emoji: "🌋", description: "30 dias seguidos", rarity: "LEGENDARY" },
+  BOSS_HUNTER: { title: "Caçador de Boss", emoji: "🐲", description: "Derrotou uma missão Boss", rarity: "LEGENDARY" },
+  LEVEL_5: { title: "Aventureiro experiente", emoji: "⚔️", description: "Chegou ao nível 5", rarity: "EPIC" },
+  LEVEL_10: { title: "Lenda em formação", emoji: "👑", description: "Chegou ao nível 10", rarity: "MYTHIC" },
+};
+
+export const RARITY_STYLE: Record<Rarity, { label: string; chip: string; chipText: string; fill: string; shadow: string }> = {
+  RARE:      { label: "RARE",      chip: "bg-[#1B7CC9]", chipText: "text-white", fill: "bg-gradient-to-br from-[#6FC1FA] to-[#1B7CC9]", shadow: "0 5px 0 0 #155F9C" },
+  EPIC:      { label: "EPIC",      chip: "bg-[#5234CC]", chipText: "text-white", fill: "bg-gradient-to-br from-[#9C82FF] to-[#5234CC]", shadow: "0 5px 0 0 #3D2799" },
+  LEGENDARY: { label: "LEGENDARY", chip: "bg-[#D4831A]", chipText: "text-white", fill: "bg-gradient-to-br from-[#FFC25C] to-[#D4831A]", shadow: "0 5px 0 0 #A56514" },
+  MYTHIC:    { label: "MYTHIC",    chip: "bg-[#B82332]", chipText: "text-white", fill: "bg-gradient-to-br from-[#FF6675] to-[#B82332]", shadow: "0 5px 0 0 #8F1A25" },
 };
 
 export function fmtBRL(cents: number) {

@@ -177,9 +177,9 @@ export default function AulaPlayer({
             {COURSE.materials.map((m) => (
               <li
                 key={m.name}
-                className="flex items-center gap-3 p-2.5 rounded-kid-md bg-kid-base"
+                className="flex items-center gap-3 p-2.5 rounded-[10px] bg-kid-base"
               >
-                <span className="w-10 h-10 rounded-kid-md bg-white flex items-center justify-center font-body font-extrabold text-[10px] text-kid-text-muted">
+                <span className="w-10 h-10 rounded-[6px] bg-white flex items-center justify-center font-body font-extrabold text-[10px] text-kid-text-muted">
                   {m.type}
                 </span>
                 <span className="flex-1 font-body font-bold text-[14px] text-kid-text-strong">
@@ -251,9 +251,9 @@ export default function AulaPlayer({
             {lessons.map((l) => (
               <li
                 key={l.n}
-                className="flex items-center gap-3 p-2.5 rounded-kid-md bg-kid-base"
+                className="flex items-center gap-3 p-2.5 rounded-[10px] bg-kid-base"
               >
-                <span className="w-8 h-8 rounded-kid-sm bg-white flex items-center justify-center font-heading font-bold text-[14px] text-kid-text-strong shrink-0">
+                <span className="w-8 h-8 rounded-[6px] bg-white flex items-center justify-center font-heading font-bold text-[14px] text-kid-text-strong shrink-0">
                   {l.n + 1}
                 </span>
                 <LessonStatusIcon status={l.status} />
