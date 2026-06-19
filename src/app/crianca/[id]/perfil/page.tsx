@@ -207,7 +207,7 @@ export default async function Perfil({ params }: { params: Promise<{ id: string 
         </div>
       </div>
 
-      <CriancaTabBar childId={childId} active="amigos" />
+      <CriancaTabBar childId={childId} active="perfil" />
     </main>
   );
 }

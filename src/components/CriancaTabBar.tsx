@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-type Tab = "home" | "recompensas" | "conquistas" | "amigos";
+type Tab = "home" | "recompensas" | "conquistas" | "perfil";
 
 function IconHome({ className }: { className?: string }) {
   return (
@@ -36,13 +36,11 @@ function IconTrophy({ className }: { className?: string }) {
   );
 }
 
-function IconUsers({ className }: { className?: string }) {
+function IconUser({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
     </svg>
   );
 }
@@ -51,7 +49,7 @@ const TABS: { key: Tab; label: string; icon: typeof IconHome }[] = [
   { key: "home", label: "Home", icon: IconHome },
   { key: "recompensas", label: "Recompensas", icon: IconGift },
   { key: "conquistas", label: "Conquistas", icon: IconTrophy },
-  { key: "amigos", label: "Amigos", icon: IconUsers },
+  { key: "perfil", label: "Perfil", icon: IconUser },
 ];
 
 export default function CriancaTabBar({ childId, active }: { childId: string; active: Tab }) {
@@ -60,7 +58,7 @@ export default function CriancaTabBar({ childId, active }: { childId: string; ac
       case "home": return `/crianca/${childId}`;
       case "recompensas": return `/crianca/${childId}/recompensas`;
       case "conquistas": return `/crianca/${childId}/conquistas`;
-      case "amigos": return `/crianca/${childId}/amigos`;
+      case "perfil": return `/crianca/${childId}/perfil`;
     }
   };
 

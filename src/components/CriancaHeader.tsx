@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { getChildStats } from "@/lib/childStats";
 import AppIcon from "@/components/AppIcon";
 
@@ -118,17 +117,14 @@ export default async function CriancaHeader({ childId }: { childId: string }) {
           </div>
         </div>
 
-        <Link
-          href={`/crianca/${childId}/perfil`}
-          className="w-11 h-11 rounded-full bg-white/15 flex items-center justify-center transition-all"
-          style={{ boxShadow: "0 3px 0 0 rgba(60,35,160,0.45), inset 0 1px 0 0 rgba(255,255,255,0.15)" }}
-          aria-label="Editar perfil"
+        <span
+          className="inline-flex items-center gap-2 px-4 h-11 rounded-pill bg-kid-gold text-kid-text-on-warm font-heading font-bold text-[18px] leading-none ring-2 ring-white/40"
+          style={{ boxShadow: "0 3px 0 0 rgba(120,70,0,0.45), inset 0 1px 0 0 rgba(255,255,255,0.35)" }}
+          aria-label={`${availableCoins} moedas`}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-          </svg>
-        </Link>
+          <AppIcon name="coin" size={22} />
+          {availableCoins}
+        </span>
       </div>
 
       <div className="mt-4 relative">
@@ -137,8 +133,8 @@ export default async function CriancaHeader({ childId }: { childId: string }) {
             <span className="text-white">{xpInLevel}</span>
             <span className="text-white/70"> / 100 XP</span>
           </p>
-          <p className="font-body font-extrabold text-[11px] uppercase tracking-[0.1em] text-white/70 inline-flex items-center gap-1">
-            <AppIcon name="coin" size={14} /> {availableCoins} moedas
+          <p className="font-body font-extrabold text-[10px] uppercase tracking-[0.12em] text-white/60">
+            Nível {level}
           </p>
         </div>
         <div className="h-[12px] bg-white/15 rounded-pill overflow-hidden">
