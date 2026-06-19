@@ -61,11 +61,11 @@ export default function NovaRecompensa() {
                 placeholder="Roblox, Steam…"
               />
             </Field>
-            <Field label="Custo XP (criança paga)">
+            <Field label="Custo em moedas (criança paga)">
               <input
                 type="number"
-                name="xpCost"
-                defaultValue={50}
+                name="coinsCost"
+                defaultValue={10}
                 min={1}
                 className="kid-input"
               />

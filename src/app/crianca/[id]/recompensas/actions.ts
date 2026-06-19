@@ -8,18 +8,13 @@ export async function requestRedemption(formData: FormData) {
   const childId = String(formData.get("childId"));
 
   const reward = await prisma.reward.findUniqueOrThrow({ where: { id: rewardId } });
-  const { availableXp } = await getChildStats(childId);
-  if (availableXp < reward.xpCost) return;
+  const { availableCoins } = await getChildStats(childId);
+  if (availableCoins < reward.coinsCost) return;
 
-  // Reservamos o XP via XpEvent negativo (reembolsado se for rejeitado pelo pai)
-  await prisma.$transaction([
-    prisma.redemption.create({
-      data: { childId, rewardId, status: "REQUESTED", xpSpent: reward.xpCost },
-    }),
-    prisma.xpEvent.create({
-      data: { childId, amount: -reward.xpCost, reason: `redemption:${rewardId}` },
-    }),
-  ]);
+  // Moedas reservadas só pelo Redemption.coinsSpent — XP fica intocado (continua governando nível/rank).
+  await prisma.redemption.create({
+    data: { childId, rewardId, status: "REQUESTED", coinsSpent: reward.coinsCost },
+  });
 
   revalidatePath(`/crianca/${childId}/recompensas`);
   revalidatePath("/pai/resgates");

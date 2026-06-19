@@ -119,24 +119,24 @@ async function main() {
   await prisma.reward.createMany({
     data: [
       // Digitais (com custo R$)
-      { familyId: family.id, title: "Robux R$ 15", description: "100 Robux para Roblox", emoji: "🟢", kind: "DIGITAL_CODE", provider: "Roblox", xpCost: 200, costCents: 1500, featured: true },
-      { familyId: family.id, title: "Robux R$ 30", description: "200 Robux para Roblox", emoji: "🟢", kind: "DIGITAL_CODE", provider: "Roblox", xpCost: 400, costCents: 3000 },
-      { familyId: family.id, title: "V-Bucks R$ 25", description: "1000 V-Bucks Fortnite", emoji: "🎮", kind: "DIGITAL_CODE", provider: "Epic Games", xpCost: 350, costCents: 2500 },
-      { familyId: family.id, title: "Steam R$ 20", description: "Gift card Steam", emoji: "🕹️", kind: "DIGITAL_CODE", provider: "Steam", xpCost: 280, costCents: 2000 },
-      { familyId: family.id, title: "Spotify 1 mês", description: "Plano individual", emoji: "🎵", kind: "DIGITAL_CODE", provider: "Spotify", xpCost: 300, costCents: 2190 },
-      { familyId: family.id, title: "Kindle e-book R$ 15", description: "1 livro digital à escolha", emoji: "📚", kind: "DIGITAL_CODE", provider: "Amazon", xpCost: 250, costCents: 1500, featured: true },
+      { familyId: family.id, title: "Robux R$ 15", description: "100 Robux para Roblox", emoji: "🟢", kind: "DIGITAL_CODE", provider: "Roblox", coinsCost: 40, costCents: 1500, featured: true },
+      { familyId: family.id, title: "Robux R$ 30", description: "200 Robux para Roblox", emoji: "🟢", kind: "DIGITAL_CODE", provider: "Roblox", coinsCost: 80, costCents: 3000 },
+      { familyId: family.id, title: "V-Bucks R$ 25", description: "1000 V-Bucks Fortnite", emoji: "🎮", kind: "DIGITAL_CODE", provider: "Epic Games", coinsCost: 70, costCents: 2500 },
+      { familyId: family.id, title: "Steam R$ 20", description: "Gift card Steam", emoji: "🕹️", kind: "DIGITAL_CODE", provider: "Steam", coinsCost: 56, costCents: 2000 },
+      { familyId: family.id, title: "Spotify 1 mês", description: "Plano individual", emoji: "🎵", kind: "DIGITAL_CODE", provider: "Spotify", coinsCost: 60, costCents: 2190 },
+      { familyId: family.id, title: "Kindle e-book R$ 15", description: "1 livro digital à escolha", emoji: "📚", kind: "DIGITAL_CODE", provider: "Amazon", coinsCost: 50, costCents: 1500, featured: true },
       // Físicos (sem código digital, pai entrega)
-      { familyId: family.id, title: "Sorvete favorito", description: "Pode ser na sorveteria", emoji: "🍦", kind: "PHYSICAL", xpCost: 80, costCents: 0 },
-      { familyId: family.id, title: "Livro novo", description: "Um livro à escolha (até R$ 50)", emoji: "📖", kind: "PHYSICAL", xpCost: 250, costCents: 5000 },
-      { familyId: family.id, title: "Pacote de figurinhas", description: "Álbum atual", emoji: "🃏", kind: "PHYSICAL", xpCost: 60, costCents: 500 },
+      { familyId: family.id, title: "Sorvete favorito", description: "Pode ser na sorveteria", emoji: "🍦", kind: "PHYSICAL", coinsCost: 16, costCents: 0 },
+      { familyId: family.id, title: "Livro novo", description: "Um livro à escolha (até R$ 50)", emoji: "📖", kind: "PHYSICAL", coinsCost: 50, costCents: 5000 },
+      { familyId: family.id, title: "Pacote de figurinhas", description: "Álbum atual", emoji: "🃏", kind: "PHYSICAL", coinsCost: 12, costCents: 500 },
       // Experiências
-      { familyId: family.id, title: "Cinema no fim de semana", description: "Filme à escolha", emoji: "🎬", kind: "EXPERIENCE", xpCost: 300, costCents: 4000 },
-      { familyId: family.id, title: "Pizza de sexta", description: "Você escolhe o sabor", emoji: "🍕", kind: "EXPERIENCE", xpCost: 150, costCents: 0, featured: true },
-      { familyId: family.id, title: "Acampamento no quintal", description: "Barraca na sala/quintal numa sexta", emoji: "⛺", kind: "EXPERIENCE", xpCost: 200, costCents: 0 },
+      { familyId: family.id, title: "Cinema no fim de semana", description: "Filme à escolha", emoji: "🎬", kind: "EXPERIENCE", coinsCost: 60, costCents: 4000 },
+      { familyId: family.id, title: "Pizza de sexta", description: "Você escolhe o sabor", emoji: "🍕", kind: "EXPERIENCE", coinsCost: 30, costCents: 0, featured: true },
+      { familyId: family.id, title: "Acampamento no quintal", description: "Barraca na sala/quintal numa sexta", emoji: "⛺", kind: "EXPERIENCE", coinsCost: 40, costCents: 0 },
       // Privilégios (zero R$)
-      { familyId: family.id, title: "Escolher filme de sexta", description: "Você decide", emoji: "🎞️", kind: "PRIVILEGE", xpCost: 30, costCents: 0 },
-      { familyId: family.id, title: "+30min de tela hoje", description: "Limite extra para o dia", emoji: "📱", kind: "PRIVILEGE", xpCost: 50, costCents: 0 },
-      { familyId: family.id, title: "Ficar acordado +1h sexta", description: "Vale 1 sexta-feira", emoji: "🌙", kind: "PRIVILEGE", xpCost: 70, costCents: 0 },
+      { familyId: family.id, title: "Escolher filme de sexta", description: "Você decide", emoji: "🎞️", kind: "PRIVILEGE", coinsCost: 6, costCents: 0 },
+      { familyId: family.id, title: "+30min de tela hoje", description: "Limite extra para o dia", emoji: "📱", kind: "PRIVILEGE", coinsCost: 10, costCents: 0 },
+      { familyId: family.id, title: "Ficar acordado +1h sexta", description: "Vale 1 sexta-feira", emoji: "🌙", kind: "PRIVILEGE", coinsCost: 14, costCents: 0 },
     ],
   });
 
@@ -146,7 +146,7 @@ async function main() {
     data: {
       childId: lila.id, rewardId: robux.id, status: "DELIVERED",
       requestedAt: daysAgo(8), deliveredAt: daysAgo(8),
-      xpSpent: 200, costCentsPaid: 1500,
+      coinsSpent: 40, costCentsPaid: 1500,
       deliveryCode: "ROBUX-XXXX-AAAA-BBBB",
       parentNote: "Código entregue por WhatsApp",
     },
@@ -155,7 +155,7 @@ async function main() {
   // Resgate pendente da Lila (sorvete)
   const sorvete = await prisma.reward.findFirstOrThrow({ where: { title: "Sorvete favorito" } });
   await prisma.redemption.create({
-    data: { childId: lila.id, rewardId: sorvete.id, status: "REQUESTED", xpSpent: 80 },
+    data: { childId: lila.id, rewardId: sorvete.id, status: "REQUESTED", coinsSpent: 16 },
   });
 
   // Conquistas Lila (auto-calculadas depois, mas plantamos algumas)

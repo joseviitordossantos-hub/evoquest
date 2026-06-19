@@ -14,12 +14,12 @@ const KIND_ORDER = ["DIGITAL_CODE", "EXPERIENCE", "PHYSICAL", "PRIVILEGE"];
 
 export default async function Loja({ params }: { params: Promise<{ id: string }> }) {
   const { id: childId } = await params;
-  const { availableXp } = await getChildStats(childId);
+  const { availableCoins } = await getChildStats(childId);
 
   const [rewards, myRedemptions] = await Promise.all([
     prisma.reward.findMany({
       where: { active: true },
-      orderBy: [{ featured: "desc" }, { xpCost: "asc" }],
+      orderBy: [{ featured: "desc" }, { coinsCost: "asc" }],
     }),
     prisma.redemption.findMany({
       where: { childId },
@@ -39,7 +39,7 @@ export default async function Loja({ params }: { params: Promise<{ id: string }>
             Loja
           </p>
           <h1 className="font-heading font-bold text-[24px] text-kid-text-strong leading-tight mt-1">
-            Troque seu XP por prêmios
+            Troque suas moedas por prêmios
           </h1>
         </header>
 
@@ -79,7 +79,7 @@ export default async function Loja({ params }: { params: Promise<{ id: string }>
               <ul className="grid grid-cols-2 gap-3">
                 {items.map((r) => (
                   <li key={r.id}>
-                    <RewardCard reward={r} childId={childId} availableXp={availableXp} />
+                    <RewardCard reward={r} childId={childId} availableCoins={availableCoins} />
                   </li>
                 ))}
               </ul>

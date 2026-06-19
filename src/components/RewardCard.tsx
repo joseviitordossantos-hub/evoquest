@@ -8,7 +8,7 @@ type Reward = {
   title: string;
   description: string | null;
   emoji: string;
-  xpCost: number;
+  coinsCost: number;
   featured: boolean;
   provider: string | null;
 };
@@ -16,14 +16,14 @@ type Reward = {
 export default function RewardCard({
   reward,
   childId,
-  availableXp,
+  availableCoins,
 }: {
   reward: Reward;
   childId: string;
-  availableXp: number;
+  availableCoins: number;
 }) {
-  const affordable = availableXp >= reward.xpCost;
-  const missing = reward.xpCost - availableXp;
+  const affordable = availableCoins >= reward.coinsCost;
+  const missing = reward.coinsCost - availableCoins;
   const iconName = emojiToIconName(reward.emoji);
 
   return (
@@ -51,8 +51,8 @@ export default function RewardCard({
         </p>
       )}
 
-      <div className="mt-3 kid-chip bg-kid-tint-orange text-kid-on-orange w-fit !text-[12px] inline-flex items-center gap-1">
-        <AppIcon name="bolt" size={14} /> {reward.xpCost} XP
+      <div className="mt-3 kid-chip bg-kid-tint-gold text-kid-on-gold w-fit !text-[12px] inline-flex items-center gap-1">
+        <AppIcon name="coin" size={14} /> {reward.coinsCost} moedas
       </div>
 
       {affordable ? (
@@ -63,7 +63,7 @@ export default function RewardCard({
         </form>
       ) : (
         <div className="mt-3 flex items-center justify-center gap-2 bg-kid-sunk rounded-pill px-3 py-2 font-body font-extrabold text-[11px] text-kid-text-muted">
-          <AppIcon name="lock" size={14} /> Faltam {missing} XP
+          <AppIcon name="lock" size={14} /> Faltam {missing} moedas
         </div>
       )}
     </article>

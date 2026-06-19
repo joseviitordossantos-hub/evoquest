@@ -95,7 +95,7 @@ function AvatarRing({
 }
 
 export default async function CriancaHeader({ childId }: { childId: string }) {
-  const { child, totalXp, availableXp, level, xpInLevel } = await getChildStats(childId);
+  const { child, totalXp, availableCoins, level, xpInLevel } = await getChildStats(childId);
   const avatarSrc = AVATAR_MAP[child.avatarSeed] ?? null;
 
   return (
@@ -137,8 +137,8 @@ export default async function CriancaHeader({ childId }: { childId: string }) {
             <span className="text-white">{xpInLevel}</span>
             <span className="text-white/70"> / 100 XP</span>
           </p>
-          <p className="font-body font-extrabold text-[11px] uppercase tracking-[0.1em] text-white/70">
-            <AppIcon name="coin" size={14} /> {availableXp} XP livres
+          <p className="font-body font-extrabold text-[11px] uppercase tracking-[0.1em] text-white/70 inline-flex items-center gap-1">
+            <AppIcon name="coin" size={14} /> {availableCoins} moedas
           </p>
         </div>
         <div className="h-[12px] bg-white/15 rounded-pill overflow-hidden">

@@ -20,7 +20,7 @@ export async function createReward(formData: FormData) {
       emoji: String(formData.get("emoji") || "🎁"),
       kind: String(formData.get("kind") || "PRIVILEGE"),
       provider: String(formData.get("provider") || "") || null,
-      xpCost: Number(formData.get("xpCost") || 50),
+      coinsCost: Number(formData.get("coinsCost") || 10),
       costCents: Math.round(Number(formData.get("costReais") || 0) * 100),
       featured: formData.get("featured") === "on",
     },

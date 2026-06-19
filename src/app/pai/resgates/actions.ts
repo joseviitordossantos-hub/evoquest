@@ -12,12 +12,8 @@ export async function approveRedemption(formData: FormData) {
 
 export async function rejectRedemption(formData: FormData) {
   const id = String(formData.get("id"));
-  const r = await prisma.redemption.findUniqueOrThrow({ where: { id } });
-  // Devolve XP à criança
-  await prisma.$transaction([
-    prisma.redemption.update({ where: { id }, data: { status: "REJECTED" } }),
-    prisma.xpEvent.create({ data: { childId: r.childId, amount: r.xpSpent, reason: `refund:${id}` } }),
-  ]);
+  // Moedas voltam automaticamente — a query de availableCoins ignora redemptions REJECTED.
+  await prisma.redemption.update({ where: { id }, data: { status: "REJECTED" } });
   revalidatePath("/pai/resgates");
   revalidatePath("/pai");
 }
