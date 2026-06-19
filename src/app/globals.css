@@ -1,0 +1,216 @@
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  background: #F4F0FC;
+  color: #281C44;
+  font-family: "Nunito", "Varela Round", system-ui, -apple-system, sans-serif;
+  font-weight: 600;
+}
+
+/* ============================================================
+   Soft Design System — flat surfaces, gradients, no shadows
+   ============================================================ */
+@layer components {
+  /* ── Button system ──────────────────────────────────────────
+     Primary   = purple gradient (default .kid-btn)  — main CTA
+     Secondary = white bg, purple text, subtle border — supporting actions
+     Tertiary  = ghost / transparent, purple text     — low-emphasis
+     Accent variants: -teal (success), -gold (XP/reward), -pink (danger)
+  ───────────────────────────────────────────────────────────── */
+
+  .kid-btn {
+    @apply inline-flex items-center justify-center gap-2 text-white font-body font-extrabold rounded-pill min-h-[56px] px-8 text-[17px] tracking-[0.01em] select-none;
+    background: linear-gradient(135deg, #7B5CFF 0%, #B14DFF 100%);
+    box-shadow: 0 4px 0 0 #5A3ED4;
+    transition: transform 160ms cubic-bezier(.2,.8,.3,1), box-shadow 160ms cubic-bezier(.2,.8,.3,1);
+  }
+  .kid-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 0 #5A3ED4;
+  }
+  .kid-btn:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 0 #5A3ED4;
+  }
+  .kid-btn:disabled {
+    @apply cursor-not-allowed;
+    background: #E5DCF5;
+    color: #8C849E;
+    box-shadow: 0 4px 0 0 #C9BDEA;
+  }
+
+  .kid-btn-secondary {
+    @apply kid-btn;
+    background: white;
+    color: #7B5CFF;
+    box-shadow: 0 4px 0 0 #D4CCF0, inset 0 0 0 2px #E5DCF5;
+  }
+  .kid-btn-secondary:hover:not(:disabled) {
+    box-shadow: 0 6px 0 0 #D4CCF0, inset 0 0 0 2px #7B5CFF;
+  }
+  .kid-btn-secondary:active:not(:disabled) {
+    box-shadow: 0 1px 0 0 #D4CCF0, inset 0 0 0 2px #7B5CFF;
+  }
+
+  .kid-btn-tertiary {
+    @apply kid-btn;
+    background: transparent;
+    color: #7B5CFF;
+    box-shadow: none;
+  }
+  .kid-btn-tertiary:hover:not(:disabled) {
+    box-shadow: none;
+  }
+  .kid-btn-tertiary:active:not(:disabled) {
+    box-shadow: none;
+  }
+
+  .kid-btn-white {
+    @apply kid-btn;
+    background: white;
+    color: #281C44;
+    box-shadow: 0 4px 0 0 #D4CCF0;
+  }
+  .kid-btn-teal {
+    @apply kid-btn;
+    background: linear-gradient(135deg, #39D9C4, #11A892);
+    box-shadow: 0 4px 0 0 #0D7D6C;
+  }
+  .kid-btn-gold {
+    @apply kid-btn;
+    background: linear-gradient(135deg, #FFD15C, #FF8A3D);
+    color: #5A3000;
+    box-shadow: 0 4px 0 0 #C96A1E;
+  }
+  .kid-btn-pink {
+    @apply kid-btn;
+    background: linear-gradient(135deg, #FF7BAE, #FF5FA2);
+    box-shadow: 0 4px 0 0 #CC3D7A;
+  }
+
+  .kid-btn-sm {
+    @apply min-h-[40px] px-5 text-[14px];
+  }
+
+  /* Card — white flat on lavender, subtle border */
+  .kid-card {
+    @apply bg-white rounded-kid-xl;
+    border: 1px solid rgba(123, 92, 255, 0.08);
+  }
+
+  /* Chip / pill — tinted, no border */
+  .kid-chip {
+    @apply inline-flex items-center gap-1.5 rounded-pill px-4 py-1.5 font-body font-extrabold text-[12px] tracking-[0.08em] uppercase;
+  }
+
+  /* Gradient text — brand signature */
+  .kid-gradient-text {
+    background: linear-gradient(120deg, #7B5CFF, #C24DFF 55%, #FF5FA2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Chip color variants (encapsulate bg + text) ── */
+  .kid-chip-violet  { background: #E0D4FC; color: #5B3CC7; }
+  .kid-chip-gold    { background: #FDEABC; color: #8E5A00; }
+  .kid-chip-pink    { background: #FFD0E5; color: #C4225A; }
+  .kid-chip-orange  { background: #FFD9C4; color: #A04518; }
+  .kid-chip-teal    { background: #B8EDE3; color: #0D7D6C; }
+
+  /* ── Stat card — tinted container on lavender base ── */
+  .kid-stat {
+    @apply rounded-kid-xl p-4 transition-all;
+    border: 1px solid rgba(123, 92, 255, 0.08);
+  }
+  .kid-stat:hover { transform: translateY(-4px); }
+  .kid-stat-violet  { background: #E0D4FC; }
+  .kid-stat-gold    { background: #FDEABC; }
+  .kid-stat-pink    { background: #FFD0E5; }
+  .kid-stat-orange  { background: #FFD9C4; }
+  .kid-stat-teal    { background: #B8EDE3; }
+
+  /* ── Form input ── */
+  .kid-input {
+    @apply w-full p-3 rounded-kid-md font-bold outline-none;
+    background: #E5DCF5;
+    color: #281C44;
+  }
+  .kid-input:focus {
+    box-shadow: 0 0 0 2px rgba(123, 92, 255, 0.3);
+  }
+
+  /* ── Section label (uppercase muted heading) ── */
+  .kid-label {
+    @apply font-body font-extrabold text-[12px] uppercase tracking-[0.12em];
+    color: #8C849E;
+  }
+
+  /* ── Divider between list items ── */
+  .kid-divider {
+    border-bottom: 1px solid #E5DCF5;
+  }
+}
+
+/* ============================================================
+   Global subtle border for white rounded containers
+   ============================================================ */
+.bg-white.rounded-kid-xl {
+  border: 1px solid rgba(123, 92, 255, 0.08);
+}
+
+/* ============================================================
+   Patterns — subtle, low opacity, under content
+   ============================================================ */
+.pattern-dots-violet {
+  background-image: radial-gradient(rgba(123,92,255,0.07) 2px, transparent 2px);
+  background-size: 26px 26px;
+}
+
+.pattern-dots-light {
+  background-image: radial-gradient(rgba(255,255,255,0.10) 2px, transparent 2px);
+  background-size: 30px 30px;
+}
+
+.pattern-dots-teal {
+  background-image: radial-gradient(rgba(31,199,182,0.10) 2px, transparent 2px);
+  background-size: 26px 26px;
+}
+
+.pattern-stripes {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255,255,255,0.08) 0 14px,
+    transparent 14px 28px
+  );
+}
+
+/* Halo decorativo de fundo */
+.pattern-blob {
+  background: radial-gradient(circle at 35% 35%, rgba(194,77,255,0.30), transparent 70%);
+  filter: blur(8px);
+}
+
+/* ============================================================
+   Gradients as utility classes
+   ============================================================ */
+.grad-primary   { background: linear-gradient(135deg, #7B5CFF 0%, #B14DFF 100%); }
+.grad-header    { background: linear-gradient(160deg, #8B6BFF, #C24DFF); }
+.grad-section   { background: linear-gradient(160deg, #6A45F5 0%, #9B4DFF 55%, #C24DFF 100%); }
+.grad-kids      { background: linear-gradient(150deg, #FF7BAE 0%, #C24DFF 100%); }
+.grad-xp        { background: linear-gradient(90deg, #FFC23C, #FF8A3D 60%, #FF5FA2); }
+.grad-streak    { background: linear-gradient(135deg, #FF7BAE, #FF5FA2); }
+.grad-gold      { background: linear-gradient(135deg, #FFD15C, #FF8A3D); }
+.grad-teal      { background: linear-gradient(135deg, #39D9C4, #11A892); }
+.grad-blue      { background: linear-gradient(135deg, #3B9BFF, #2E7BFF); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}

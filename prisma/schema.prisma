@@ -1,0 +1,173 @@
+// SQLite não suporta enums. Usamos String + constantes em src/lib/enums.ts.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  role      String   @default("PARENT")
+  familyId  String?
+  family    Family?  @relation(fields: [familyId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Family {
+  id            String              @id @default(cuid())
+  name          String
+  balanceCents  Int                 @default(0)
+  parents       User[]
+  children      Child[]
+  rewards       Reward[]
+  transactions  WalletTransaction[]
+  consent       ConsentRecord?
+  createdAt     DateTime            @default(now())
+}
+
+model Child {
+  id           String        @id @default(cuid())
+  familyId     String
+  family       Family        @relation(fields: [familyId], references: [id])
+  displayName  String
+  birthDate    DateTime
+  interests    String
+  avatarSeed   String        @default("default")
+  missions     Mission[]
+  logs         MissionLog[]
+  xpEvents     XpEvent[]
+  streak       Streak?
+  redemptions  Redemption[]
+  achievements Achievement[]
+  createdAt    DateTime      @default(now())
+}
+
+model Mission {
+  id              String       @id @default(cuid())
+  childId         String
+  child           Child        @relation(fields: [childId], references: [id])
+  title           String
+  category        String
+  difficulty      String       @default("EASY")
+  xpReward        Int          @default(10)
+  rewardText      String?
+  frequency       String       @default("DAILY")
+  targetCount     Int          @default(1)
+  currentProgress Int          @default(0)
+  active          Boolean      @default(true)
+  createdById     String
+  logs            MissionLog[]
+  createdAt       DateTime     @default(now())
+}
+
+model MissionLog {
+  id         String    @id @default(cuid())
+  missionId  String
+  mission    Mission   @relation(fields: [missionId], references: [id])
+  childId    String
+  child      Child     @relation(fields: [childId], references: [id])
+  markedAt   DateTime  @default(now())
+  photoPath  String?
+  childNote  String?
+  status     String    @default("PENDING")
+  approvedAt DateTime?
+  approvedBy String?
+  xpAwarded  Int       @default(0)
+}
+
+model XpEvent {
+  id        String   @id @default(cuid())
+  childId   String
+  child     Child    @relation(fields: [childId], references: [id])
+  amount    Int
+  reason    String
+  createdAt DateTime @default(now())
+}
+
+model Streak {
+  id                   String    @id @default(cuid())
+  childId              String    @unique
+  child                Child     @relation(fields: [childId], references: [id])
+  currentDays          Int       @default(0)
+  longestDays          Int       @default(0)
+  lastActiveDate       DateTime?
+  freezesAvailable     Int       @default(2)
+  freezesUsedThisMonth Int       @default(0)
+}
+
+// --- Recompensas ---
+
+model Reward {
+  id           String       @id @default(cuid())
+  familyId     String
+  family       Family       @relation(fields: [familyId], references: [id])
+  title        String
+  description  String?
+  emoji        String       @default("🎁")
+  kind         String       @default("PRIVILEGE") // DIGITAL_CODE | PHYSICAL | EXPERIENCE | PRIVILEGE
+  provider     String?      // Roblox | Steam | Spotify | Kindle | iFood | null
+  xpCost       Int
+  costCents    Int          @default(0) // 0 = não custa dinheiro (vale offline/privilégio)
+  active       Boolean      @default(true)
+  featured     Boolean      @default(false)
+  redemptions  Redemption[]
+}
+
+model Redemption {
+  id            String    @id @default(cuid())
+  childId       String
+  child         Child     @relation(fields: [childId], references: [id])
+  rewardId      String
+  reward        Reward    @relation(fields: [rewardId], references: [id])
+  requestedAt   DateTime  @default(now())
+  status        String    @default("REQUESTED") // REQUESTED | APPROVED | DELIVERED | REJECTED
+  xpSpent       Int       @default(0)
+  costCentsPaid Int       @default(0)
+  deliveredAt   DateTime?
+  parentNote    String?
+  deliveryCode  String?   // código de gift card / instrução
+}
+
+// --- Carteira parental ---
+
+model WalletTransaction {
+  id          String   @id @default(cuid())
+  familyId    String
+  family      Family   @relation(fields: [familyId], references: [id])
+  amountCents Int      // positivo = crédito, negativo = débito
+  type        String   // CREDIT | DEBIT_REDEMPTION | REFUND
+  description String
+  createdAt   DateTime @default(now())
+}
+
+// --- Conquistas / badges ---
+
+model Achievement {
+  id          String   @id @default(cuid())
+  childId     String
+  child       Child    @relation(fields: [childId], references: [id])
+  code        String   // FIRST_MISSION | STREAK_7 | STREAK_30 | TEN_MISSIONS | BOSS_HUNTER | LEVEL_5
+  title       String
+  emoji       String
+  earnedAt    DateTime @default(now())
+
+  @@unique([childId, code])
+}
+
+// --- LGPD ---
+
+model ConsentRecord {
+  id            String   @id @default(cuid())
+  familyId      String   @unique
+  family        Family   @relation(fields: [familyId], references: [id])
+  parentName    String
+  parentDocHash String
+  acceptedAt    DateTime @default(now())
+  termsVersion  String
+}
