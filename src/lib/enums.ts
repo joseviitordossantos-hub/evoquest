@@ -48,10 +48,10 @@ export const Difficulty = {
   BOSS: "BOSS",
 } as const;
 
-export type Rarity = "RARE" | "EPIC" | "LEGENDARY" | "MYTHIC";
+export type Rarity = "COMMON" | "RARE" | "EPIC" | "LEGENDARY" | "MYTHIC";
 
 export const ACHIEVEMENTS: Record<string, { title: string; emoji: string; description: string; rarity: Rarity }> = {
-  FIRST_MISSION: { title: "Primeira conquista", emoji: "🌱", description: "Completou sua primeira missão", rarity: "RARE" },
+  FIRST_MISSION: { title: "Primeira conquista", emoji: "🌱", description: "Completou sua primeira missão", rarity: "COMMON" },
   TEN_MISSIONS: { title: "Dez é nada", emoji: "🔟", description: "Completou 10 missões", rarity: "RARE" },
   THIRTY_MISSIONS: { title: "Constância", emoji: "💪", description: "Completou 30 missões", rarity: "EPIC" },
   STREAK_7: { title: "Uma semana firme", emoji: "🔥", description: "7 dias seguidos", rarity: "RARE" },
@@ -62,6 +62,7 @@ export const ACHIEVEMENTS: Record<string, { title: string; emoji: string; descri
 };
 
 export const RARITY_STYLE: Record<Rarity, { label: string; chip: string; chipText: string; fill: string; from: string; to: string }> = {
+  COMMON:    { label: "COMUM",     chip: "bg-[#8C849E]", chipText: "text-white", fill: "bg-gradient-to-br from-[#F1EDF7] to-[#9F95B0]", from: "#F1EDF7", to: "#9F95B0" },
   RARE:      { label: "RARE",      chip: "bg-[#1B7CC9]", chipText: "text-white", fill: "bg-gradient-to-br from-[#6FC1FA] to-[#1B7CC9]", from: "#6FC1FA", to: "#1B7CC9" },
   EPIC:      { label: "EPIC",      chip: "bg-[#5234CC]", chipText: "text-white", fill: "bg-gradient-to-br from-[#9C82FF] to-[#5234CC]", from: "#9C82FF", to: "#5234CC" },
   LEGENDARY: { label: "LEGENDARY", chip: "bg-[#D4831A]", chipText: "text-white", fill: "bg-gradient-to-br from-[#FFC25C] to-[#D4831A]", from: "#FFC25C", to: "#D4831A" },
