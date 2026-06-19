@@ -36,11 +36,11 @@ function EmojiBox({ category, badge }: { category: string; badge?: "check" | "cl
   const badgeIcon: Record<string, string> = { check: "check", clock: "hourglass", retry: "retry" };
 
   return (
-    <div className={`w-14 h-14 rounded-[10px] ${grad} flex items-center justify-center shrink-0 relative`}>
-      <AppIcon name={iconName} size={28} />
+    <div className={`w-20 h-20 rounded-[14px] ${grad} flex items-center justify-center shrink-0 relative`}>
+      <AppIcon name={iconName} size={56} />
       {badge && (
-        <span className="absolute -bottom-1.5 -right-1.5">
-          <AppIcon name={badgeIcon[badge]} size={18} />
+        <span className="absolute -bottom-2 -right-2">
+          <AppIcon name={badgeIcon[badge]} size={24} />
         </span>
       )}
     </div>
