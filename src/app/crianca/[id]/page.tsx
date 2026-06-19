@@ -49,9 +49,11 @@ export default async function JornadaCrianca({ params }: { params: Promise<{ id:
               </h2>
             </header>
             <div className="-mx-5 px-5 overflow-x-auto scrollbar-hide">
-              <ul className="flex gap-3 pb-3 pt-1 w-max">
+              <ul
+                className="grid grid-flow-col gap-3 pb-3 pt-1 w-max auto-cols-[calc((100vw-40px-24px)/3.5)] [@media(min-width:480px)]:auto-cols-[calc((480px-40px-24px)/3.5)]"
+              >
                 {recentAchievements.map((a) => (
-                  <li key={a.id} className="shrink-0 w-[68px]">
+                  <li key={a.id}>
                     <AchievementIcon
                       emoji={a.emoji}
                       title={a.title}
