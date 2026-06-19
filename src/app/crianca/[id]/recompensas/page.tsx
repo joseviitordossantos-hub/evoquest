@@ -76,7 +76,7 @@ export default async function Loja({ params }: { params: Promise<{ id: string }>
                 <AppIcon name={rewardKindIconName[k]} size={22} />
                 <span>{rewardKindLabel[k]}</span>
               </p>
-              <ul className="grid grid-cols-2 gap-3">
+              <ul className="grid grid-cols-1 gap-3">
                 {items.map((r) => (
                   <li key={r.id}>
                     <RewardCard reward={r} childId={childId} availableCoins={availableCoins} />
