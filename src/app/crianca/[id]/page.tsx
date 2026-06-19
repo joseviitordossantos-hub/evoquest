@@ -57,6 +57,7 @@ export default async function JornadaCrianca({ params }: { params: Promise<{ id:
                     <AchievementIcon
                       emoji={a.emoji}
                       title={a.title}
+                      description={ACHIEVEMENTS[a.code]?.description}
                       earnedAt={a.earnedAt}
                       rarity={ACHIEVEMENTS[a.code]?.rarity}
                     />

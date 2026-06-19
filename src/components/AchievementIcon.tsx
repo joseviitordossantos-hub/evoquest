@@ -10,11 +10,12 @@ type CommonProps = {
   title: string;
   locked?: boolean;
   hint?: string;
+  description?: string;
   earnedAt?: Date | string;
   rarity?: Rarity;
 };
 
-export default function AchievementIcon({ emoji, title, locked, hint, earnedAt, rarity }: CommonProps) {
+export default function AchievementIcon({ emoji, title, locked, hint, description, earnedAt, rarity }: CommonProps) {
   const style = rarity ? RARITY_STYLE[rarity] : null;
   const [open, setOpen] = useState(false);
   const iconName = emojiToIconName(emoji);
@@ -75,6 +76,9 @@ export default function AchievementIcon({ emoji, title, locked, hint, earnedAt, 
             </h3>
             {locked && hint && (
               <p className="font-body text-[13px] text-kid-text-soft mt-2 leading-snug">{hint}</p>
+            )}
+            {!locked && description && (
+              <p className="font-body text-[13px] text-kid-text-soft mt-2 leading-snug">{description}</p>
             )}
             {!locked && formattedDate && (
               <p className="font-body font-extrabold text-[11px] uppercase tracking-[0.1em] mt-3 text-kid-text-muted">

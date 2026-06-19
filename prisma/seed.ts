@@ -163,7 +163,7 @@ async function main() {
       { childId: lila.id, code: "FIRST_MISSION", title: "Primeira conquista", emoji: "🌱", earnedAt: daysAgo(9) },
       { childId: lila.id, code: "STREAK_7", title: "Uma semana firme", emoji: "🔥", earnedAt: daysAgo(2) },
       { childId: lila.id, code: "BOSS_HUNTER", title: "Caçador de Boss", emoji: "🐲", earnedAt: daysAgo(5) },
-      { childId: lila.id, code: "TEN_MISSIONS", title: "Dez é nada", emoji: "🔟", earnedAt: daysAgo(1) },
+      { childId: lila.id, code: "LEVEL_10", title: "Lenda em formação", emoji: "👑", earnedAt: daysAgo(1) },
       { childId: theo.id, code: "FIRST_MISSION", title: "Primeira conquista", emoji: "🌱", earnedAt: daysAgo(3) },
     ],
   });
