@@ -1,6 +1,20 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaLibSQL } from "@prisma/adapter-libsql";
+import { createClient } from "@libsql/client";
 
-const prisma = new PrismaClient();
+function makeSeedClient() {
+  if (process.env.TURSO_DATABASE_URL) {
+    const libsql = createClient({
+      url: process.env.TURSO_DATABASE_URL!,
+      authToken: process.env.TURSO_AUTH_TOKEN,
+    });
+    const adapter = new PrismaLibSQL(libsql as any);
+    return new PrismaClient({ adapter } as any);
+  }
+  return new PrismaClient();
+}
+
+const prisma = makeSeedClient();
 
 async function wipe() {
   await prisma.achievement.deleteMany();
