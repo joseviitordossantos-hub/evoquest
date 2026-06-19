@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
+
+export const dynamic = "force-dynamic";
 import PaiNav from "@/components/PaiNav";
 import Footer from "@/components/Footer";
 import { fmtBRL } from "@/lib/enums";

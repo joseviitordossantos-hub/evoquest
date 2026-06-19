@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import PaiNav from "@/components/PaiNav";
+
+export const dynamic = "force-dynamic";
 import { fmtBRL, rewardKindLabel } from "@/lib/enums";
 import { toggleRewardActive } from "./actions";
 import Footer from "@/components/Footer";

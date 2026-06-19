@@ -5,6 +5,8 @@ import EvoQuestLogo from "@/components/EvoQuestLogo";
 import Footer from "@/components/Footer";
 import AppIcon from "@/components/AppIcon";
 
+export const dynamic = "force-dynamic";
+
 const AVATAR_MAP: Record<string, string> = {
   lila: "/avatar-girl.png",
   theo: "/avatar-boy.png",

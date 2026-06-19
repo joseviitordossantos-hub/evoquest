@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import PaiNav from "@/components/PaiNav";
+
+export const dynamic = "force-dynamic";
 import { fmtBRL } from "@/lib/enums";
 import { addFunds } from "./actions";
 import Footer from "@/components/Footer";
