@@ -76,16 +76,18 @@ export default function MissionCard({
 
   if (pending) {
     return (
-      <article className="kid-stat kid-stat-gold flex items-center gap-4 !p-4">
-        <EmojiBox category={mission.category} badge="clock" />
-        <div className="flex-1 min-w-0">
-          <p className="font-heading font-semibold text-[16px] text-kid-text-strong">{mission.title}</p>
-          <ProgressBar current={mission.targetCount} target={mission.targetCount} />
-          <p className="kid-chip bg-white/60 text-kid-text-soft mt-2 !text-[10px] !px-3 !py-1">
-            Esperando
-          </p>
-        </div>
-      </article>
+      <Link href={`/crianca/${childId}/aula/${mission.id}`} className="block">
+        <article className="kid-stat kid-stat-gold flex items-center gap-4 !p-4">
+          <EmojiBox category={mission.category} badge="clock" />
+          <div className="flex-1 min-w-0">
+            <p className="font-heading font-semibold text-[16px] text-kid-text-strong">{mission.title}</p>
+            <ProgressBar current={mission.targetCount} target={mission.targetCount} />
+            <p className="kid-chip bg-white/60 text-kid-text-soft mt-2 !text-[10px] !px-3 !py-1">
+              Esperando
+            </p>
+          </div>
+        </article>
+      </Link>
     );
   }
 

@@ -81,6 +81,7 @@ async function main() {
     prisma.mission.create({ data: { childId: theo.id, title: "Estudar matemática 20min", category: "estudo", difficulty: "MEDIUM", xpReward: 25, frequency: "DAILY", targetCount: 1, currentProgress: 0, createdById: parent.id } }),
     prisma.mission.create({ data: { childId: theo.id, title: "Treinar futebol no quintal", category: "esporte", difficulty: "EASY", xpReward: 15, frequency: "DAILY", targetCount: 3, currentProgress: 2, createdById: parent.id } }),
     prisma.mission.create({ data: { childId: theo.id, title: "Tirar nota ≥ 8 na prova", category: "estudo", difficulty: "HARD", xpReward: 80, frequency: "ONCE", targetCount: 1, currentProgress: 0, createdById: parent.id, rewardText: "Robux 100" } }),
+    prisma.mission.create({ data: { childId: theo.id, title: "Praticar inglês 15min", category: "idioma", difficulty: "MEDIUM", xpReward: 25, frequency: "DAILY", targetCount: 1, currentProgress: 0, createdById: parent.id } }),
   ]);
 
   // Histórico de missões aprovadas (Lila)
