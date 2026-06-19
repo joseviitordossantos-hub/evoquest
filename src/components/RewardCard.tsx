@@ -55,8 +55,9 @@ export default function RewardCard({
                 ? "bg-[#D8F4DE] text-[#15803D]"
                 : "bg-[#FFEDD3] text-[#A56514]"
             }`}
+            title={`Você tem ${availableCoins} moedas`}
           >
-            <AppIcon name="coin" size={11} /> {reward.coinsCost}
+            <AppIcon name="coin" size={11} /> Você tem: {availableCoins}
           </span>
         </div>
 
@@ -66,36 +67,25 @@ export default function RewardCard({
           </p>
         )}
 
-        <div className="mt-auto pt-2 flex items-end justify-between">
-          <p className="font-heading font-extrabold text-[18px] text-kid-violet-deep leading-none inline-flex items-baseline gap-1">
-            {reward.coinsCost}
-            <span className="font-body font-extrabold text-[11px] text-kid-text-muted uppercase tracking-[0.08em]">
-              moedas
-            </span>
-          </p>
+        <div className="mt-auto pt-2 flex items-center justify-between gap-2">
+          <span className="inline-flex items-center gap-1.5 bg-kid-tint-gold text-kid-on-gold rounded-pill px-3 py-1.5 font-heading font-extrabold text-[14px] leading-none">
+            <AppIcon name="coin" size={16} /> {reward.coinsCost}
+            <span className="font-body font-extrabold text-[10px] uppercase tracking-[0.08em] ml-0.5">moedas</span>
+          </span>
           {affordable ? (
             <form action={requestRedemption}>
               <input type="hidden" name="rewardId" value={reward.id} />
               <input type="hidden" name="childId" value={childId} />
               <button
                 type="submit"
-                className="w-10 h-10 rounded-full grad-primary text-white flex items-center justify-center transition-transform hover:-translate-y-0.5 active:translate-y-0"
-                aria-label="Trocar"
+                className="grad-primary text-white rounded-pill px-4 h-9 font-body font-extrabold text-[12px] tracking-[0.06em] uppercase inline-flex items-center transition-transform hover:-translate-y-0.5 active:translate-y-0"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M3 6h18l-2 13H5L3 6z" />
-                  <path d="M9 11v4" />
-                  <path d="M15 11v4" />
-                  <path d="M9 3h6" />
-                </svg>
+                Trocar
               </button>
             </form>
           ) : (
-            <span
-              className="w-10 h-10 rounded-full bg-kid-sunk text-kid-text-muted flex items-center justify-center"
-              aria-label="Bloqueado"
-            >
-              <AppIcon name="lock" size={16} />
+            <span className="bg-kid-sunk text-kid-text-muted rounded-pill px-4 h-9 font-body font-extrabold text-[12px] tracking-[0.06em] uppercase inline-flex items-center gap-1.5">
+              <AppIcon name="lock" size={12} /> Faltam {reward.coinsCost - availableCoins}
             </span>
           )}
         </div>
