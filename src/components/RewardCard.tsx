@@ -45,21 +45,9 @@ export default function RewardCard({
       </div>
 
       <div className="flex-1 min-w-0 flex flex-col">
-        <div className="flex items-start gap-2">
-          <p className="font-heading font-bold text-[16px] text-kid-text-strong leading-tight flex-1 min-w-0 pr-1">
-            {reward.title}
-          </p>
-          <span
-            className={`shrink-0 rounded-pill px-2.5 py-1 font-body font-extrabold text-[10px] tracking-[0.04em] inline-flex items-center gap-1 ${
-              affordable
-                ? "bg-[#D8F4DE] text-[#15803D]"
-                : "bg-[#FFEDD3] text-[#A56514]"
-            }`}
-            title={`Você tem ${availableCoins} moedas`}
-          >
-            <AppIcon name="coin" size={11} /> Você tem: {availableCoins}
-          </span>
-        </div>
+        <p className="font-heading font-bold text-[16px] text-kid-text-strong leading-tight pr-1">
+          {reward.title}
+        </p>
 
         {reward.description && (
           <p className="font-body text-[12px] text-kid-text-soft mt-0.5 leading-snug line-clamp-2">
@@ -78,14 +66,14 @@ export default function RewardCard({
               <input type="hidden" name="childId" value={childId} />
               <button
                 type="submit"
-                className="grad-primary text-white rounded-pill px-4 h-9 font-body font-extrabold text-[12px] tracking-[0.06em] uppercase inline-flex items-center transition-transform hover:-translate-y-0.5 active:translate-y-0"
+                className="grad-primary text-white rounded-pill px-3 h-7 font-body font-extrabold text-[10px] tracking-[0.06em] uppercase inline-flex items-center transition-transform hover:-translate-y-0.5 active:translate-y-0"
               >
                 Trocar
               </button>
             </form>
           ) : (
-            <span className="bg-kid-sunk text-kid-text-muted rounded-pill px-4 h-9 font-body font-extrabold text-[12px] tracking-[0.06em] uppercase inline-flex items-center gap-1.5">
-              <AppIcon name="lock" size={12} /> Faltam {reward.coinsCost - availableCoins}
+            <span className="bg-kid-sunk text-kid-text-muted rounded-pill px-3 h-7 font-body font-extrabold text-[10px] tracking-[0.06em] uppercase inline-flex items-center gap-1">
+              <AppIcon name="lock" size={11} /> Faltam {reward.coinsCost - availableCoins}
             </span>
           )}
         </div>
