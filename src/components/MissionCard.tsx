@@ -39,8 +39,8 @@ function EmojiBox({ category, badge }: { category: string; badge?: "check" | "cl
     <div className={`w-20 h-20 rounded-[14px] ${grad} flex items-center justify-center shrink-0 relative`}>
       <AppIcon name={iconName} size={56} />
       {badge && (
-        <span className="absolute -bottom-2 -right-2">
-          <AppIcon name={badgeIcon[badge]} size={24} />
+        <span className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center ring-2 ring-white">
+          <AppIcon name={badgeIcon[badge]} size={22} />
         </span>
       )}
     </div>
