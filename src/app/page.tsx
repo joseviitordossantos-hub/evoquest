@@ -43,20 +43,20 @@ export default async function Home() {
       </section>
 
       <section className="px-4 pb-16 max-w-3xl mx-auto relative z-10">
-        <div className="grad-section rounded-kid-xl p-8 relative overflow-hidden">
+        <div className="grad-section rounded-kid-xl p-5 relative overflow-hidden">
           <div className="pattern-dots-light absolute inset-0 rounded-kid-xl" />
           <div className="relative">
             <span className="kid-chip bg-white/20 text-white">DEMO INTERATIVA</span>
             <h2 className="font-heading font-bold text-3xl mt-4 leading-tight text-white">Família Silva — entre pelos dois lados</h2>
-            <p className="font-body text-white/70 mt-3 mb-8">
+            <p className="font-body text-white/70 mt-3 mb-6">
               Veja o app pelos olhos do responsável (gestão, carteira, aprovação)
               ou da criança (missões, loja, troféus).
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <Link
                 href="/pai"
-                className="block bg-white rounded-kid-xl p-5 hover:-translate-y-1 transition-all"
+                className="block bg-white rounded-[6px] p-4 hover:-translate-y-1 transition-all"
               >
                 <p className="font-body font-extrabold text-[10px] uppercase tracking-[0.12em] text-kid-text-muted">RESPONSÁVEL</p>
                 <p className="font-heading font-bold text-xl mt-2 text-kid-text-strong">Marcos Silva</p>
@@ -66,7 +66,7 @@ export default async function Home() {
                 <Link
                   key={c.id}
                   href={`/crianca/${c.id}`}
-                  className={`block kid-stat ${i % 2 === 0 ? "kid-stat-gold" : "kid-stat-pink"} hover:-translate-y-1 transition-all`}
+                  className={`block kid-stat !rounded-[6px] !p-4 ${i % 2 === 0 ? "kid-stat-gold" : "kid-stat-pink"} hover:-translate-y-1 transition-all`}
                 >
                   <p className="font-body font-extrabold text-[10px] uppercase tracking-[0.12em] text-kid-text-muted">CRIANÇA</p>
                   <div className="flex items-center gap-3 mt-2">
