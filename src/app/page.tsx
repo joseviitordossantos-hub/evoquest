@@ -31,7 +31,7 @@ export default async function Home() {
 
       <section className="px-4 pt-10 pb-8 max-w-3xl mx-auto relative z-10">
         <span className="kid-chip kid-chip-pink inline-flex items-center gap-1"><AppIcon name="star" size={14} /> PROTÓTIPO V0</span>
-        <h1 className="font-heading font-bold text-[48px] leading-[1.08] tracking-tight text-kid-text-strong mt-3">
+        <h1 className="font-heading font-black text-[68px] leading-[1.02] tracking-[-0.02em] text-kid-text-strong mt-3">
           Transforme<br />
           <span className="kid-gradient-text">esforço</span>
           {" "}em conquista.
