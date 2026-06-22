@@ -35,6 +35,17 @@ export const ICON_EMOJI: Record<string, string> = {
   "rw-privilege": "⭐",
   lock: "🔒",
   ticket: "🎟️",
+  robux: "🟢",
+  vbucks: "🎮",
+  steam: "🕹️",
+  spotify: "🎵",
+  battlenet: "🎮",
+  riotpoints: "⚔️",
+  cellphone: "📱",
+  pizza: "🍕",
+  icecream: "🍦",
+  tent: "⛺",
+  books: "📚",
 };
 
 export const ICON_FILE: Record<string, string> = {
@@ -53,6 +64,11 @@ export const ICON_FILE: Record<string, string> = {
   "rw-physical": "box",
   "rw-experience": "ticket",
   "rw-privilege": "star",
+  cellphone: "cellphone",
+  pizza: "pizza",
+  icecream: "icecream",
+  tent: "tent",
+  books: "books",
 };
 
 const ICONS_WITHOUT_FILE = new Set(["heart", "warning", "gift", "party", "retry", "ten", "muscle", "volcano"]);
@@ -63,6 +79,7 @@ for (const [name, emoji] of Object.entries(ICON_EMOJI)) {
 }
 
 export function emojiToIconName(emoji: string): string | null {
+  if (ICON_EMOJI[emoji]) return emoji;
   return EMOJI_TO_ICON[emoji] ?? null;
 }
 

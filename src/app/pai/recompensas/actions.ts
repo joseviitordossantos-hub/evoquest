@@ -10,6 +10,29 @@ export async function toggleRewardActive(formData: FormData) {
   revalidatePath("/pai/recompensas");
 }
 
+export async function buyRewardStock(formData: FormData) {
+  const id = String(formData.get("id"));
+  const reward = await prisma.reward.findUniqueOrThrow({ where: { id } });
+  const family = await prisma.family.findFirstOrThrow({ where: { id: reward.familyId } });
+  if (reward.costCents > family.balanceCents) {
+    throw new Error("Saldo insuficiente na carteira");
+  }
+  await prisma.$transaction([
+    prisma.reward.update({ where: { id }, data: { stock: { increment: 1 } } }),
+    prisma.family.update({ where: { id: family.id }, data: { balanceCents: { decrement: reward.costCents } } }),
+    prisma.walletTransaction.create({
+      data: {
+        familyId: family.id,
+        amountCents: -reward.costCents,
+        type: "DEBIT_REDEMPTION",
+        description: `Compra de estoque: ${reward.title}`,
+      },
+    }),
+  ]);
+  revalidatePath("/pai/recompensas");
+  revalidatePath("/pai/carteira");
+}
+
 export async function createReward(formData: FormData) {
   const family = await prisma.family.findFirstOrThrow();
   await prisma.reward.create({

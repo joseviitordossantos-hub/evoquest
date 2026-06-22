@@ -83,20 +83,20 @@ async function main() {
 
   // Missões da Lila
   const lilaMissions = await Promise.all([
-    prisma.mission.create({ data: { childId: lila.id, title: "Ler 10 páginas", category: "leitura", difficulty: "EASY", xpReward: 15, frequency: "DAILY", targetCount: 10, currentProgress: 7, createdById: parent.id, rewardText: "1 episódio extra de série" } }),
-    prisma.mission.create({ data: { childId: lila.id, title: "Praticar inglês 15min", category: "idioma", difficulty: "MEDIUM", xpReward: 25, frequency: "DAILY", targetCount: 1, currentProgress: 0, createdById: parent.id } }),
-    prisma.mission.create({ data: { childId: lila.id, title: "Arrumar o quarto", category: "rotina", difficulty: "EASY", xpReward: 10, frequency: "DAILY", targetCount: 1, currentProgress: 1, createdById: parent.id } }),
-    prisma.mission.create({ data: { childId: lila.id, title: "Desenhar 1 página do sketchbook", category: "outro", difficulty: "MEDIUM", xpReward: 20, frequency: "DAILY", targetCount: 5, currentProgress: 3, createdById: parent.id } }),
-    prisma.mission.create({ data: { childId: lila.id, title: "Ler 1 livro inteiro", category: "leitura", difficulty: "BOSS", xpReward: 200, frequency: "ONCE", targetCount: 150, currentProgress: 92, createdById: parent.id, rewardText: "Um livro novo de presente" } }),
+    prisma.mission.create({ data: { childId: lila.id, title: "Ler 10 páginas", category: "leitura", difficulty: "COMMON", xpReward: 15, frequency: "DAILY", targetCount: 10, currentProgress: 7, createdById: parent.id, rewardText: "1 episódio extra de série" } }),
+    prisma.mission.create({ data: { childId: lila.id, title: "Praticar inglês 15min", category: "idioma", difficulty: "RARE", xpReward: 37, frequency: "DAILY", targetCount: 1, currentProgress: 0, createdById: parent.id } }),
+    prisma.mission.create({ data: { childId: lila.id, title: "Arrumar o quarto", category: "rotina", difficulty: "COMMON", xpReward: 10, frequency: "DAILY", targetCount: 1, currentProgress: 0, createdById: parent.id } }),
+    prisma.mission.create({ data: { childId: lila.id, title: "Desenhar 1 página do sketchbook", category: "outro", difficulty: "LEGENDARY", xpReward: 36, frequency: "DAILY", targetCount: 5, currentProgress: 3, createdById: parent.id } }),
+    prisma.mission.create({ data: { childId: lila.id, title: "Ler 1 livro inteiro", category: "leitura", difficulty: "MYTHIC", xpReward: 400, frequency: "ONCE", targetCount: 150, currentProgress: 92, createdById: parent.id, rewardText: "Um livro novo de presente" } }),
   ]);
 
   // Missões do Théo (espelha as da Lila)
   const theoMissions = await Promise.all([
-    prisma.mission.create({ data: { childId: theo.id, title: "Ler 10 páginas", category: "leitura", difficulty: "EASY", xpReward: 15, frequency: "DAILY", targetCount: 10, currentProgress: 7, createdById: parent.id, rewardText: "1 episódio extra de série" } }),
-    prisma.mission.create({ data: { childId: theo.id, title: "Praticar inglês 15min", category: "idioma", difficulty: "MEDIUM", xpReward: 25, frequency: "DAILY", targetCount: 1, currentProgress: 0, createdById: parent.id } }),
-    prisma.mission.create({ data: { childId: theo.id, title: "Arrumar o quarto", category: "rotina", difficulty: "EASY", xpReward: 10, frequency: "DAILY", targetCount: 1, currentProgress: 1, createdById: parent.id } }),
-    prisma.mission.create({ data: { childId: theo.id, title: "Desenhar 1 página do sketchbook", category: "outro", difficulty: "MEDIUM", xpReward: 20, frequency: "DAILY", targetCount: 5, currentProgress: 3, createdById: parent.id } }),
-    prisma.mission.create({ data: { childId: theo.id, title: "Ler 1 livro inteiro", category: "leitura", difficulty: "BOSS", xpReward: 200, frequency: "ONCE", targetCount: 150, currentProgress: 92, createdById: parent.id, rewardText: "Um livro novo de presente" } }),
+    prisma.mission.create({ data: { childId: theo.id, title: "Ler 10 páginas", category: "leitura", difficulty: "COMMON", xpReward: 15, frequency: "DAILY", targetCount: 10, currentProgress: 7, createdById: parent.id, rewardText: "1 episódio extra de série" } }),
+    prisma.mission.create({ data: { childId: theo.id, title: "Praticar inglês 15min", category: "idioma", difficulty: "RARE", xpReward: 37, frequency: "DAILY", targetCount: 1, currentProgress: 0, createdById: parent.id } }),
+    prisma.mission.create({ data: { childId: theo.id, title: "Arrumar o quarto", category: "rotina", difficulty: "COMMON", xpReward: 10, frequency: "DAILY", targetCount: 1, currentProgress: 0, createdById: parent.id } }),
+    prisma.mission.create({ data: { childId: theo.id, title: "Desenhar 1 página do sketchbook", category: "outro", difficulty: "LEGENDARY", xpReward: 36, frequency: "DAILY", targetCount: 5, currentProgress: 3, createdById: parent.id } }),
+    prisma.mission.create({ data: { childId: theo.id, title: "Ler 1 livro inteiro", category: "leitura", difficulty: "MYTHIC", xpReward: 400, frequency: "ONCE", targetCount: 150, currentProgress: 92, createdById: parent.id, rewardText: "Um livro novo de presente" } }),
   ]);
 
   // Histórico de missões aprovadas (Lila)
@@ -115,9 +115,18 @@ async function main() {
   });
   await prisma.xpEvent.create({ data: { childId: lila.id, amount: 200, reason: `mission:${lilaMissions[4].id}`, createdAt: bossLog.markedAt } });
 
-  // Lila tem 2 missões marcadas hoje aguardando aprovação
+  // Lila — estados variados hoje para visualização
+  // Missão 0 (Ler 10 páginas): PENDING (amarelo + esperando)
   await prisma.missionLog.create({ data: { missionId: lilaMissions[0].id, childId: lila.id, status: "PENDING", childNote: "Li o capítulo 3 inteiro!" } });
-  await prisma.missionLog.create({ data: { missionId: lilaMissions[1].id, childId: lila.id, status: "PENDING" } });
+  // Missão 1 (Praticar inglês): sem log hoje, progress 0 → à fazer (azul)
+  // Missão 2 (Arrumar o quarto): APPROVED hoje → concluído (verde)
+  const arrumouLog = await prisma.missionLog.create({
+    data: { missionId: lilaMissions[2].id, childId: lila.id, status: "APPROVED", markedAt: new Date(), approvedAt: new Date(), approvedBy: parent.id, xpAwarded: lilaMissions[2].xpReward },
+  });
+  await prisma.xpEvent.create({ data: { childId: lila.id, amount: lilaMissions[2].xpReward, reason: `mission:${lilaMissions[2].id}`, createdAt: arrumouLog.markedAt } });
+  // Missão 3 (Desenhar sketchbook): sem log hoje, progress 3/5 → em andamento (amarelo)
+  // Missão 4 (Ler livro inteiro): REJECTED hoje → tentar novamente (azul)
+  await prisma.missionLog.create({ data: { missionId: lilaMissions[4].id, childId: lila.id, status: "REJECTED", childNote: "Quase lá!", markedAt: new Date() } });
 
   // Histórico Théo (mesma série da Lila — 9 dias aprovados + BOSS + 2 pendings)
   for (const ago of approvedDates) {
@@ -131,22 +140,28 @@ async function main() {
     data: { missionId: theoMissions[4].id, childId: theo.id, status: "APPROVED", markedAt: daysAgo(5), approvedAt: daysAgo(5), approvedBy: parent.id, xpAwarded: 200 },
   });
   await prisma.xpEvent.create({ data: { childId: theo.id, amount: 200, reason: `mission:${theoMissions[4].id}`, createdAt: theoBossLog.markedAt } });
+  // Théo — estados variados
   await prisma.missionLog.create({ data: { missionId: theoMissions[0].id, childId: theo.id, status: "PENDING", childNote: "Terminei o capítulo!" } });
-  await prisma.missionLog.create({ data: { missionId: theoMissions[1].id, childId: theo.id, status: "PENDING" } });
+  const theoArrumouLog = await prisma.missionLog.create({
+    data: { missionId: theoMissions[2].id, childId: theo.id, status: "APPROVED", markedAt: new Date(), approvedAt: new Date(), approvedBy: parent.id, xpAwarded: theoMissions[2].xpReward },
+  });
+  await prisma.xpEvent.create({ data: { childId: theo.id, amount: theoMissions[2].xpReward, reason: `mission:${theoMissions[2].id}`, createdAt: theoArrumouLog.markedAt } });
 
   // Catálogo de recompensas — rico para apresentação
   await prisma.reward.createMany({
     data: [
       // Digitais (com custo R$)
-      { familyId: family.id, title: "Robux R$ 15", description: "100 Robux para Roblox", emoji: "🟢", kind: "DIGITAL_CODE", provider: "Roblox", coinsCost: 40, costCents: 1500, featured: true },
-      { familyId: family.id, title: "Robux R$ 30", description: "200 Robux para Roblox", emoji: "🟢", kind: "DIGITAL_CODE", provider: "Roblox", coinsCost: 80, costCents: 3000 },
-      { familyId: family.id, title: "V-Bucks R$ 25", description: "1000 V-Bucks Fortnite", emoji: "🎮", kind: "DIGITAL_CODE", provider: "Epic Games", coinsCost: 70, costCents: 2500 },
-      { familyId: family.id, title: "Steam R$ 20", description: "Gift card Steam", emoji: "🕹️", kind: "DIGITAL_CODE", provider: "Steam", coinsCost: 56, costCents: 2000 },
-      { familyId: family.id, title: "Spotify 1 mês", description: "Plano individual", emoji: "🎵", kind: "DIGITAL_CODE", provider: "Spotify", coinsCost: 60, costCents: 2190 },
+      { familyId: family.id, title: "Robux R$ 15", description: "100 Robux para Roblox", emoji: "robux", kind: "DIGITAL_CODE", provider: "Roblox", coinsCost: 40, costCents: 1500, featured: true },
+      { familyId: family.id, title: "Robux R$ 30", description: "200 Robux para Roblox", emoji: "robux", kind: "DIGITAL_CODE", provider: "Roblox", coinsCost: 80, costCents: 3000 },
+      { familyId: family.id, title: "V-Bucks R$ 25", description: "1000 V-Bucks Fortnite", emoji: "vbucks", kind: "DIGITAL_CODE", provider: "Epic Games", coinsCost: 70, costCents: 2500 },
+      { familyId: family.id, title: "Steam R$ 20", description: "Gift card Steam", emoji: "steam", kind: "DIGITAL_CODE", provider: "Steam", coinsCost: 56, costCents: 2000 },
+      { familyId: family.id, title: "Spotify 1 mês", description: "Plano individual", emoji: "spotify", kind: "DIGITAL_CODE", provider: "Spotify", coinsCost: 60, costCents: 2190 },
+      { familyId: family.id, title: "Battle.net R$ 30", description: "Saldo Battle.net Blizzard", emoji: "battlenet", kind: "DIGITAL_CODE", provider: "Blizzard", coinsCost: 80, costCents: 3000 },
+      { familyId: family.id, title: "RP R$ 25", description: "Riot Points para League of Legends", emoji: "riotpoints", kind: "DIGITAL_CODE", provider: "Riot Games", coinsCost: 70, costCents: 2500 },
       { familyId: family.id, title: "Kindle e-book R$ 15", description: "1 livro digital à escolha", emoji: "📚", kind: "DIGITAL_CODE", provider: "Amazon", coinsCost: 50, costCents: 1500, featured: true },
       // Físicos (sem código digital, pai entrega)
       { familyId: family.id, title: "Sorvete favorito", description: "Pode ser na sorveteria", emoji: "🍦", kind: "PHYSICAL", coinsCost: 16, costCents: 0 },
-      { familyId: family.id, title: "Livro novo", description: "Um livro à escolha (até R$ 50)", emoji: "📖", kind: "PHYSICAL", coinsCost: 50, costCents: 5000 },
+      { familyId: family.id, title: "Livro novo", description: "Um livro à escolha (até R$ 50)", emoji: "books", kind: "PHYSICAL", coinsCost: 50, costCents: 5000 },
       { familyId: family.id, title: "Pacote de figurinhas", description: "Álbum atual", emoji: "🃏", kind: "PHYSICAL", coinsCost: 12, costCents: 500 },
       // Experiências
       { familyId: family.id, title: "Cinema no fim de semana", description: "Filme à escolha", emoji: "🎬", kind: "EXPERIENCE", coinsCost: 60, costCents: 4000 },

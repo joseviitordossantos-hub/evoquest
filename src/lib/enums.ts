@@ -41,12 +41,18 @@ export const redemptionStatusLabel: Record<string, string> = {
   REJECTED: "Rejeitado",
 };
 
-export const Difficulty = {
-  EASY: "EASY",
-  MEDIUM: "MEDIUM",
-  HARD: "HARD",
-  BOSS: "BOSS",
-} as const;
+export type ComplexityT = "COMMON" | "RARE" | "LEGENDARY" | "MYTHIC";
+
+export const COMPLEXITY_META: Record<ComplexityT, { label: string; multiplier: number }> = {
+  COMMON:    { label: "Comum",    multiplier: 1.0 },
+  RARE:      { label: "Raro",     multiplier: 1.5 },
+  LEGENDARY: { label: "Lendário", multiplier: 1.8 },
+  MYTHIC:    { label: "Mítico",   multiplier: 2.0 },
+};
+
+export function applyComplexity(baseXp: number, complexity: string): number {
+  return Math.floor(baseXp * (COMPLEXITY_META[complexity as ComplexityT]?.multiplier ?? 1));
+}
 
 export type Rarity = "COMMON" | "RARE" | "EPIC" | "LEGENDARY" | "MYTHIC";
 

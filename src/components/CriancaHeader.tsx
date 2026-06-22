@@ -118,11 +118,11 @@ export default async function CriancaHeader({ childId }: { childId: string }) {
         </div>
 
         <span
-          className="inline-flex items-center gap-2 px-4 h-11 rounded-pill bg-kid-gold text-kid-text-on-warm font-heading font-bold text-[18px] leading-none ring-2 ring-white/40"
-          style={{ boxShadow: "0 3px 0 0 rgba(120,70,0,0.45), inset 0 1px 0 0 rgba(255,255,255,0.35)" }}
+          className="inline-flex items-center gap-2 pl-1 pr-4 h-11 rounded-pill font-heading font-bold text-[18px] leading-none"
+          style={{ background: "#FCEABB", color: "#8B6914" }}
           aria-label={`${availableCoins} coins`}
         >
-          <AppIcon name="coin" size={22} />
+          <AppIcon name="coin" size={32} />
           {availableCoins}
         </span>
       </div>

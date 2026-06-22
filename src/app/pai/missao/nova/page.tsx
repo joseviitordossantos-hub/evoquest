@@ -2,15 +2,17 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import PaiNav from "@/components/PaiNav";
 import Footer from "@/components/Footer";
+import XpComplexityPicker from "@/components/XpComplexityPicker";
 
 async function createMission(formData: FormData) {
   "use server";
   const childId = String(formData.get("childId"));
   const title = String(formData.get("title"));
   const category = String(formData.get("category"));
-  const difficulty = String(formData.get("difficulty")) as "EASY" | "MEDIUM" | "HARD" | "BOSS";
+  const difficulty = String(formData.get("difficulty")) as "COMMON" | "RARE" | "LEGENDARY" | "MYTHIC";
   const xpReward = Number(formData.get("xpReward"));
   const rewardText = String(formData.get("rewardText") || "");
+  const rewardId = String(formData.get("rewardId") || "");
   const frequency = String(formData.get("frequency")) as "DAILY" | "WEEKLY" | "ONCE";
 
   const parent = await prisma.user.findFirstOrThrow({ where: { role: "PARENT" } });
@@ -23,10 +25,21 @@ async function createMission(formData: FormData) {
       difficulty,
       xpReward,
       rewardText: rewardText || null,
+      rewardId: rewardId || null,
       frequency,
       createdById: parent.id,
     },
   });
+
+  if (rewardId) {
+    const r = await prisma.reward.findUnique({ where: { id: rewardId } });
+    if (r && r.kind === "DIGITAL_CODE" && r.costCents > 0 && r.stock > 0) {
+      await prisma.reward.update({
+        where: { id: rewardId },
+        data: { stock: { decrement: 1 } },
+      });
+    }
+  }
 
   redirect("/pai");
 }
@@ -34,7 +47,13 @@ async function createMission(formData: FormData) {
 export default async function NovaMissao({ searchParams }: { searchParams: Promise<{ childId?: string }> }) {
   const { childId } = await searchParams;
   if (!childId) return <p>childId obrigatório.</p>;
-  const child = await prisma.child.findUniqueOrThrow({ where: { id: childId } });
+  const [child, allRewards] = await Promise.all([
+    prisma.child.findUniqueOrThrow({ where: { id: childId } }),
+    prisma.reward.findMany({ where: { active: true }, orderBy: { title: "asc" } }),
+  ]);
+  const availableRewards = allRewards.filter(
+    (r) => !(r.kind === "DIGITAL_CODE" && r.costCents > 0) || r.stock > 0
+  );
 
   return (
     <main className="min-h-screen bg-kid-base pattern-dots-violet font-body">
@@ -76,24 +95,29 @@ export default async function NovaMissao({ searchParams }: { searchParams: Promi
                 <option value="ONCE">Uma vez (meta)</option>
               </select>
             </Field>
-            <Field label="Dificuldade">
-              <select name="difficulty" className="kid-input">
-                <option value="EASY">Fácil</option>
-                <option value="MEDIUM">Médio</option>
-                <option value="HARD">Difícil</option>
-                <option value="BOSS">Boss (marco)</option>
-              </select>
-            </Field>
-            <Field label="XP">
-              <input
-                type="number"
-                name="xpReward"
-                defaultValue={15}
-                className="kid-input"
-              />
-            </Field>
           </div>
-          <Field label="Recompensa combinada (opcional)">
+          <XpComplexityPicker />
+          <Field label="Vincular recompensa do estoque (opcional)">
+            {availableRewards.length === 0 ? (
+              <p className="font-body text-[13px] text-kid-text-muted bg-kid-base rounded-[10px] p-3">
+                Sem recompensas em estoque. Vá em{" "}
+                <a href="/pai/recompensas" className="text-kid-violet font-extrabold underline">
+                  Recompensas
+                </a>{" "}
+                e clique em <strong>Comprar</strong> para adicionar itens ao estoque.
+              </p>
+            ) : (
+              <select name="rewardId" className="kid-input">
+                <option value="">— Nenhuma —</option>
+                {availableRewards.map((r) => (
+                  <option key={r.id} value={r.id}>
+                    {r.emoji} {r.title} (estoque: {r.stock})
+                  </option>
+                ))}
+              </select>
+            )}
+          </Field>
+          <Field label="Recompensa combinada por texto (opcional)">
             <input
               name="rewardText"
               className="kid-input"

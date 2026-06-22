@@ -55,9 +55,11 @@ model Mission {
   child           Child        @relation(fields: [childId], references: [id])
   title           String
   category        String
-  difficulty      String       @default("EASY")
+  difficulty      String       @default("COMMON")
   xpReward        Int          @default(10)
   rewardText      String?
+  rewardId        String?
+  reward          Reward?      @relation(fields: [rewardId], references: [id])
   frequency       String       @default("DAILY")
   targetCount     Int          @default(1)
   currentProgress Int          @default(0)
@@ -115,9 +117,11 @@ model Reward {
   provider     String?      // Roblox | Steam | Spotify | Kindle | iFood | null
   coinsCost    Int
   costCents    Int          @default(0) // 0 = não custa dinheiro (vale offline/privilégio)
+  stock        Int          @default(0) // quantidade comprada pelo pai, ainda não vinculada a missão
   active       Boolean      @default(true)
   featured     Boolean      @default(false)
   redemptions  Redemption[]
+  missions     Mission[]
 }
 
 model Redemption {

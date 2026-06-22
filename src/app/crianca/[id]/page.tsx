@@ -2,8 +2,8 @@ import { prisma } from "@/lib/prisma";
 import CriancaHeader from "@/components/CriancaHeader";
 import CriancaTabBar from "@/components/CriancaTabBar";
 import StreakIndicator from "@/components/StreakIndicator";
-import MissionCard from "@/components/MissionCard";
 import EmptyState from "@/components/EmptyState";
+import MissionFilteredList from "@/components/MissionFilteredList";
 import Footer from "@/components/Footer";
 import AchievementIcon from "@/components/AchievementIcon";
 import { ACHIEVEMENTS } from "@/lib/enums";
@@ -84,13 +84,10 @@ export default async function JornadaCrianca({ params }: { params: Promise<{ id:
             body="Volte amanhã ou peça para seu responsável criar novas missões!"
           />
         ) : (
-          <ul className="space-y-3">
-            {child.missions.map((m) => (
-              <li key={m.id}>
-                <MissionCard mission={m} childId={childId} log={m.logs[0] ?? null} />
-              </li>
-            ))}
-          </ul>
+          <MissionFilteredList
+            items={child.missions.map((m) => ({ mission: m, log: m.logs[0] ?? null }))}
+            childId={childId}
+          />
         )}
         <Footer />
       </div>

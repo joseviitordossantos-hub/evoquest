@@ -3,12 +3,15 @@ import { prisma } from "@/lib/prisma";
 import { fmtBRL } from "@/lib/enums";
 import EvoQuestLogo from "@/components/EvoQuestLogo";
 import PaiNavMenu from "@/components/PaiNavMenu";
+import ParentNotificationsBell from "@/components/ParentNotificationsBell";
 import AppIcon from "@/components/AppIcon";
+import { fetchParentNotifications } from "@/lib/parentNotifications";
 
 export default async function PaiNav({ active }: { active?: string }) {
   const family = await prisma.family.findFirst({ include: { children: true } });
   const balance = family?.balanceCents ?? 0;
   const pending = await prisma.redemption.count({ where: { status: "REQUESTED" } });
+  const notifications = family ? await fetchParentNotifications(family.id) : [];
 
   const items = [
     { href: "/pai", label: "Painel", key: "painel", icon: "grid" },
@@ -54,6 +57,9 @@ export default async function PaiNav({ active }: { active?: string }) {
           <Link href="/pai/carteira" className="hidden md:flex kid-chip kid-chip-teal text-[13px] items-center gap-1">
             <AppIcon name="coin" size={16} /> {fmtBRL(balance)}
           </Link>
+
+          {/* Notifications bell */}
+          <ParentNotificationsBell items={notifications} />
 
           {/* Mobile hamburger */}
           <PaiNavMenu

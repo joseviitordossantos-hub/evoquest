@@ -40,7 +40,7 @@ export default async function Conquistas({ params }: { params: Promise<{ id: str
               body="Complete missões para ganhar seus primeiros troféus!"
             />
           ) : (
-            <ul className="grid grid-cols-5 gap-2">
+            <ul className="grid grid-cols-4 gap-3">
               {earned.map((a) => (
                 <li key={a.id} className="flex justify-center pb-3">
                   <AchievementIcon
@@ -61,7 +61,7 @@ export default async function Conquistas({ params }: { params: Promise<{ id: str
             <p className="font-heading font-semibold text-[16px] text-kid-text-strong px-1 mb-2">
               A descobrir ({locked.length})
             </p>
-            <ul className="grid grid-cols-5 gap-2">
+            <ul className="grid grid-cols-4 gap-3">
               {locked.map((code) => {
                 const meta = ACHIEVEMENTS[code];
                 return (

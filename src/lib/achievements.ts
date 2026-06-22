@@ -11,7 +11,7 @@ export async function evaluateAchievements(childId: string) {
   const totalXp = xpEvents.reduce((s, e) => s + e.amount, 0);
   const level = Math.floor(totalXp / 100) + 1;
   const approvedCount = logs.length;
-  const bossCompleted = logs.some((l) => l.mission.difficulty === "BOSS");
+  const bossCompleted = logs.some((l) => l.mission.difficulty === "MYTHIC");
   const longest = streak?.longestDays ?? 0;
 
   const earnedCodes: string[] = [];

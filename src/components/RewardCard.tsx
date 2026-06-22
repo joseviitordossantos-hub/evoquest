@@ -30,12 +30,6 @@ export default function RewardCard({
         affordable ? "" : "opacity-80"
       }`}
     >
-      {reward.featured && (
-        <span className="absolute -top-1.5 -left-1.5 kid-chip kid-chip-pink !text-[9px] !px-2 !py-0.5 -rotate-6 inline-flex items-center gap-1 z-10">
-          <AppIcon name="star" size={10} /> TOP
-        </span>
-      )}
-
       <div className="w-[88px] h-[88px] rounded-[8px] bg-kid-base flex items-center justify-center shrink-0 overflow-hidden">
         {iconName ? (
           <AppIcon name={iconName} size={64} />
@@ -56,9 +50,11 @@ export default function RewardCard({
         )}
 
         <div className="mt-auto pt-2 flex items-center justify-between gap-2">
-          <span className="inline-flex items-center gap-1.5 bg-kid-tint-gold text-kid-on-gold rounded-pill px-3 py-1.5 font-heading font-extrabold text-[14px] leading-none">
-            <AppIcon name="coin" size={16} /> {reward.coinsCost}
-            <span className="font-body font-extrabold text-[10px] uppercase tracking-[0.08em] ml-0.5">coins</span>
+          <span
+            className="inline-flex items-center gap-1.5 rounded-pill pl-1 pr-3 h-8 font-heading font-extrabold text-[14px] leading-none"
+            style={{ background: "#FCEABB", color: "#8B6914" }}
+          >
+            <AppIcon name="coin" size={24} /> {reward.coinsCost}
           </span>
           {affordable ? (
             <form action={requestRedemption}>
@@ -66,13 +62,13 @@ export default function RewardCard({
               <input type="hidden" name="childId" value={childId} />
               <button
                 type="submit"
-                className="grad-primary text-white rounded-pill px-3 h-7 font-body font-extrabold text-[10px] tracking-[0.06em] uppercase inline-flex items-center transition-transform hover:-translate-y-0.5 active:translate-y-0"
+                className="grad-primary text-white rounded-pill px-4 h-8 font-body font-extrabold text-[11px] tracking-[0.06em] uppercase inline-flex items-center transition-transform hover:-translate-y-0.5 active:translate-y-0"
               >
                 Trocar
               </button>
             </form>
           ) : (
-            <span className="bg-kid-sunk text-kid-text-muted rounded-pill px-3 h-7 font-body font-extrabold text-[10px] tracking-[0.06em] uppercase inline-flex items-center gap-1">
+            <span className="bg-kid-sunk text-kid-text-muted rounded-pill px-4 h-8 font-body font-extrabold text-[11px] tracking-[0.04em] uppercase inline-flex items-center gap-1 whitespace-nowrap">
               <AppIcon name="lock" size={11} /> Faltam {reward.coinsCost - availableCoins}
             </span>
           )}

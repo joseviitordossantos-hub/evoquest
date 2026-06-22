@@ -1,5 +1,7 @@
 import Link from "next/link";
 import AppIcon from "@/components/AppIcon";
+import ComplexityBadge from "@/components/ComplexityBadge";
+import type { ComplexityT } from "@/lib/enums";
 
 type Mission = {
   id: string;
@@ -30,13 +32,26 @@ const CATEGORY_GRAD: Record<string, string> = {
   outro: "grad-kids",
 };
 
-function EmojiBox({ category, badge }: { category: string; badge?: "check" | "clock" | "retry" }) {
+const RARITY_CARD: Record<ComplexityT, { bg: string; bgDone: string; text: string; textDone: string; iconFrom: string; iconTo: string }> = {
+  COMMON:    { bg: "#EDE9F3", bgDone: "#D4EDDA", text: "#4F4668", textDone: "#1B5E2E", iconFrom: "#C4B8DB", iconTo: "#9F95B0" },
+  RARE:      { bg: "#E0F0FF", bgDone: "#D4EDDA", text: "#1B4F7A", textDone: "#1B5E2E", iconFrom: "#6FC1FA", iconTo: "#1B7CC9" },
+  LEGENDARY: { bg: "#FFF4E0", bgDone: "#D4EDDA", text: "#7A5200", textDone: "#1B5E2E", iconFrom: "#FFC25C", iconTo: "#D4831A" },
+  MYTHIC:    { bg: "#FFE8EB", bgDone: "#D4EDDA", text: "#7A1A24", textDone: "#1B5E2E", iconFrom: "#FF6675", iconTo: "#B82332" },
+};
+
+function getRarityColors(difficulty: string) {
+  return RARITY_CARD[(difficulty as ComplexityT) in RARITY_CARD ? (difficulty as ComplexityT) : "COMMON"];
+}
+
+function EmojiBox({ category, badge, iconFrom, iconTo }: { category: string; badge?: "check" | "clock" | "retry"; iconFrom: string; iconTo: string }) {
   const iconName = CATEGORY_ICON[category] ?? "cat-other";
-  const grad = CATEGORY_GRAD[category] ?? "grad-kids";
   const badgeIcon: Record<string, string> = { check: "check", clock: "hourglass", retry: "retry" };
 
   return (
-    <div className={`w-20 h-20 rounded-[14px] ${grad} flex items-center justify-center shrink-0 relative`}>
+    <div
+      className="w-20 h-20 rounded-[14px] flex items-center justify-center shrink-0 relative"
+      style={{ background: `linear-gradient(135deg, ${iconFrom}, ${iconTo})` }}
+    >
       <AppIcon name={iconName} size={56} />
       {badge && (
         <span className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center ring-2 ring-white">
@@ -59,14 +74,21 @@ export default function MissionCard({
   const done = log?.status === "APPROVED";
   const pending = log?.status === "PENDING";
   const rejected = log?.status === "REJECTED";
+  const r = getRarityColors(mission.difficulty);
 
   if (done) {
     return (
-      <article className="kid-stat kid-stat-teal flex items-center gap-4 !p-4">
-        <EmojiBox category={mission.category} badge="check" />
+      <article
+        className="rounded-kid-xl p-4 flex items-center gap-4"
+        style={{ background: r.bgDone }}
+      >
+        <EmojiBox category={mission.category} badge="check" iconFrom={r.iconFrom} iconTo={r.iconTo} />
         <div className="flex-1 min-w-0">
-          <p className="font-heading font-semibold text-[16px] text-kid-on-teal">{mission.title}</p>
-          <p className="font-body font-extrabold text-[13px] text-kid-on-teal mt-1 flex items-center gap-1">
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className="font-heading font-semibold text-[16px]" style={{ color: r.textDone }}>{mission.title}</p>
+            <ComplexityBadge complexity={mission.difficulty} />
+          </div>
+          <p className="font-body font-extrabold text-[13px] mt-1 flex items-center gap-1" style={{ color: r.textDone }}>
             +{mission.xpReward} XP conquistados <AppIcon name="party" size={16} />
           </p>
         </div>
@@ -77,12 +99,18 @@ export default function MissionCard({
   if (pending) {
     return (
       <Link href={`/crianca/${childId}/aula/${mission.id}`} className="block">
-        <article className="kid-stat kid-stat-gold flex items-center gap-4 !p-4">
-          <EmojiBox category={mission.category} badge="clock" />
+        <article
+          className="rounded-kid-xl p-4 flex items-center gap-4"
+          style={{ background: r.bg }}
+        >
+          <EmojiBox category={mission.category} badge="clock" iconFrom={r.iconFrom} iconTo={r.iconTo} />
           <div className="flex-1 min-w-0">
-            <p className="font-heading font-semibold text-[16px] text-kid-text-strong">{mission.title}</p>
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className="font-heading font-semibold text-[16px]" style={{ color: r.text }}>{mission.title}</p>
+              <ComplexityBadge complexity={mission.difficulty} />
+            </div>
             <ProgressBar current={mission.targetCount} target={mission.targetCount} />
-            <p className="kid-chip bg-white/60 text-kid-text-soft mt-2 !text-[10px] !px-3 !py-1">
+            <p className="kid-chip bg-white/60 mt-2 !text-[10px] !px-3 !py-1" style={{ color: r.text }}>
               Esperando
             </p>
           </div>
@@ -94,11 +122,16 @@ export default function MissionCard({
   if (rejected) {
     return (
       <Link href={`/crianca/${childId}/aula/${mission.id}`} className="block">
-        <article className="relative bg-white rounded-kid-xl p-4 flex items-center gap-4">
-          <XpBadge xp={mission.xpReward} />
-          <EmojiBox category={mission.category} badge="retry" />
+        <article
+          className="rounded-kid-xl p-4 flex items-center gap-4"
+          style={{ background: r.bg }}
+        >
+          <EmojiBox category={mission.category} badge="retry" iconFrom={r.iconFrom} iconTo={r.iconTo} />
           <div className="flex-1 min-w-0">
-            <p className="font-heading font-semibold text-[16px] text-kid-text-strong">{mission.title}</p>
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className="font-heading font-semibold text-[16px]" style={{ color: r.text }}>{mission.title}</p>
+              <ComplexityBadge complexity={mission.difficulty} />
+            </div>
             <ProgressBar current={mission.currentProgress} target={mission.targetCount} />
           </div>
         </article>
@@ -108,28 +141,22 @@ export default function MissionCard({
 
   return (
     <Link href={`/crianca/${childId}/aula/${mission.id}`} className="block">
-      <article className="relative bg-white rounded-kid-xl p-4 flex items-center gap-4">
-        <XpBadge xp={mission.xpReward} />
-        <EmojiBox category={mission.category} />
+      <article
+        className="rounded-kid-xl p-4 flex items-center gap-4"
+        style={{ background: r.bg }}
+      >
+        <EmojiBox category={mission.category} iconFrom={r.iconFrom} iconTo={r.iconTo} />
         <div className="flex-1 min-w-0">
-          <p className="font-heading font-semibold text-[16px] text-kid-text-strong">{mission.title}</p>
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className="font-heading font-semibold text-[16px]" style={{ color: r.text }}>
+              {mission.title}
+            </p>
+            <ComplexityBadge complexity={mission.difficulty} />
+          </div>
           <ProgressBar current={mission.currentProgress} target={mission.targetCount} />
         </div>
       </article>
     </Link>
-  );
-}
-
-function XpBadge({ xp }: { xp: number }) {
-  return (
-    <span
-      className="absolute top-3 right-3 w-7 h-7 rounded-full bg-kid-orange/15 flex items-center justify-center"
-      title={`+${xp} XP`}
-    >
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" className="text-kid-orange">
-        <path d="M7.8 1L3 8h3.2L5.2 13 11 6H7.8L8.8 1z" />
-      </svg>
-    </span>
   );
 }
 

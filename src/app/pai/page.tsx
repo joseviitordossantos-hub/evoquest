@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 import PaiNav from "@/components/PaiNav";
 import Footer from "@/components/Footer";
-import { fmtBRL } from "@/lib/enums";
+import { fmtBRL, COMPLEXITY_META, type ComplexityT } from "@/lib/enums";
 import AppIcon from "@/components/AppIcon";
 
 const AVATAR_MAP: Record<string, string> = {
@@ -106,7 +106,7 @@ export default async function PaiDashboard() {
                         className="flex justify-between items-center border-b border-kid-sunk py-2 text-sm font-bold"
                       >
                         <span className="text-kid-text-strong">{m.title}</span>
-                        <span className="font-body font-extrabold text-[11px] text-kid-text-muted">{m.xpReward} XP · {m.difficulty}</span>
+                        <span className="font-body font-extrabold text-[11px] text-kid-text-muted">{m.xpReward} XP · {COMPLEXITY_META[m.difficulty as ComplexityT]?.label ?? m.difficulty}</span>
                       </li>
                     ))}
                   </ul>
