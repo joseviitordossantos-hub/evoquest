@@ -2,6 +2,8 @@ import PaiNav from "@/components/PaiNav";
 import Footer from "@/components/Footer";
 import { createReward } from "../actions";
 
+export const dynamic = "force-dynamic";
+
 export default function NovaRecompensa() {
   return (
     <main className="min-h-screen bg-kid-base pattern-dots-violet font-body">
