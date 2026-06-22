@@ -10,6 +10,8 @@ import { emojiToIconName } from "@/lib/iconMap";
 import { rewardKindLabel, rewardKindIconName } from "@/lib/enums";
 import Footer from "@/components/Footer";
 
+export const dynamic = "force-dynamic";
+
 const KIND_ORDER = ["DIGITAL_CODE", "EXPERIENCE", "PHYSICAL", "PRIVILEGE"];
 
 export default async function Loja({ params }: { params: Promise<{ id: string }> }) {

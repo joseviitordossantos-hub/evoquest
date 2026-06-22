@@ -4,6 +4,8 @@ import { evaluateAchievements } from "@/lib/achievements";
 import PaiNav from "@/components/PaiNav";
 import Footer from "@/components/Footer";
 
+export const dynamic = "force-dynamic";
+
 async function approveBatch(formData: FormData) {
   "use server";
   const childId = String(formData.get("childId"));

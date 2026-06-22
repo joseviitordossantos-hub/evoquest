@@ -6,6 +6,8 @@ import EmptyState from "@/components/EmptyState";
 import { ACHIEVEMENTS } from "@/lib/enums";
 import Footer from "@/components/Footer";
 
+export const dynamic = "force-dynamic";
+
 export default async function Conquistas({ params }: { params: Promise<{ id: string }> }) {
   const { id: childId } = await params;
   const earned = await prisma.achievement.findMany({

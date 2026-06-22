@@ -6,6 +6,8 @@ import CriancaTabBar from "@/components/CriancaTabBar";
 import AppIcon from "@/components/AppIcon";
 import Footer from "@/components/Footer";
 
+export const dynamic = "force-dynamic";
+
 const HERO: Record<string, string> = {
   lila: "/HERO-GIRL-USER.jpg",
   theo: "/HERO-BOY-USER.jpg",

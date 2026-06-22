@@ -4,6 +4,8 @@ import PaiNav from "@/components/PaiNav";
 import Footer from "@/components/Footer";
 import XpComplexityPicker from "@/components/XpComplexityPicker";
 
+export const dynamic = "force-dynamic";
+
 async function createMission(formData: FormData) {
   "use server";
   const childId = String(formData.get("childId"));

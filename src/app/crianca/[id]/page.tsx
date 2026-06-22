@@ -8,6 +8,8 @@ import Footer from "@/components/Footer";
 import AchievementIcon from "@/components/AchievementIcon";
 import { ACHIEVEMENTS } from "@/lib/enums";
 
+export const dynamic = "force-dynamic";
+
 export default async function JornadaCrianca({ params }: { params: Promise<{ id: string }> }) {
   const { id: childId } = await params;
   const start = new Date(); start.setHours(0, 0, 0, 0);
