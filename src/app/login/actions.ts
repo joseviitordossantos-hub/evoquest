@@ -4,12 +4,9 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 
-// Credencial fixa do protótipo (responsável principal).
-const PRIMARY = { email: "jose.vitor@evoquest.com.br", password: "jose 1234" };
-
-// Login de teste rápido (apenas protótipo). Resolve dinamicamente para o
-// primeiro responsável cadastrado, funcionando em qualquer ambiente.
-const TEST = { email: "admin", password: "admin" };
+// Login padrão do protótipo. Resolve dinamicamente para o primeiro responsável
+// cadastrado no banco, funcionando em qualquer ambiente (dev/prod).
+const DEFAULT_LOGIN = { email: "admin@evoquest.com.br", password: "evoquest1234" };
 
 export type LoginState = { error?: string };
 
@@ -20,27 +17,20 @@ export async function signIn(
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
 
-  let sessionEmail: string | null = null;
-
-  if (email === PRIMARY.email && password === PRIMARY.password) {
-    sessionEmail = PRIMARY.email;
-  } else if (email === TEST.email && password === TEST.password) {
-    const parent = await prisma.user.findFirst({
-      where: { role: "PARENT" },
-      orderBy: { createdAt: "asc" },
-    });
-    if (!parent) {
-      return { error: "Nenhum responsável cadastrado para o login de teste." };
-    }
-    sessionEmail = parent.email;
-  }
-
-  if (!sessionEmail) {
+  if (email !== DEFAULT_LOGIN.email || password !== DEFAULT_LOGIN.password) {
     return { error: "E-mail ou senha incorretos." };
   }
 
+  const parent = await prisma.user.findFirst({
+    where: { role: "PARENT" },
+    orderBy: { createdAt: "asc" },
+  });
+  if (!parent) {
+    return { error: "Nenhum responsável cadastrado." };
+  }
+
   const jar = await cookies();
-  jar.set("evoquest_session", sessionEmail, {
+  jar.set("evoquest_session", parent.email, {
     httpOnly: true,
     sameSite: "lax",
     path: "/",

@@ -115,7 +115,7 @@ export default function Login() {
               {/* E-mail */}
               <div className="bg-kid-base rounded-[14px] px-5 h-[58px] flex items-center focus-within:ring-2 focus-within:ring-kid-violet/30 transition-shadow">
                 <input
-                  type="text"
+                  type="email"
                   name="email"
                   required
                   placeholder="Endereço de e-mail"
