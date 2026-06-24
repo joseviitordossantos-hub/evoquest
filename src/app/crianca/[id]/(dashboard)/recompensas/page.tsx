@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import CriancaHeader from "@/components/CriancaHeader";
+import ProfileSummaryCard from "@/components/ProfileSummaryCard";
 import RewardCard from "@/components/RewardCard";
 import RedeemStatusPill from "@/components/RedeemStatusPill";
 import EmptyState from "@/components/EmptyState";
@@ -32,7 +32,7 @@ export default async function Loja({ params }: { params: Promise<{ id: string }>
 
   return (
     <div className="max-w-[480px] mx-auto px-5 pt-5 space-y-4 lg:max-w-5xl lg:px-8 lg:pt-8">
-      <CriancaHeader childId={childId} />
+      <ProfileSummaryCard childId={childId} />
 
       <header className="mt-6 px-1">
         <p className="font-body font-extrabold text-[12px] uppercase tracking-[0.12em] text-kid-text-muted">
