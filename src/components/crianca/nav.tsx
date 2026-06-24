@@ -1,4 +1,4 @@
-export type Tab = "home" | "recompensas" | "conquistas" | "perfil";
+export type Tab = "home" | "recompensas" | "conquistas" | "perfil" | "configuracoes";
 
 export function IconHome({ className }: { className?: string }) {
   return (
@@ -43,11 +43,34 @@ export function IconUser({ className }: { className?: string }) {
   );
 }
 
-export const TABS: { key: Tab; label: string; icon: typeof IconHome }[] = [
+export function IconSettings({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+    </svg>
+  );
+}
+
+type TabDef = { key: Tab; label: string; icon: typeof IconHome };
+
+export const TABS: TabDef[] = [
   { key: "home", label: "Home", icon: IconHome },
   { key: "recompensas", label: "Recompensas", icon: IconGift },
   { key: "conquistas", label: "Conquistas", icon: IconTrophy },
   { key: "perfil", label: "Perfil", icon: IconUser },
+];
+
+// Sidebar (desktop) — nav principal no topo e nav de conta no rodapé
+export const SIDEBAR_MAIN: TabDef[] = [
+  { key: "home", label: "Home", icon: IconHome },
+  { key: "recompensas", label: "Recompensas", icon: IconGift },
+  { key: "conquistas", label: "Conquistas", icon: IconTrophy },
+];
+
+export const SIDEBAR_FOOTER: TabDef[] = [
+  { key: "perfil", label: "Perfil", icon: IconUser },
+  { key: "configuracoes", label: "Configurações", icon: IconSettings },
 ];
 
 export function hrefFor(childId: string, key: Tab): string {
@@ -56,6 +79,7 @@ export function hrefFor(childId: string, key: Tab): string {
     case "recompensas": return `/crianca/${childId}/recompensas`;
     case "conquistas": return `/crianca/${childId}/conquistas`;
     case "perfil": return `/crianca/${childId}/perfil`;
+    case "configuracoes": return `/crianca/${childId}/configuracoes`;
   }
 }
 
@@ -64,6 +88,7 @@ export function deriveActiveTab(pathname: string, childId: string): Tab {
   if (pathname === base || pathname === `${base}/`) return "home";
   if (pathname.startsWith(`${base}/recompensas`)) return "recompensas";
   if (pathname.startsWith(`${base}/conquistas`)) return "conquistas";
+  if (pathname.startsWith(`${base}/configuracoes`)) return "configuracoes";
   if (pathname.startsWith(`${base}/perfil`)) return "perfil";
   return "home";
 }

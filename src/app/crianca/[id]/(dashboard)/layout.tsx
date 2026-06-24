@@ -1,5 +1,6 @@
 import CriancaSidebar from "@/components/CriancaSidebar";
 import CriancaTabBar from "@/components/CriancaTabBar";
+import ChildTopBar from "@/components/ChildTopBar";
 
 export default async function CriancaDashboardLayout({
   children,
@@ -13,7 +14,10 @@ export default async function CriancaDashboardLayout({
   return (
     <div className="min-h-screen bg-kid-base font-body lg:flex">
       <CriancaSidebar childId={childId} />
-      <div className="flex-1 min-w-0 pb-32 lg:pb-0">{children}</div>
+      <div className="flex-1 min-w-0 flex flex-col">
+        <ChildTopBar childId={childId} />
+        <div className="flex-1 min-w-0 pb-32 lg:pb-0">{children}</div>
+      </div>
       <CriancaTabBar childId={childId} />
     </div>
   );

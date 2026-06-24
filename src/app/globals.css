@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Londrina+Solid:wght@400;900&family=Nunito:wght@600;700;800;900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -107,6 +107,13 @@ html, body {
   /* Chip / pill — tinted, no border */
   .kid-chip {
     @apply inline-flex items-center gap-1.5 rounded-pill px-4 py-1.5 font-body font-extrabold text-[12px] tracking-[0.08em] uppercase;
+  }
+
+  /* Fonte de display dos bosses (Londrina Solid) */
+  .font-boss {
+    font-family: "Londrina Solid", "Fredoka", system-ui, sans-serif;
+    font-weight: 900;
+    letter-spacing: 0.01em;
   }
 
   /* Gradient text — brand signature */
@@ -220,6 +227,13 @@ html, body {
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* Scrollbar fina (lista interna de missões) */
+.scrollbar-thin { scrollbar-width: thin; scrollbar-color: #D6CBEE transparent; }
+.scrollbar-thin::-webkit-scrollbar { width: 6px; }
+.scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: #D6CBEE; border-radius: 999px; }
+.scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #C3B5E4; }
+
 /* Tap feedback — apply to any clickable card/button in child UI */
 @keyframes kidTapDown {
   0%, 100% { transform: scale(1); }
@@ -282,6 +296,27 @@ html, body {
   to { --rarity-angle: 360deg; }
 }
 
+/* Listras diagonais para o preenchimento das barras (XP / HP / progresso).
+   Usar como <span class="bar-stripes" /> dentro do elemento de fill. */
+@keyframes barStripesMove {
+  from { background-position: 0 0; }
+  to { background-position: 36.77px 0; }
+}
+.bar-stripes {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(0, 0, 0, 0.13) 0px,
+    rgba(0, 0, 0, 0.13) 13px,
+    rgba(0, 0, 0, 0) 13px,
+    rgba(0, 0, 0, 0) 26px
+  );
+  animation: barStripesMove 6s linear infinite;
+  animation-play-state: paused;
+}
+.bar-stripes-active {
+  animation-play-state: running;
+}
+
 .pattern-diagonal-stripes {
   background-image: repeating-linear-gradient(
     115deg,
@@ -289,6 +324,28 @@ html, body {
     rgba(255, 255, 255, 0) 18px,
     rgba(255, 255, 255, 0.12) 18px,
     rgba(255, 255, 255, 0.12) 38px
+  );
+}
+
+/* Raios radiais do card do boss (gira lentamente) */
+.boss-rays {
+  background-image: repeating-conic-gradient(
+    from 0deg at 50% 50%,
+    rgba(255, 255, 255, 0.05) 0deg,
+    rgba(255, 255, 255, 0.05) 15deg,
+    rgba(255, 255, 255, 0) 15deg,
+    rgba(255, 255, 255, 0) 30deg
+  );
+}
+
+/* Raios para o card de conteúdo bloqueado (fundo claro, raios cinza) */
+.locked-rays {
+  background-image: repeating-conic-gradient(
+    from 0deg at 50% 50%,
+    rgba(43, 27, 71, 0.05) 0deg,
+    rgba(43, 27, 71, 0.05) 15deg,
+    rgba(43, 27, 71, 0) 15deg,
+    rgba(43, 27, 71, 0) 30deg
   );
 }
 

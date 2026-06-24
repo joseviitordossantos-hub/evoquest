@@ -1,12 +1,12 @@
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import CriancaHeader from "@/components/CriancaHeader";
-
 import EmptyState from "@/components/EmptyState";
-import MissionFilteredList from "@/components/MissionFilteredList";
 import Footer from "@/components/Footer";
-import AchievementIcon from "@/components/AchievementIcon";
-import BossCard from "@/components/BossCard";
-import StreakIndicator from "@/components/StreakIndicator";
+import BossHero from "@/components/BossHero";
+import ProfileSummaryCard from "@/components/ProfileSummaryCard";
+import AchievementMiniCard from "@/components/AchievementMiniCard";
+import RewardMiniCard from "@/components/RewardMiniCard";
+import MissionPanel from "@/components/MissionPanel";
 import LevelUpModal from "@/components/LevelUpModal";
 import { ACHIEVEMENTS } from "@/lib/enums";
 import { getChildStats } from "@/lib/childStats";
@@ -29,36 +29,36 @@ export default async function JornadaCrianca({ params }: { params: Promise<{ id:
     },
   });
 
-  const recentAchievements = await prisma.achievement.findMany({
-    where: { childId },
-    orderBy: { earnedAt: "desc" },
-    take: 8,
-  });
+  const [recentAchievements, rewards, stats] = await Promise.all([
+    prisma.achievement.findMany({ where: { childId }, orderBy: { earnedAt: "desc" }, take: 8 }),
+    prisma.reward.findMany({
+      where: { active: true, forBoss: false },
+      orderBy: [{ featured: "desc" }, { coinsCost: "asc" }],
+      take: 5,
+    }),
+    getChildStats(childId),
+  ]);
 
-  // Detectar level-up para mostrar o modal celebrativo
-  const stats = await getChildStats(childId);
+  // Level-up: modal celebrativo
   const levelsGained = stats.level - child.highestLevelClaimed;
   const showLevelUp = levelsGained > 0;
-
   let newlyUnlocked: { id: string; title: string; emoji: string; minLevel: number }[] = [];
   if (showLevelUp) {
-    const rewards = await prisma.reward.findMany({
-      where: {
-        active: true,
-        minLevel: { gt: child.highestLevelClaimed, lte: stats.level },
-      },
+    const unlockable = await prisma.reward.findMany({
+      where: { active: true, minLevel: { gt: child.highestLevelClaimed, lte: stats.level } },
       orderBy: { minLevel: "asc" },
     });
-    newlyUnlocked = rewards.map((r) => ({
-      id: r.id,
-      title: r.title,
-      emoji: r.emoji,
-      minLevel: r.minLevel,
-    }));
+    newlyUnlocked = unlockable.map((r) => ({ id: r.id, title: r.title, emoji: r.emoji, minLevel: r.minLevel }));
   }
   const newRank = getRankForLevel(stats.level);
-  const streakDays = child.streak?.currentDays ?? 0;
-  const freezes = child.streak?.freezesAvailable ?? 0;
+
+  const missionItems = child.missions.map((m) => ({ mission: m, log: m.logs[0] ?? null }));
+
+  const sectionLink = (href: string) => (
+    <Link href={href} className="font-body font-bold text-[14px] text-kid-text-muted hover:text-kid-violet transition-colors whitespace-nowrap">
+      Ver todas →
+    </Link>
+  );
 
   return (
     <>
@@ -74,103 +74,94 @@ export default async function JornadaCrianca({ params }: { params: Promise<{ id:
           unlocked={newlyUnlocked}
         />
       )}
-      <div className="max-w-[480px] mx-auto px-5 pt-5 space-y-4 lg:max-w-5xl lg:px-8 lg:pt-8 xl:max-w-6xl xl:grid xl:grid-cols-[1fr_320px] xl:gap-6 xl:space-y-0 xl:items-start">
-        {/* Coluna principal */}
-        <div className="space-y-4 xl:space-y-6 min-w-0">
-          <CriancaHeader childId={childId} />
 
-          {/* Boss — coluna principal até xl, depois migra para o rail */}
-          <div className="xl:hidden">
-            <BossCard childId={childId} />
+      <div className="max-w-[1500px] mx-auto px-5 py-5 lg:px-8 lg:py-7">
+        <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_366px] gap-5 lg:gap-6 items-start xl:items-stretch">
+          {/* Coluna esquerda/central */}
+          <div className="min-w-0 space-y-5 lg:space-y-6">
+            {/* Perfil + Boss */}
+            <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_390px] gap-5 lg:gap-6 items-stretch">
+              <ProfileSummaryCard childId={childId} />
+              <BossHero childId={childId} />
+            </div>
+
+            {/* Últimas conquistas */}
+            {recentAchievements.length > 0 && (
+              <section>
+                <header className="flex items-end justify-between mb-3 px-1">
+                  <h2 className="font-heading font-extrabold text-[20px] text-kid-text-soft">Últimas conquistas</h2>
+                  {sectionLink(`/crianca/${childId}/conquistas`)}
+                </header>
+                <div
+                  className="-mx-5 px-5 lg:mx-0 lg:px-0 overflow-x-auto scrollbar-hide"
+                  style={{
+                    WebkitMaskImage: "linear-gradient(to right, #000 88%, transparent 100%)",
+                    maskImage: "linear-gradient(to right, #000 88%, transparent 100%)",
+                  }}
+                >
+                  <ul className="flex gap-4 pb-1 w-max">
+                    {recentAchievements.map((a) => (
+                      <li key={a.id}>
+                        <AchievementMiniCard
+                          emoji={a.emoji}
+                          title={ACHIEVEMENTS[a.code]?.title ?? a.title}
+                          rarity={ACHIEVEMENTS[a.code]?.rarity}
+                          description={ACHIEVEMENTS[a.code]?.description}
+                          earnedAt={a.earnedAt.toISOString()}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </section>
+            )}
+
+            {/* Recompensas disponíveis — oculto no mobile */}
+            {rewards.length > 0 && (
+              <section className="hidden lg:block">
+                <header className="flex items-end justify-between mb-3 px-1">
+                  <h2 className="font-heading font-extrabold text-[20px] text-kid-text-soft">Recompensas disponíveis</h2>
+                  {sectionLink(`/crianca/${childId}/recompensas`)}
+                </header>
+                <div className="overflow-x-auto xl:overflow-visible scrollbar-hide">
+                  <ul className="flex xl:grid xl:grid-cols-5 gap-4 pb-1">
+                    {rewards.map((r) => (
+                      <li key={r.id} className="xl:min-w-0">
+                        <RewardMiniCard
+                          reward={r}
+                          childId={childId}
+                          availableCoins={stats.availableCoins}
+                          childLevel={stats.level}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </section>
+            )}
+
           </div>
 
-          {/* Conquistas recentes — coluna principal até xl */}
-          {recentAchievements.length > 0 && (
-            <section className="mt-6 xl:hidden">
-              <header className="px-1 mb-3">
-                <p className="font-body font-extrabold text-[12px] uppercase tracking-[0.12em] text-kid-text-muted">
-                  Últimas conquistas
-                </p>
-                <h2 className="font-heading font-bold text-[18px] text-kid-text-strong leading-tight mt-1">
-                  Seus troféus recentes
-                </h2>
-              </header>
-              <div className="-mx-5 px-5 overflow-x-auto scrollbar-hide">
-                <ul className="grid grid-flow-col gap-3 pb-3 pt-1 w-max auto-cols-[calc((100vw-40px-24px)/3.5)] [@media(min-width:480px)]:auto-cols-[calc((480px-40px-24px)/3.5)]">
-                  {recentAchievements.map((a) => (
-                    <li key={a.id}>
-                      <AchievementIcon
-                        emoji={a.emoji}
-                        title={a.title}
-                        description={ACHIEVEMENTS[a.code]?.description}
-                        earnedAt={a.earnedAt}
-                        rarity={ACHIEVEMENTS[a.code]?.rarity}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </section>
-          )}
-
-          <header className="mt-6 xl:mt-0 px-1">
-            <p className="font-body font-extrabold text-[12px] uppercase tracking-[0.12em] text-kid-text-muted">
-              Hoje
-            </p>
-            <h1 className="font-heading font-bold text-[24px] text-kid-text-strong leading-tight mt-1">
-              Suas missões
-            </h1>
-          </header>
-
-          {child.missions.length === 0 ? (
-            <EmptyState
-              emoji="sprout"
-              title="Sem missões hoje"
-              body="Volte amanhã ou peça para seu responsável criar novas missões!"
-            />
-          ) : (
-            <MissionFilteredList
-              items={child.missions.map((m) => ({ mission: m, log: m.logs[0] ?? null }))}
-              childId={childId}
-            />
-          )}
-          <div className="xl:hidden">
-            <Footer />
+          {/* Coluna direita — missões (trava na altura da coluna esquerda, rola por dentro) */}
+          <div className="min-w-0 xl:relative">
+            <div className="xl:absolute xl:inset-0 xl:flex">
+              {missionItems.length === 0 ? (
+                <EmptyState
+                  emoji="sprout"
+                  title="Sem missões hoje"
+                  body="Volte amanhã ou peça para seu responsável criar novas missões!"
+                />
+              ) : (
+                <div className="w-full xl:min-h-0">
+                  <MissionPanel items={missionItems} childId={childId} />
+                </div>
+              )}
+            </div>
           </div>
         </div>
-
-        {/* Right rail — apenas em xl+ */}
-        <aside className="hidden xl:flex xl:flex-col xl:gap-4 xl:sticky xl:top-8">
-          <BossCard childId={childId} />
-
-          {streakDays > 0 && (
-            <StreakIndicator currentDays={streakDays} freezesAvailable={freezes} />
-          )}
-
-          {recentAchievements.length > 0 && (
-            <section className="kid-card p-4">
-              <p className="font-body font-extrabold text-[12px] uppercase tracking-[0.12em] text-kid-text-muted mb-3">
-                Últimas conquistas
-              </p>
-              <ul className="grid grid-cols-2 gap-3">
-                {recentAchievements.slice(0, 6).map((a) => (
-                  <li key={a.id} className="flex justify-center">
-                    <AchievementIcon
-                      emoji={a.emoji}
-                      title={a.title}
-                      description={ACHIEVEMENTS[a.code]?.description}
-                      earnedAt={a.earnedAt}
-                      rarity={ACHIEVEMENTS[a.code]?.rarity}
-                    />
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-
-          <Footer />
-        </aside>
       </div>
+
+      <Footer />
     </>
   );
 }

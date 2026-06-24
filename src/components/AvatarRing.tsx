@@ -1,11 +1,5 @@
 import Image from "next/image";
 
-const RING_SIZE = 76;
-const STROKE = 5.5;
-const GAP = 3;
-const RADIUS = (RING_SIZE - STROKE) / 2;
-const AVATAR_SIZE = RING_SIZE - STROKE * 2 - GAP * 2;
-
 export default function AvatarRing({
   src,
   alt,
@@ -13,6 +7,7 @@ export default function AvatarRing({
   badge,
   gradFrom,
   gradTo,
+  size = 76,
 }: {
   src: string | null;
   alt: string;
@@ -20,7 +15,15 @@ export default function AvatarRing({
   badge: string;
   gradFrom: string;
   gradTo: string;
+  size?: number;
 }) {
+  const RING_SIZE = size;
+  const STROKE = Math.max(4, size * 0.072);
+  const GAP = size * 0.04;
+  const RADIUS = (RING_SIZE - STROKE) / 2;
+  const AVATAR_SIZE = RING_SIZE - STROKE * 2 - GAP * 2;
+  const BADGE_SIZE = Math.round(size * 0.32);
+
   return (
     <div className="relative shrink-0" style={{ width: RING_SIZE, height: RING_SIZE }}>
       <svg
@@ -68,10 +71,10 @@ export default function AvatarRing({
       <Image
         src={badge}
         alt=""
-        width={26}
-        height={26}
+        width={BADGE_SIZE}
+        height={BADGE_SIZE}
         className="absolute left-1/2 -bottom-1.5 -translate-x-1/2 object-contain drop-shadow-md pointer-events-none"
-        style={{ width: 24, height: 24 }}
+        style={{ width: BADGE_SIZE, height: BADGE_SIZE }}
       />
     </div>
   );
