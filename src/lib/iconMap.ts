@@ -82,7 +82,10 @@ export const ICON_FILE: Record<string, string> = {
   orcboss: "orcboss",
 };
 
-const ICONS_WITHOUT_FILE = new Set(["heart", "warning", "gift", "party", "retry", "ten", "muscle", "volcano"]);
+// Nomes sem arquivo PNG próprio: ficam de fora do mapa reverso emoji→ícone
+// para não "roubar" um emoji de outro ícone que tem arquivo (ex.: 🟢 deve cair
+// em `robux`, não em `slime`, que não possui imagem).
+const ICONS_WITHOUT_FILE = new Set(["heart", "warning", "gift", "party", "retry", "ten", "muscle", "volcano", "slime"]);
 
 const EMOJI_TO_ICON: Record<string, string> = {};
 for (const [name, emoji] of Object.entries(ICON_EMOJI)) {
