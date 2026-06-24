@@ -22,7 +22,7 @@ export default async function Resgates() {
   return (
     <main className="min-h-screen bg-kid-base pattern-dots-violet font-body">
       <PaiNav active="resgates" />
-      <div className="px-6 py-10 max-w-5xl mx-auto">
+      <div className="px-4 sm:px-6 py-8 sm:py-10 max-w-5xl mx-auto">
         <span className="kid-chip kid-chip-gold">RESGATES</span>
         <h1 className="font-heading font-bold text-5xl text-kid-text-strong leading-tight mt-3">
           Aprovar e entregar

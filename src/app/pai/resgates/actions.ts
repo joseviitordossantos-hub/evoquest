@@ -51,5 +51,5 @@ export async function deliverRedemption(formData: FormData) {
 
   revalidatePath("/pai/resgates");
   revalidatePath("/pai");
-  revalidatePath("/pai/carteira");
+  revalidatePath("/pai/perfil");
 }

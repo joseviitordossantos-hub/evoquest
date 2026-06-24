@@ -7,3 +7,8 @@ dev.db-journal
 *.log
 .DS_Store
 .vercel
+.env*
+
+# user uploads (prototype only)
+public/uploads/avatars/*
+!public/uploads/avatars/.gitkeep

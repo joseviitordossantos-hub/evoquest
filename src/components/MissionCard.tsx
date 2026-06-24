@@ -54,7 +54,7 @@ function EmojiBox({ category, badge, iconFrom, iconTo }: { category: string; bad
     >
       <AppIcon name={iconName} size={56} />
       {badge && (
-        <span className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center ring-2 ring-white">
+        <span className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center ring-2 ring-white ${badge === "check" ? "animate-bounce-in" : "animate-pop"}`}>
           <AppIcon name={badgeIcon[badge]} size={22} />
         </span>
       )}
@@ -98,7 +98,7 @@ export default function MissionCard({
 
   if (pending) {
     return (
-      <Link href={`/crianca/${childId}/aula/${mission.id}`} className="block">
+      <Link href={`/crianca/${childId}/aula/${mission.id}`} className="block kid-tappable">
         <article
           className="rounded-kid-xl p-4 flex items-center gap-4"
           style={{ background: r.bg }}
@@ -121,7 +121,7 @@ export default function MissionCard({
 
   if (rejected) {
     return (
-      <Link href={`/crianca/${childId}/aula/${mission.id}`} className="block">
+      <Link href={`/crianca/${childId}/aula/${mission.id}`} className="block kid-tappable">
         <article
           className="rounded-kid-xl p-4 flex items-center gap-4"
           style={{ background: r.bg }}
@@ -162,9 +162,10 @@ export default function MissionCard({
 
 function ProgressBar({ current, target }: { current: number; target: number }) {
   const pct = target > 0 ? Math.min(Math.round((current / target) * 100), 100) : 0;
+  const nearDone = pct >= 80 && pct < 100;
   return (
     <div className="mt-2">
-      <div className="h-[15px] bg-kid-sunk rounded-pill overflow-hidden relative">
+      <div className={`h-[15px] bg-kid-sunk rounded-pill overflow-hidden relative ${nearDone ? "animate-pulse" : ""}`}>
         <div
           className="h-full grad-xp rounded-pill transition-[width] duration-500 ease-kid-standard"
           style={{ width: `${pct}%` }}

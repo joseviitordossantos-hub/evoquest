@@ -106,7 +106,7 @@ export default function AulaPlayer({
   }
 
   return (
-    <main className="min-h-screen bg-kid-base font-body pb-28">
+    <main className="min-h-screen bg-kid-base font-body pb-32">
       {/* Topbar */}
       <nav className="bg-white/80 backdrop-blur-lg sticky top-0 z-20">
         <div className="max-w-[480px] mx-auto px-4 py-3 flex items-center justify-between">
@@ -281,7 +281,7 @@ export default function AulaPlayer({
         <Footer />
       </div>
 
-      <CriancaTabBar childId={childId} active="home" />
+      <CriancaTabBar childId={childId} />
 
       {/* Quiz overlay */}
       {quizOpen && (
@@ -321,16 +321,19 @@ export default function AulaPlayer({
                   <ul className="space-y-3 mt-5">
                     {currentQuiz.options.map((opt, i) => {
                       let style = "bg-white rounded-kid-lg";
+                      let extra = "";
                       if (answerRevealed && i === currentQuiz.correct) {
                         style = "bg-kid-tint-teal rounded-kid-lg";
+                        if (selectedAnswer === i) extra = "animate-pop";
                       } else if (answerRevealed && selectedAnswer === i && i !== currentQuiz.correct) {
                         style = "bg-kid-tint-pink rounded-kid-lg";
+                        extra = "animate-shake";
                       }
                       return (
                         <li key={i}>
                           <button
                             onClick={() => handleQuizAnswer(i)}
-                            className={`w-full text-left p-4 ${style} transition-transform ${!answerRevealed ? "hover:-translate-y-0.5" : ""}`}
+                            className={`w-full text-left p-4 ${style} ${extra} transition-transform kid-tappable ${!answerRevealed ? "hover:-translate-y-0.5" : ""}`}
                           >
                             <div className="flex items-center gap-3">
                               <span className="w-8 h-8 rounded-full bg-kid-tint-violet flex items-center justify-center font-heading font-bold text-[14px] text-kid-on-violet shrink-0">
@@ -387,13 +390,22 @@ export default function AulaPlayer({
                     <div className="pattern-dots-light absolute inset-0 rounded-kid-xl" />
                     <div className="relative">
                       <span className="block animate-pop"><AppIcon name="trophy" size={64} /></span>
-                      <h1 className="font-heading font-bold text-[28px] text-white mt-4 leading-tight">
+                      <h1
+                        className="font-heading font-bold text-[28px] text-white mt-4 leading-tight animate-bounce-in"
+                        style={{ animationDelay: "200ms", animationFillMode: "backwards" }}
+                      >
                         Quiz completo!
                       </h1>
-                      <p className="font-body font-bold text-[14px] text-white/70 mt-2">
+                      <p
+                        className="font-body font-bold text-[14px] text-white/70 mt-2 animate-fade-in"
+                        style={{ animationDelay: "400ms", animationFillMode: "backwards" }}
+                      >
                         Você mandou muito bem. Continue assim!
                       </p>
-                      <div className="mt-6 inline-flex items-center gap-2 bg-white/30 text-white rounded-pill px-5 py-2 font-heading font-bold text-[20px]">
+                      <div
+                        className="mt-6 inline-flex items-center gap-2 bg-white/30 text-white rounded-pill px-5 py-2 font-heading font-bold text-[20px] animate-bounce-in"
+                        style={{ animationDelay: "550ms", animationFillMode: "backwards" }}
+                      >
                         +25 XP <AppIcon name="bolt" size={22} />
                       </div>
                     </div>

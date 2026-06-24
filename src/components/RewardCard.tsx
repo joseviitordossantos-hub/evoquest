@@ -1,6 +1,9 @@
+"use client";
+
+import { useState } from "react";
 import AppIcon from "@/components/AppIcon";
 import { emojiToIconName } from "@/lib/iconMap";
-import { requestRedemption } from "@/app/crianca/[id]/recompensas/actions";
+import { requestRedemption } from "@/app/crianca/[id]/(dashboard)/recompensas/actions";
 
 type Reward = {
   id: string;
@@ -10,66 +13,86 @@ type Reward = {
   coinsCost: number;
   featured: boolean;
   provider: string | null;
+  minLevel?: number;
 };
 
 export default function RewardCard({
   reward,
   childId,
   availableCoins,
+  childLevel = 1,
 }: {
   reward: Reward;
   childId: string;
   availableCoins: number;
+  childLevel?: number;
 }) {
+  const minLevel = reward.minLevel ?? 0;
+  const isLocked = minLevel > 0 && childLevel < minLevel;
   const affordable = availableCoins >= reward.coinsCost;
   const iconName = emojiToIconName(reward.emoji);
+  const subtitle = reward.description ?? reward.provider;
+  const [shake, setShake] = useState(false);
+
+  const triggerShake = () => {
+    if (shake) return;
+    setShake(true);
+    setTimeout(() => setShake(false), 450);
+  };
 
   return (
     <article
-      className={`bg-white rounded-[14px] p-3 flex items-stretch gap-3 relative transition-transform hover:-translate-y-0.5 ${
-        affordable ? "" : "opacity-80"
-      }`}
+      onClick={isLocked || !affordable ? triggerShake : undefined}
+      title={isLocked ? `Desbloqueia no Nível ${minLevel}` : undefined}
+      className={`bg-white rounded-kid-xl p-3 flex flex-col gap-3 relative transition-transform hover:-translate-y-0.5 ${
+        isLocked ? "opacity-70 cursor-pointer" : affordable ? "" : "opacity-80 cursor-pointer"
+      } ${shake ? "animate-shake" : ""}`}
     >
-      <div className="w-[88px] h-[88px] rounded-[8px] bg-kid-base flex items-center justify-center shrink-0 overflow-hidden">
+      {/* Image area */}
+      <div className={`aspect-square rounded-[14px] bg-kid-base flex items-center justify-center overflow-hidden relative ${isLocked ? "grayscale" : ""}`}>
         {iconName ? (
-          <AppIcon name={iconName} size={64} />
+          <AppIcon name={iconName} size={96} />
         ) : (
-          <span className="text-[52px] leading-none">{reward.emoji}</span>
+          <span className="text-[72px] leading-none">{reward.emoji}</span>
+        )}
+        {isLocked && (
+          <span className="absolute top-2 right-2 w-9 h-9 rounded-full bg-white/95 shadow-sm flex items-center justify-center text-kid-text-strong">
+            <AppIcon name="lock" size={18} />
+          </span>
         )}
       </div>
 
-      <div className="flex-1 min-w-0 flex flex-col">
-        <p className="font-heading font-bold text-[16px] text-kid-text-strong leading-tight pr-1">
+      {/* Body */}
+      <div className="flex flex-col flex-1 px-1">
+        <p className="font-heading font-bold text-[17px] text-kid-text-strong leading-tight line-clamp-2">
           {reward.title}
         </p>
-
-        {reward.description && (
-          <p className="font-body text-[12px] text-kid-text-soft mt-0.5 leading-snug line-clamp-2">
-            {reward.description}
+        {subtitle && (
+          <p className="font-body text-[12px] text-kid-text-soft mt-0.5 leading-snug line-clamp-1">
+            {subtitle}
           </p>
         )}
 
-        <div className="mt-auto pt-2 flex items-center justify-between gap-2">
-          <span
-            className="inline-flex items-center gap-1.5 rounded-pill pl-1 pr-3 h-8 font-heading font-extrabold text-[14px] leading-none"
-            style={{ background: "#FCEABB", color: "#8B6914" }}
-          >
-            <AppIcon name="coin" size={24} /> {reward.coinsCost}
-          </span>
-          {affordable ? (
+        {/* Action */}
+        <div className="mt-auto pt-3">
+          {isLocked ? (
+            <span className="bg-kid-sunk text-kid-text-strong rounded-pill w-full h-11 font-heading font-extrabold text-[14px] inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
+              <AppIcon name="lock" size={14} /> Nível {minLevel}
+            </span>
+          ) : affordable ? (
             <form action={requestRedemption}>
               <input type="hidden" name="rewardId" value={reward.id} />
               <input type="hidden" name="childId" value={childId} />
               <button
                 type="submit"
-                className="grad-primary text-white rounded-pill px-4 h-8 font-body font-extrabold text-[11px] tracking-[0.06em] uppercase inline-flex items-center transition-transform hover:-translate-y-0.5 active:translate-y-0"
+                className="grad-primary text-white rounded-pill w-full h-11 font-heading font-extrabold text-[15px] inline-flex items-center justify-center gap-2 transition-transform hover:-translate-y-0.5 active:translate-y-0 kid-tappable"
               >
-                Trocar
+                <AppIcon name="coin" size={22} /> {reward.coinsCost} coins
               </button>
             </form>
           ) : (
-            <span className="bg-kid-sunk text-kid-text-muted rounded-pill px-4 h-8 font-body font-extrabold text-[11px] tracking-[0.04em] uppercase inline-flex items-center gap-1 whitespace-nowrap">
-              <AppIcon name="lock" size={11} /> Faltam {reward.coinsCost - availableCoins}
+            <span className="bg-kid-sunk text-kid-text-muted rounded-pill w-full h-11 font-heading font-extrabold text-[14px] inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
+              <AppIcon name="lock" size={14} /> Faltam {reward.coinsCost - availableCoins}
             </span>
           )}
         </div>

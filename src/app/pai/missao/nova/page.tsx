@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import PaiNav from "@/components/PaiNav";
 import Footer from "@/components/Footer";
 import XpComplexityPicker from "@/components/XpComplexityPicker";
+import AppIcon from "@/components/AppIcon";
+import { emojiToIconName } from "@/lib/iconMap";
 
 export const dynamic = "force-dynamic";
 
@@ -46,31 +48,85 @@ async function createMission(formData: FormData) {
   redirect("/pai");
 }
 
-export default async function NovaMissao({ searchParams }: { searchParams: Promise<{ childId?: string }> }) {
-  const { childId } = await searchParams;
-  if (!childId) return <p>childId obrigatório.</p>;
-  const [child, allRewards] = await Promise.all([
-    prisma.child.findUniqueOrThrow({ where: { id: childId } }),
+export default async function NovaMissao({
+  searchParams,
+}: {
+  searchParams: Promise<{ childId?: string; rewardId?: string }>;
+}) {
+  const { childId, rewardId } = await searchParams;
+
+  const [child, allRewards, family] = await Promise.all([
+    childId
+      ? prisma.child.findUnique({ where: { id: childId } })
+      : Promise.resolve(null),
     prisma.reward.findMany({ where: { active: true }, orderBy: { title: "asc" } }),
+    prisma.family.findFirst({ include: { children: { orderBy: { displayName: "asc" } } } }),
   ]);
   const availableRewards = allRewards.filter(
     (r) => !(r.kind === "DIGITAL_CODE" && r.costCents > 0) || r.stock > 0
   );
+  const lockedReward = rewardId ? allRewards.find((r) => r.id === rewardId) ?? null : null;
+  const lockedRewardIcon = lockedReward ? emojiToIconName(lockedReward.emoji) : null;
+  const children = family?.children ?? [];
 
   return (
     <main className="min-h-screen bg-kid-base pattern-dots-violet font-body">
       <PaiNav active="painel" />
-      <div className="px-6 py-10 max-w-2xl mx-auto">
+      <div className="px-4 sm:px-6 py-8 sm:py-10 max-w-2xl mx-auto">
         <span className="kid-chip kid-chip-violet">NOVA MISSÃO</span>
-        <h1 className="font-heading font-bold text-4xl text-kid-text-strong leading-tight mt-3 mb-8">
-          Pra {child.displayName}
+        <h1 className="font-heading font-bold text-4xl text-kid-text-strong leading-tight mt-3 mb-3">
+          {child ? `Pra ${child.displayName}` : "Criar missão"}
         </h1>
+
+        {lockedReward && (
+          <div className="bg-white rounded-kid-xl p-4 mb-4 flex items-center gap-3">
+            <div className="w-14 h-14 rounded-[10px] bg-kid-base flex items-center justify-center shrink-0">
+              {lockedRewardIcon ? (
+                <AppIcon name={lockedRewardIcon} size={40} />
+              ) : (
+                <span className="text-3xl">{lockedReward.emoji}</span>
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-body font-extrabold text-[10px] uppercase tracking-[0.12em] text-kid-text-muted">
+                Prêmio vinculado
+              </p>
+              <p className="font-heading font-bold text-[16px] text-kid-text-strong leading-tight">
+                {lockedReward.title}
+              </p>
+              <p className="font-body font-bold text-[12px] text-kid-text-muted mt-0.5">
+                Custa {lockedReward.coinsCost} coins · estoque: {lockedReward.stock}
+              </p>
+            </div>
+          </div>
+        )}
 
         <form
           action={createMission}
           className="bg-white rounded-kid-xl p-6 space-y-4"
         >
-          <input type="hidden" name="childId" value={childId} />
+          {!child && (
+            <Field label="Para qual filho?">
+              {children.length === 0 ? (
+                <p className="font-body text-[13px] text-kid-text-muted bg-kid-base rounded-[10px] p-3">
+                  Sem crianças cadastradas.
+                </p>
+              ) : (
+                <select name="childId" required className="kid-input" defaultValue="">
+                  <option value="" disabled>
+                    — Selecione uma criança —
+                  </option>
+                  {children.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.displayName}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </Field>
+          )}
+          {child && <input type="hidden" name="childId" value={child.id} />}
+
           <Field label="Título da missão">
             <input
               name="title"
@@ -99,26 +155,32 @@ export default async function NovaMissao({ searchParams }: { searchParams: Promi
             </Field>
           </div>
           <XpComplexityPicker />
-          <Field label="Vincular recompensa do estoque (opcional)">
-            {availableRewards.length === 0 ? (
-              <p className="font-body text-[13px] text-kid-text-muted bg-kid-base rounded-[10px] p-3">
-                Sem recompensas em estoque. Vá em{" "}
-                <a href="/pai/recompensas" className="text-kid-violet font-extrabold underline">
-                  Recompensas
-                </a>{" "}
-                e clique em <strong>Comprar</strong> para adicionar itens ao estoque.
-              </p>
-            ) : (
-              <select name="rewardId" className="kid-input">
-                <option value="">— Nenhuma —</option>
-                {availableRewards.map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {r.emoji} {r.title} (estoque: {r.stock})
-                  </option>
-                ))}
-              </select>
-            )}
-          </Field>
+
+          {lockedReward ? (
+            <input type="hidden" name="rewardId" value={lockedReward.id} />
+          ) : (
+            <Field label="Vincular recompensa do estoque (opcional)">
+              {availableRewards.length === 0 ? (
+                <p className="font-body text-[13px] text-kid-text-muted bg-kid-base rounded-[10px] p-3">
+                  Sem recompensas em estoque. Vá em{" "}
+                  <a href="/pai/recompensas" className="text-kid-violet font-extrabold underline">
+                    Recompensas
+                  </a>{" "}
+                  e clique em <strong>Comprar</strong> para adicionar itens ao estoque.
+                </p>
+              ) : (
+                <select name="rewardId" className="kid-input" defaultValue="">
+                  <option value="">— Nenhuma —</option>
+                  {availableRewards.map((r) => (
+                    <option key={r.id} value={r.id}>
+                      {r.emoji} {r.title} (estoque: {r.stock})
+                    </option>
+                  ))}
+                </select>
+              )}
+            </Field>
+          )}
+
           <Field label="Recompensa combinada por texto (opcional)">
             <input
               name="rewardText"

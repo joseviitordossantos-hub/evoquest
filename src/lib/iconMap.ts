@@ -46,6 +46,12 @@ export const ICON_EMOJI: Record<string, string> = {
   icecream: "🍦",
   tent: "⛺",
   books: "📚",
+  moon: "🌙",
+  film: "🎬",
+  cinema: "🍿",
+  cupstrickers: "🃏",
+  orcboss: "👹",
+  slime: "🟢",
 };
 
 export const ICON_FILE: Record<string, string> = {
@@ -69,6 +75,11 @@ export const ICON_FILE: Record<string, string> = {
   icecream: "icecream",
   tent: "tent",
   books: "books",
+  moon: "moon",
+  film: "film",
+  cinema: "cinema",
+  cupstrickers: "cupstrickers",
+  orcboss: "orcboss",
 };
 
 const ICONS_WITHOUT_FILE = new Set(["heart", "warning", "gift", "party", "retry", "ten", "muscle", "volcano"]);

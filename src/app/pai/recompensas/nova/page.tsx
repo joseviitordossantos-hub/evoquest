@@ -8,7 +8,7 @@ export default function NovaRecompensa() {
   return (
     <main className="min-h-screen bg-kid-base pattern-dots-violet font-body">
       <PaiNav active="recompensas" />
-      <div className="px-6 py-10 max-w-2xl mx-auto">
+      <div className="px-4 sm:px-6 py-8 sm:py-10 max-w-2xl mx-auto">
         <span className="kid-chip kid-chip-pink">NOVA RECOMPENSA</span>
         <h1 className="font-heading font-bold text-4xl text-kid-text-strong leading-tight mt-3 mb-8">
           O que vale a pena conquistar?
@@ -81,6 +81,19 @@ export default function NovaRecompensa() {
                 min={0}
                 className="kid-input"
               />
+            </Field>
+            <Field label="Nível mínimo (0 = sem trava)">
+              <input
+                type="number"
+                name="minLevel"
+                defaultValue={0}
+                min={0}
+                max={50}
+                className="kid-input"
+              />
+              <span className="font-body text-[11px] text-kid-text-muted mt-1 block">
+                Use para criar metas aspiracionais — a criança vê trancada até alcançar o nível.
+              </span>
             </Field>
           </div>
 

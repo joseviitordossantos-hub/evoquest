@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { evaluateAchievements } from "@/lib/achievements";
+import { dealDamageFromMissionLog } from "@/lib/boss";
 import PaiNav from "@/components/PaiNav";
 import Footer from "@/components/Footer";
 
@@ -12,6 +13,9 @@ async function approveBatch(formData: FormData) {
   const approveIds = formData.getAll("approve").map(String);
   const rejectIds = formData.getAll("reject").map(String);
 
+  const damages: number[] = [];
+  let defeatedBoss: string | null = null;
+
   for (const id of approveIds) {
     const log = await prisma.missionLog.findUniqueOrThrow({ where: { id }, include: { mission: true } });
     await prisma.missionLog.update({
@@ -21,6 +25,11 @@ async function approveBatch(formData: FormData) {
     await prisma.xpEvent.create({
       data: { childId: log.childId, amount: log.mission.xpReward, reason: `mission:${log.missionId}` },
     });
+    const dmg = await dealDamageFromMissionLog({ ...log, mission: log.mission });
+    if (dmg) {
+      damages.push(dmg.damage);
+      if (dmg.justDefeated) defeatedBoss = dmg.bossName;
+    }
   }
 
   for (const id of rejectIds) {
@@ -29,7 +38,14 @@ async function approveBatch(formData: FormData) {
 
   await evaluateAchievements(childId);
 
-  redirect(`/pai?approved=${approveIds.length}&rejected=${rejectIds.length}`);
+  const params = new URLSearchParams({
+    approved: String(approveIds.length),
+    rejected: String(rejectIds.length),
+  });
+  if (damages.length) params.set("bossDamage", damages.join(","));
+  if (defeatedBoss) params.set("bossDefeated", defeatedBoss);
+
+  redirect(`/pai?${params.toString()}`);
 }
 
 export default async function Aprovar({ searchParams }: { searchParams: Promise<{ childId?: string }> }) {
@@ -45,7 +61,7 @@ export default async function Aprovar({ searchParams }: { searchParams: Promise<
   return (
     <main className="min-h-screen bg-kid-base pattern-dots-violet font-body">
       <PaiNav active="painel" />
-      <div className="px-6 py-10 max-w-3xl mx-auto">
+      <div className="px-4 sm:px-6 py-8 sm:py-10 max-w-3xl mx-auto">
         <span className="kid-chip kid-chip-gold">REVISÃO SEMANAL</span>
         <h1 className="font-heading font-bold text-4xl text-kid-text-strong leading-tight mt-3 mb-8">
           Aprovar conquistas

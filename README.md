@@ -36,9 +36,9 @@ npm run dev
 - `/pai/resgates` — aprovar, rejeitar (com reembolso de XP), marcar como entregue (debita carteira)
 
 ### Criança (estética gamificada)
-- `/crianca/[id]` — jornada do dia, XP, nível, streak com escudos de gelo + carrossel de últimas conquistas
+- `/crianca/[id]` — jornada do dia, XP, nível, streak com escudos de gelo + carrossel de últimas conquistas. Mission cards com cores de raridade (fundo + ícone gradiente por complexidade: Comum/Raro/Lendário/Mítico)
 - `/crianca/[id]/recompensas` — loja agrupada, com indicação de quanto falta para cada
-- `/crianca/[id]/conquistas` — grid 5-col de troféus coloridos por raridade (Rare/Epic/Legendary/Mythic), bloqueados em silhueta com pista
+- `/crianca/[id]/conquistas` — grid 4-col de troféus coloridos por raridade (Rare/Epic/Legendary/Mythic), bloqueados em silhueta com pista
 - `/crianca/[id]/perfil` — perfil estilo rede social: hero do avatar, stats (missões/seguindo/seguidores), chips de visão geral (streak, XP, liga, nível) e família
 
 ### Sistema
@@ -48,12 +48,15 @@ npm run dev
 - XP reservado quando criança resgata (reembolsado se rejeitado)
 - Carteira parental real (transações com extrato) — pagamento mockado
 - Sistema de raridade de conquistas (Rare, Epic, Legendary, Mythic) com paleta dedicada e tratamento especial (stripes diagonais em Legendary)
+- Sistema de raridade de missões (Common, Rare, Legendary, Mythic) — cards com fundo tintado e ícone gradiente por complexidade, definidos em `RARITY_CARD` dentro de `MissionCard.tsx`
 
 ## Design system
 
 Tokens centralizados em `tailwind.config.ts` (cores `kid-*`, raios `kid-sm…kid-xl`, animações `wiggle/float/pop`) e utilitários em `src/app/globals.css` (`pattern-diagonal-stripes`, `scrollbar-hide`).
 
 **Raridade de conquistas** — tokens `kid-{rare,epic,legendary,mythic}-{from,to,shadow}` no Tailwind; estilos compostos em `src/lib/enums.ts › RARITY_STYLE` (gradiente + chip + sombra 3D). Ícones PNG resolvidos via `src/lib/iconMap.ts` (emoji → arquivo em `/public/icons`).
+
+**Raridade de missões** — cada mission card exibe fundo tintado e ícone com gradiente de acordo com a complexidade (COMMON cinza-lilás, RARE azul, LEGENDARY dourado, MYTHIC vermelho). Cores em `RARITY_CARD` dentro de `src/components/MissionCard.tsx`. O badge `ComplexityBadge` usa `COMPLEXITY_META` + `RARITY_STYLE` de `enums.ts`.
 
 ## Recompensas pré-cadastradas
 

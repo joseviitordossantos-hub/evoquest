@@ -10,6 +10,13 @@ export async function toggleRewardActive(formData: FormData) {
   revalidatePath("/pai/recompensas");
 }
 
+export async function toggleRewardFeatured(formData: FormData) {
+  const id = String(formData.get("id"));
+  const r = await prisma.reward.findUniqueOrThrow({ where: { id } });
+  await prisma.reward.update({ where: { id }, data: { featured: !r.featured } });
+  revalidatePath("/pai/recompensas");
+}
+
 export async function buyRewardStock(formData: FormData) {
   const id = String(formData.get("id"));
   const reward = await prisma.reward.findUniqueOrThrow({ where: { id } });
@@ -30,7 +37,7 @@ export async function buyRewardStock(formData: FormData) {
     }),
   ]);
   revalidatePath("/pai/recompensas");
-  revalidatePath("/pai/carteira");
+  revalidatePath("/pai/perfil");
 }
 
 export async function createReward(formData: FormData) {
@@ -45,6 +52,7 @@ export async function createReward(formData: FormData) {
       provider: String(formData.get("provider") || "") || null,
       coinsCost: Number(formData.get("coinsCost") || 10),
       costCents: Math.round(Number(formData.get("costReais") || 0) * 100),
+      minLevel: Math.max(0, Math.min(50, Number(formData.get("minLevel") || 0))),
       featured: formData.get("featured") === "on",
     },
   });

@@ -65,6 +65,9 @@ export const ACHIEVEMENTS: Record<string, { title: string; emoji: string; descri
   BOSS_HUNTER: { title: "Caçador de Boss", emoji: "🐲", description: "Derrotou uma missão Boss", rarity: "LEGENDARY" },
   LEVEL_5: { title: "Aventureiro experiente", emoji: "⚔️", description: "Chegou ao nível 5", rarity: "EPIC" },
   LEVEL_10: { title: "Lenda em formação", emoji: "👑", description: "Chegou ao nível 10", rarity: "MYTHIC" },
+  BOSS_SLAYER: { title: "Caçador de Bosses", emoji: "orcboss", description: "Derrotou o primeiro boss mensal", rarity: "EPIC" },
+  BOSS_SPEEDRUNNER: { title: "Speedrunner", emoji: "bolt", description: "Derrotou um boss em menos de 10 dias", rarity: "LEGENDARY" },
+  BOSS_PERFECT: { title: "Sem usar freezes", emoji: "snowflake", description: "Derrotou um boss sem gastar freezes no mês", rarity: "MYTHIC" },
 };
 
 export const RARITY_STYLE: Record<Rarity, { label: string; chip: string; chipText: string; fill: string; from: string; to: string }> = {

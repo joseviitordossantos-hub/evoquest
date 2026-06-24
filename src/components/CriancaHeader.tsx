@@ -1,5 +1,8 @@
-import Image from "next/image";
 import { getChildStats } from "@/lib/childStats";
+import { prisma } from "@/lib/prisma";
+import CoinPill from "@/components/CoinPill";
+import AvatarRing from "@/components/AvatarRing";
+import XpBarFill from "@/components/XpBarFill";
 import AppIcon from "@/components/AppIcon";
 
 const AVATAR_MAP: Record<string, string> = {
@@ -7,124 +10,52 @@ const AVATAR_MAP: Record<string, string> = {
   theo: "/avatar-boy.png",
 };
 
-const RING_SIZE = 76;
-const STROKE = 5.5;
-const GAP = 3;
-const RADIUS = (RING_SIZE - STROKE) / 2;
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-const AVATAR_SIZE = RING_SIZE - STROKE * 2 - GAP * 2;
-
-function AvatarRing({
-  src,
-  alt,
-  fallback,
-  level,
-  progress,
-}: {
-  src: string | null;
-  alt: string;
-  fallback: string;
-  level: number;
-  progress: number;
-}) {
-  const offset = CIRCUMFERENCE - (progress / 100) * CIRCUMFERENCE;
-
-  return (
-    <div className="relative shrink-0" style={{ width: RING_SIZE, height: RING_SIZE }}>
-      <svg
-        width={RING_SIZE}
-        height={RING_SIZE}
-        viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
-        className="absolute inset-0 -rotate-90"
-      >
-        <circle
-          cx={RING_SIZE / 2}
-          cy={RING_SIZE / 2}
-          r={RADIUS}
-          fill="none"
-          stroke="rgba(255,255,255,0.2)"
-          strokeWidth={STROKE}
-        />
-        <circle
-          cx={RING_SIZE / 2}
-          cy={RING_SIZE / 2}
-          r={RADIUS}
-          fill="none"
-          stroke="url(#xp-grad)"
-          strokeWidth={STROKE}
-          strokeLinecap="round"
-          strokeDasharray={CIRCUMFERENCE}
-          strokeDashoffset={offset}
-          className="transition-[stroke-dashoffset] duration-700"
-        />
-        <defs>
-          <linearGradient id="xp-grad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#FFC23C" />
-            <stop offset="60%" stopColor="#FF8A3D" />
-            <stop offset="100%" stopColor="#FF5FA2" />
-          </linearGradient>
-        </defs>
-      </svg>
-
-      <div className="absolute inset-0 flex items-center justify-center">
-        {src ? (
-          <Image
-            src={src}
-            alt={alt}
-            width={56}
-            height={56}
-            className="rounded-full object-cover"
-            style={{ width: AVATAR_SIZE, height: AVATAR_SIZE }}
-          />
-        ) : (
-          <div
-            className="rounded-full bg-white/20 text-white flex items-center justify-center font-heading font-bold text-2xl"
-            style={{ width: AVATAR_SIZE, height: AVATAR_SIZE }}
-          >
-            {fallback}
-          </div>
-        )}
-      </div>
-
-      <span className="absolute -bottom-0.5 -right-0.5 w-5.5 h-5.5 rounded-full grad-xp flex items-center justify-center font-heading font-bold text-[10px] text-white ring-[1.5px] ring-[#7B5CFF]" style={{ width: 22, height: 22 }}>
-        {level}
-      </span>
-    </div>
-  );
-}
-
 export default async function CriancaHeader({ childId }: { childId: string }) {
-  const { child, totalXp, availableCoins, level, xpInLevel } = await getChildStats(childId);
+  const [stats, streak] = await Promise.all([
+    getChildStats(childId),
+    prisma.streak.findUnique({ where: { childId } }),
+  ]);
+  const { child, totalXp, availableCoins, level, xpInLevel, rank } = stats;
   const avatarSrc = AVATAR_MAP[child.avatarSeed] ?? null;
+  const progressPct = Math.max(4, xpInLevel);
+  const streakDays = streak?.currentDays ?? 0;
 
   return (
     <div className="grad-header rounded-kid-xl p-4 relative overflow-hidden">
       <div className="pattern-dots-light absolute inset-0 rounded-kid-xl opacity-60" />
-      <div className="flex items-start justify-between relative">
-        <div className="flex items-center gap-3">
+      <div className="flex items-start justify-between relative gap-3">
+        <div className="flex items-center gap-3 min-w-0 flex-1">
           <AvatarRing
             src={avatarSrc}
             alt={child.displayName}
             fallback={child.displayName.charAt(0)}
-            level={level}
-            progress={Math.max(4, xpInLevel)}
+            badge={rank.badge}
+            gradFrom={rank.color}
+            gradTo={rank.bgColor}
           />
-          <div>
-            <p className="font-body font-extrabold text-[11px] tracking-[0.12em] uppercase text-white/80">
-              Aventureiro
-            </p>
-            <p className="font-heading font-bold text-[22px] leading-tight text-white">{child.displayName}</p>
+          <div className="min-w-0 flex-1">
+            <span
+              className="inline-block font-body font-extrabold text-[10px] tracking-[0.1em] uppercase rounded-pill px-2 py-0.5"
+              style={{ background: rank.bgColor, color: rank.color }}
+            >
+              {rank.label}
+            </span>
+            <p className="font-heading font-bold text-[22px] leading-tight text-white truncate">{child.displayName}</p>
           </div>
         </div>
 
-        <span
-          className="inline-flex items-center gap-2 pl-1 pr-4 h-11 rounded-pill font-heading font-bold text-[18px] leading-none"
-          style={{ background: "#FCEABB", color: "#8B6914" }}
-          aria-label={`${availableCoins} coins`}
-        >
-          <AppIcon name="coin" size={32} />
-          {availableCoins}
-        </span>
+        <div className="flex items-center gap-1.5 shrink-0">
+          {streakDays > 0 && (
+            <span
+              className="inline-flex items-center gap-0.5 pl-0.5 pr-2 h-9 sm:h-11 rounded-pill font-heading font-bold text-[15px] sm:text-[18px] leading-none"
+              style={{ background: "#FF5FA2", color: "#FFFFFF" }}
+            >
+              <AppIcon name="fire" size={24} />
+              {streakDays}
+            </span>
+          )}
+          <CoinPill childId={childId} amount={availableCoins} />
+        </div>
       </div>
 
       <div className="mt-4 relative">
@@ -138,10 +69,7 @@ export default async function CriancaHeader({ childId }: { childId: string }) {
           </p>
         </div>
         <div className="h-[12px] bg-white/15 rounded-pill overflow-hidden">
-          <div
-            className="h-full grad-xp rounded-pill transition-[width] duration-700 ease-kid-standard"
-            style={{ width: `${Math.max(4, xpInLevel)}%` }}
-          />
+          <XpBarFill pct={progressPct} />
         </div>
         <p className="font-body font-extrabold text-[10px] uppercase tracking-[0.08em] text-white/60 mt-1.5">
           Total acumulado: {totalXp} XP

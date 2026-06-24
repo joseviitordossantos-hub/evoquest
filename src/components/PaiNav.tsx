@@ -17,7 +17,7 @@ export default async function PaiNav({ active }: { active?: string }) {
     { href: "/pai", label: "Painel", key: "painel", icon: "grid" },
     { href: "/pai/recompensas", label: "Recompensas", key: "recompensas", icon: "gift" },
     { href: "/pai/resgates", label: `Resgates${pending ? ` (${pending})` : ""}`, key: "resgates", icon: "inbox" },
-    { href: "/pai/carteira", label: "Carteira", key: "carteira", icon: "wallet" },
+    { href: "/pai/perfil", label: "Perfil", key: "perfil", icon: "user" },
   ];
 
   const quickActions = [
@@ -54,7 +54,7 @@ export default async function PaiNav({ active }: { active?: string }) {
 
         <div className="flex items-center gap-3">
           {/* Desktop balance */}
-          <Link href="/pai/carteira" className="hidden md:flex kid-chip kid-chip-teal text-[13px] items-center gap-1">
+          <Link href="/pai/perfil" className="hidden md:flex kid-chip kid-chip-teal text-[13px] items-center gap-1">
             <AppIcon name="coin" size={16} /> {fmtBRL(balance)}
           </Link>
 

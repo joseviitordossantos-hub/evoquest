@@ -62,7 +62,7 @@ export default function MissionFilteredList({
               key={f.key}
               type="button"
               onClick={() => setFilter(f.key)}
-              className={`rounded-pill px-3 py-1.5 font-body font-extrabold text-[11px] uppercase tracking-[0.06em] transition-all ${
+              className={`rounded-pill px-3 py-1.5 font-body font-extrabold text-[11px] uppercase tracking-[0.06em] transition-all kid-tappable ${
                 active ? `${f.bgActive} ${f.text}` : `${f.bg} text-kid-text-body`
               }`}
             >
@@ -72,9 +72,13 @@ export default function MissionFilteredList({
         })}
       </div>
 
-      <ul className="space-y-3 mt-4">
-        {filtered.map((item) => (
-          <li key={item.mission.id}>
+      <ul key={filter} className="space-y-3 mt-4">
+        {filtered.map((item, i) => (
+          <li
+            key={item.mission.id}
+            className="animate-bounce-in"
+            style={{ animationDelay: `${i * 40}ms`, animationFillMode: "backwards" }}
+          >
             <MissionCard mission={item.mission} childId={childId} log={item.log} />
           </li>
         ))}

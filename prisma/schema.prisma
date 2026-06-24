@@ -11,13 +11,29 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
+  id        String        @id @default(cuid())
+  email     String        @unique
   name      String
-  role      String   @default("PARENT")
+  role      String        @default("PARENT")
   familyId  String?
-  family    Family?  @relation(fields: [familyId], references: [id])
-  createdAt DateTime @default(now())
+  family    Family?       @relation(fields: [familyId], references: [id])
+  phone     String?
+  photoPath String?
+  cards     PaymentCard[]
+  createdAt DateTime      @default(now())
+}
+
+model PaymentCard {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  brand       String   // VISA | MASTERCARD | ELO | AMEX | HIPERCARD
+  last4       String
+  holderName  String
+  expiryMonth Int
+  expiryYear  Int
+  isPrimary   Boolean  @default(false)
+  createdAt   DateTime @default(now())
 }
 
 model Family {
@@ -46,6 +62,9 @@ model Child {
   streak       Streak?
   redemptions  Redemption[]
   achievements Achievement[]
+  bosses       MonthlyBoss[]
+  highestLevelClaimed Int    @default(1)
+  bonusCoins   Int           @default(0)
   createdAt    DateTime      @default(now())
 }
 
@@ -117,11 +136,15 @@ model Reward {
   provider     String?      // Roblox | Steam | Spotify | Kindle | iFood | null
   coinsCost    Int
   costCents    Int          @default(0) // 0 = não custa dinheiro (vale offline/privilégio)
+  originalCostCents Int     @default(0) // se > costCents, mostra desconto
+  minLevel     Int          @default(0) // 0 = sem trava; >0 = exige child.level >= minLevel
   stock        Int          @default(0) // quantidade comprada pelo pai, ainda não vinculada a missão
   active       Boolean      @default(true)
   featured     Boolean      @default(false)
+  forBoss      Boolean      @default(false) // recompensas especiais usadas apenas como drop de boss mensal
   redemptions  Redemption[]
   missions     Mission[]
+  bossDrops    MonthlyBoss[]
 }
 
 model Redemption {
@@ -175,4 +198,50 @@ model ConsentRecord {
   parentDocHash String
   acceptedAt    DateTime @default(now())
   termsVersion  String
+}
+
+// --- Boss mensal ---
+
+model BossTemplate {
+  id           String        @id @default(cuid())
+  month        Int           // 1-12
+  year         Int
+  name         String
+  iconName     String        @default("orcboss")
+  defaultMaxHp Int           @default(500)
+  createdAt    DateTime      @default(now())
+  bosses       MonthlyBoss[]
+
+  @@unique([month, year])
+}
+
+model MonthlyBoss {
+  id          String        @id @default(cuid())
+  childId     String
+  child       Child         @relation(fields: [childId], references: [id])
+  templateId  String?
+  template    BossTemplate? @relation(fields: [templateId], references: [id])
+  month       Int           // 1-12
+  year        Int           // 2026
+  name        String
+  iconName    String        @default("orcboss")
+  maxHp       Int           @default(500)
+  currentHp   Int           @default(500)
+  active      Boolean       @default(false)
+  rewardId    String?
+  reward      Reward?       @relation(fields: [rewardId], references: [id])
+  defeatedAt  DateTime?
+  createdAt   DateTime      @default(now())
+  damageLogs  BossDamage[]
+
+  @@unique([childId, month, year])
+}
+
+model BossDamage {
+  id           String      @id @default(cuid())
+  bossId       String
+  boss         MonthlyBoss @relation(fields: [bossId], references: [id])
+  missionLogId String      @unique
+  amount       Int
+  createdAt    DateTime    @default(now())
 }

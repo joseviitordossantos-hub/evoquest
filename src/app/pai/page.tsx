@@ -5,8 +5,10 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 import PaiNav from "@/components/PaiNav";
 import Footer from "@/components/Footer";
-import { fmtBRL, COMPLEXITY_META, type ComplexityT } from "@/lib/enums";
+import { COMPLEXITY_META, type ComplexityT } from "@/lib/enums";
+import { getRankForLevel } from "@/lib/ranks";
 import AppIcon from "@/components/AppIcon";
+import BannerSlot from "@/components/BannerSlot";
 
 const AVATAR_MAP: Record<string, string> = {
   lila: "/avatar-girl.png",
@@ -14,15 +16,31 @@ const AVATAR_MAP: Record<string, string> = {
 };
 
 export default async function PaiDashboard() {
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1;
+  const currentYear = now.getFullYear();
+
+  const startOfToday = new Date(); startOfToday.setHours(0, 0, 0, 0);
+
   const family = await prisma.family.findFirst({
     include: {
       children: {
         include: {
           streak: true,
-          missions: { where: { active: true } },
+          missions: {
+            where: { active: true },
+            include: {
+              logs: {
+                where: { markedAt: { gte: startOfToday } },
+                orderBy: { markedAt: "desc" },
+                take: 1,
+              },
+            },
+          },
           logs: { where: { status: "PENDING" }, take: 5, orderBy: { markedAt: "desc" }, include: { mission: true } },
           xpEvents: true,
           achievements: true,
+          bosses: { where: { month: currentMonth, year: currentYear } },
         },
       },
     },
@@ -30,32 +48,26 @@ export default async function PaiDashboard() {
 
   if (!family) return <p className="p-8">Sem família seed. Rode <code>npm run db:seed</code>.</p>;
 
-  const pendingRedemptions = await prisma.redemption.count({ where: { status: "REQUESTED" } });
-
   return (
     <main className="min-h-screen bg-kid-base pattern-dots-violet font-body">
       <PaiNav active="painel" />
 
       <div className="px-4 py-6 max-w-6xl mx-auto">
-        <span className="kid-chip kid-chip-pink">PAINEL DO RESPONSÁVEL</span>
-        <h1 className="font-heading font-bold text-4xl leading-tight text-kid-text-strong mt-2">
-          Olá, {family.name.replace(/^Família /, "")}.
-        </h1>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6">
-          <StatCard label="CARTEIRA" value={fmtBRL(family.balanceCents)} href="/pai/carteira" bg="kid-stat-teal" />
-          <StatCard label="RESGATES AGUARDANDO" value={String(pendingRedemptions)} href="/pai/resgates" bg="kid-stat-gold" />
-          <StatCard label="CRIANÇAS" value={String(family.children.length)} bg="kid-stat-pink" />
+        {/* Banner */}
+        <div className="mb-6">
+          <BannerSlot />
         </div>
 
-        {family.children.map((child) => {
+        {family.children.map((child, idx) => {
           const totalXp = child.xpEvents.reduce((s, e) => s + e.amount, 0);
           const level = Math.floor(totalXp / 100) + 1;
+          const rank = getRankForLevel(level);
+          const activeBoss = child.bosses.find((b) => b.active);
 
           return (
             <section
               key={child.id}
-              className="mt-5 p-5 sm:p-6 rounded-kid-xl bg-white"
+              className={`${idx === 0 ? "" : "mt-5"} p-5 sm:p-6 rounded-kid-xl bg-white`}
             >
               <div className="mb-4">
                 <div className="flex items-center gap-5">
@@ -73,10 +85,16 @@ export default async function PaiDashboard() {
                     </div>
                   )}
                   <div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <h2 className="font-heading font-bold text-3xl text-kid-text-strong">{child.displayName}</h2>
                       <span className="grad-xp text-white font-body font-extrabold text-[11px] uppercase tracking-[0.08em] rounded-pill px-3 py-1">
                         Nível {level}
+                      </span>
+                      <span
+                        className="font-body font-extrabold text-[11px] uppercase tracking-[0.08em] rounded-pill px-3 py-1"
+                        style={{ background: rank.bgColor, color: rank.color }}
+                      >
+                        {rank.label}
                       </span>
                     </div>
                     <Link
@@ -91,63 +109,112 @@ export default async function PaiDashboard() {
                   <span className="kid-chip bg-kid-tint-orange text-kid-on-orange">{totalXp} XP</span>
                   <span className="kid-chip kid-chip-orange inline-flex items-center gap-1"><AppIcon name="fire" size={14} /> {child.streak?.currentDays ?? 0} DIAS</span>
                   <span className="kid-chip kid-chip-pink inline-flex items-center gap-1"><AppIcon name="trophy" size={14} /> {child.achievements.length}</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="kid-label mb-3">
-                    MISSÕES ATIVAS ({child.missions.length})
-                  </p>
-                  <ul className="space-y-2">
-                    {child.missions.map((m) => (
-                      <li
-                        key={m.id}
-                        className="flex justify-between items-center border-b border-kid-sunk py-2 text-sm font-bold"
-                      >
-                        <span className="text-kid-text-strong">{m.title}</span>
-                        <span className="font-body font-extrabold text-[11px] text-kid-text-muted">{m.xpReward} XP · {COMPLEXITY_META[m.difficulty as ComplexityT]?.label ?? m.difficulty}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    href={`/pai/missao/nova?childId=${child.id}`}
-                    className="kid-btn kid-btn-sm mt-4 inline-flex"
-                  >
-                    + Nova missão
-                  </Link>
-                </div>
-
-                <div>
-                  <p className="kid-label mb-3">
-                    AGUARDANDO APROVAÇÃO ({child.logs.length})
-                  </p>
-                  {child.logs.length === 0 ? (
-                    <p className="text-kid-text-muted font-bold">Nada pendente.</p>
-                  ) : (
-                    <ul className="space-y-2">
-                      {child.logs.map((log) => (
-                        <li
-                          key={log.id}
-                          className="text-sm font-bold border-b border-kid-sunk py-2 flex justify-between"
-                        >
-                          <span className="text-kid-text-strong">{log.mission.title}</span>
-                          <span className="font-body font-extrabold text-[11px] text-kid-text-muted">
-                            {new Date(log.markedAt).toLocaleDateString("pt-BR")}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  {child.logs.length > 0 && (
+                  {activeBoss && (
                     <Link
-                      href={`/pai/aprovar?childId=${child.id}`}
-                      className="kid-btn kid-btn-sm kid-btn-gold mt-4 inline-flex"
+                      href={`/pai/boss/${activeBoss.id}/editar`}
+                      className="kid-chip inline-flex items-center gap-1 hover:opacity-80 transition-opacity"
+                      style={{
+                        background: activeBoss.defeatedAt ? "#B8EDE3" : "#FFD0E5",
+                        color: activeBoss.defeatedAt ? "#0D7D6C" : "#C4225A",
+                      }}
                     >
-                      Aprovar em lote →
+                      <AppIcon name={activeBoss.iconName} size={14} />
+                      {activeBoss.defeatedAt
+                        ? `${activeBoss.name} derrotado!`
+                        : `${activeBoss.name} ${activeBoss.currentHp}/${activeBoss.maxHp} HP`}
                     </Link>
                   )}
                 </div>
+              </div>
+
+              {(() => {
+                const cols: { key: string; label: string; titleClass: string; bg: string; missions: typeof child.missions }[] = [
+                  { key: "todo",     label: "A fazer",              titleClass: "text-[#1E3A5F]", bg: "#DBEAFE", missions: [] },
+                  { key: "progress", label: "Em andamento",         titleClass: "text-[#664D03]", bg: "#FFF3CD", missions: [] },
+                  { key: "pending",  label: "Aguardando aprovação", titleClass: "text-[#A04518]", bg: "#FFD9C4", missions: [] },
+                  { key: "done",     label: "Concluída",            titleClass: "text-[#1B5E2E]", bg: "#D4EDDA", missions: [] },
+                ];
+
+                for (const m of child.missions) {
+                  const latest = m.logs[0];
+                  let key: string;
+                  if (latest?.status === "PENDING") key = "pending";
+                  else if (latest?.status === "APPROVED") key = "done";
+                  else if (m.currentProgress > 0) key = "progress";
+                  else key = "todo";
+                  cols.find((c) => c.key === key)!.missions.push(m);
+                }
+
+                return (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {cols.map((col) => (
+                      <div
+                        key={col.key}
+                        className="rounded-kid-md p-3 flex flex-col gap-2"
+                        style={{ background: col.bg }}
+                      >
+                        <div className="flex items-baseline justify-between gap-2 mb-1">
+                          <p className={`font-body font-extrabold text-[11px] uppercase tracking-[0.08em] ${col.titleClass}`}>
+                            {col.label}
+                          </p>
+                          <span className={`font-heading font-bold text-[14px] ${col.titleClass}`}>
+                            {col.missions.length}
+                          </span>
+                        </div>
+
+                        {col.missions.length === 0 ? (
+                          <p className="font-body font-bold text-[12px] text-kid-text-muted py-2">
+                            —
+                          </p>
+                        ) : (
+                          <ul className="space-y-2">
+                            {col.missions.map((m) => (
+                              <li key={m.id} className="bg-white rounded-[10px] p-2.5">
+                                <p className="font-heading font-semibold text-[13px] text-kid-text-strong leading-tight">
+                                  {m.title}
+                                </p>
+                                <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+                                  <span className="font-body font-extrabold text-[10px] text-kid-text-muted">
+                                    {m.xpReward} XP
+                                  </span>
+                                  <span className="text-kid-text-muted">·</span>
+                                  <span className="font-body font-extrabold text-[10px] text-kid-text-muted">
+                                    {COMPLEXITY_META[m.difficulty as ComplexityT]?.label ?? m.difficulty}
+                                  </span>
+                                  {m.targetCount > 1 && col.key === "progress" && (
+                                    <>
+                                      <span className="text-kid-text-muted">·</span>
+                                      <span className="font-body font-extrabold text-[10px] text-kid-text-muted">
+                                        {m.currentProgress}/{m.targetCount}
+                                      </span>
+                                    </>
+                                  )}
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
+
+              <div className="flex gap-3 mt-4 flex-wrap">
+                <Link
+                  href={`/pai/missao/nova?childId=${child.id}`}
+                  className="kid-btn kid-btn-sm inline-flex"
+                >
+                  + Nova missão
+                </Link>
+                {child.logs.length > 0 && (
+                  <Link
+                    href={`/pai/aprovar?childId=${child.id}`}
+                    className="kid-btn kid-btn-sm kid-btn-gold inline-flex"
+                  >
+                    Aprovar em lote ({child.logs.length}) →
+                  </Link>
+                )}
               </div>
             </section>
           );
@@ -156,14 +223,4 @@ export default async function PaiDashboard() {
       </div>
     </main>
   );
-}
-
-function StatCard({ label, value, href, bg }: { label: string; value: string; href?: string; bg: string }) {
-  const inner = (
-    <div className={`kid-stat ${bg}`}>
-      <p className="kid-label">{label}</p>
-      <p className="font-heading font-bold text-3xl mt-1 text-kid-text-strong">{value}</p>
-    </div>
-  );
-  return href ? <Link href={href}>{inner}</Link> : inner;
 }

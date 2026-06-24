@@ -68,6 +68,12 @@ const ICONS: Record<string, React.ReactNode> = {
       <polyline points="3,10 7,14 15,4" />
     </svg>
   ),
+  user: (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="9" cy="6" r="3" />
+      <path d="M3 16c1-3.5 3.5-5 6-5s5 1.5 6 5" />
+    </svg>
+  ),
 };
 
 export default function PaiNavMenu({
@@ -120,7 +126,7 @@ export default function PaiNavMenu({
         <div className="fixed left-0 right-0 top-[69px] bg-white shadow-[0_12px_40px_rgba(123,92,255,0.12)] z-50 overflow-y-auto max-h-[calc(100vh-69px)]">
           {/* Balance */}
           <Link
-            href="/pai/carteira"
+            href="/pai/perfil"
             className="flex items-center justify-between px-5 py-4 bg-kid-tint-teal/40"
           >
             <span className="font-body font-extrabold text-[13px] uppercase tracking-[0.06em] text-kid-on-teal">Saldo da carteira</span>

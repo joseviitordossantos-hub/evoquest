@@ -17,6 +17,9 @@ function makeSeedClient() {
 const prisma = makeSeedClient();
 
 async function wipe() {
+  await prisma.bossDamage.deleteMany();
+  await prisma.monthlyBoss.deleteMany();
+  await prisma.bossTemplate.deleteMany();
   await prisma.achievement.deleteMany();
   await prisma.xpEvent.deleteMany();
   await prisma.missionLog.deleteMany();
@@ -27,6 +30,7 @@ async function wipe() {
   await prisma.streak.deleteMany();
   await prisma.child.deleteMany();
   await prisma.consentRecord.deleteMany();
+  await prisma.paymentCard.deleteMany();
   await prisma.user.deleteMany();
   await prisma.family.deleteMany();
 }
@@ -43,8 +47,8 @@ async function main() {
     data: {
       name: "Família Silva",
       balanceCents: 8500, // R$ 85 já carregados
-      parents: { create: [{ email: "pai@demo.com", name: "Marcos Silva", role: "PARENT" }] },
-      consent: { create: { parentName: "Marcos Silva", parentDocHash: "demo-hash", termsVersion: "v0.1" } },
+      parents: { create: [{ email: "jose.vitor@evoquest.com.br", name: "José Vitor Silva", role: "PARENT", phone: "(11) 98765-4321" }] },
+      consent: { create: { parentName: "José Vitor Silva", parentDocHash: "demo-hash", termsVersion: "v0.1" } },
     },
   });
 
@@ -151,26 +155,34 @@ async function main() {
   await prisma.reward.createMany({
     data: [
       // Digitais (com custo R$)
-      { familyId: family.id, title: "Robux R$ 15", description: "100 Robux para Roblox", emoji: "robux", kind: "DIGITAL_CODE", provider: "Roblox", coinsCost: 40, costCents: 1500, featured: true },
-      { familyId: family.id, title: "Robux R$ 30", description: "200 Robux para Roblox", emoji: "robux", kind: "DIGITAL_CODE", provider: "Roblox", coinsCost: 80, costCents: 3000 },
-      { familyId: family.id, title: "V-Bucks R$ 25", description: "1000 V-Bucks Fortnite", emoji: "vbucks", kind: "DIGITAL_CODE", provider: "Epic Games", coinsCost: 70, costCents: 2500 },
-      { familyId: family.id, title: "Steam R$ 20", description: "Gift card Steam", emoji: "steam", kind: "DIGITAL_CODE", provider: "Steam", coinsCost: 56, costCents: 2000 },
-      { familyId: family.id, title: "Spotify 1 mês", description: "Plano individual", emoji: "spotify", kind: "DIGITAL_CODE", provider: "Spotify", coinsCost: 60, costCents: 2190 },
-      { familyId: family.id, title: "Battle.net R$ 30", description: "Saldo Battle.net Blizzard", emoji: "battlenet", kind: "DIGITAL_CODE", provider: "Blizzard", coinsCost: 80, costCents: 3000 },
-      { familyId: family.id, title: "RP R$ 25", description: "Riot Points para League of Legends", emoji: "riotpoints", kind: "DIGITAL_CODE", provider: "Riot Games", coinsCost: 70, costCents: 2500 },
-      { familyId: family.id, title: "Kindle e-book R$ 15", description: "1 livro digital à escolha", emoji: "📚", kind: "DIGITAL_CODE", provider: "Amazon", coinsCost: 50, costCents: 1500, featured: true },
+      { familyId: family.id, title: "Robux R$ 15", description: "100 Robux para Roblox", emoji: "robux", kind: "DIGITAL_CODE", provider: "Roblox", coinsCost: 40, costCents: 1500, originalCostCents: 1800, featured: true },
+      { familyId: family.id, title: "Robux R$ 30", description: "200 Robux para Roblox", emoji: "robux", kind: "DIGITAL_CODE", provider: "Roblox", coinsCost: 80, costCents: 3000, minLevel: 4 },
+      { familyId: family.id, title: "V-Bucks R$ 25", description: "1000 V-Bucks Fortnite", emoji: "vbucks", kind: "DIGITAL_CODE", provider: "Epic Games", coinsCost: 70, costCents: 2500, originalCostCents: 3000, minLevel: 6 },
+      { familyId: family.id, title: "Steam R$ 20", description: "Gift card Steam", emoji: "steam", kind: "DIGITAL_CODE", provider: "Steam", coinsCost: 56, costCents: 2000, minLevel: 3 },
+      { familyId: family.id, title: "Spotify 1 mês", description: "Plano individual", emoji: "spotify", kind: "DIGITAL_CODE", provider: "Spotify", coinsCost: 60, costCents: 2190, minLevel: 5 },
+      { familyId: family.id, title: "Battle.net R$ 30", description: "Saldo Battle.net Blizzard", emoji: "battlenet", kind: "DIGITAL_CODE", provider: "Blizzard", coinsCost: 80, costCents: 3000, originalCostCents: 3500, minLevel: 5 },
+      { familyId: family.id, title: "RP R$ 25", description: "Riot Points para League of Legends", emoji: "riotpoints", kind: "DIGITAL_CODE", provider: "Riot Games", coinsCost: 70, costCents: 2500, originalCostCents: 2900, minLevel: 5 },
+      { familyId: family.id, title: "E-book R$ 15", description: "1 livro digital à escolha", emoji: "📚", kind: "DIGITAL_CODE", provider: "Amazon", coinsCost: 50, costCents: 1500, featured: true },
       // Físicos (sem código digital, pai entrega)
       { familyId: family.id, title: "Sorvete favorito", description: "Pode ser na sorveteria", emoji: "🍦", kind: "PHYSICAL", coinsCost: 16, costCents: 0 },
-      { familyId: family.id, title: "Livro novo", description: "Um livro à escolha (até R$ 50)", emoji: "books", kind: "PHYSICAL", coinsCost: 50, costCents: 5000 },
-      { familyId: family.id, title: "Pacote de figurinhas", description: "Álbum atual", emoji: "🃏", kind: "PHYSICAL", coinsCost: 12, costCents: 500 },
+      { familyId: family.id, title: "Livro novo", description: "Um livro à escolha (até R$ 50)", emoji: "books", kind: "PHYSICAL", coinsCost: 50, costCents: 5000, minLevel: 7 },
+      { familyId: family.id, title: "Pacote de figurinhas", description: "Álbum atual", emoji: "cupstrickers", kind: "PHYSICAL", coinsCost: 12, costCents: 500 },
       // Experiências
-      { familyId: family.id, title: "Cinema no fim de semana", description: "Filme à escolha", emoji: "🎬", kind: "EXPERIENCE", coinsCost: 60, costCents: 4000 },
+      { familyId: family.id, title: "Cinema no fim de semana", description: "Filme à escolha", emoji: "cinema", kind: "EXPERIENCE", coinsCost: 60, costCents: 4000, minLevel: 4 },
       { familyId: family.id, title: "Pizza de sexta", description: "Você escolhe o sabor", emoji: "🍕", kind: "EXPERIENCE", coinsCost: 30, costCents: 0, featured: true },
       { familyId: family.id, title: "Acampamento no quintal", description: "Barraca na sala/quintal numa sexta", emoji: "⛺", kind: "EXPERIENCE", coinsCost: 40, costCents: 0 },
       // Privilégios (zero R$)
-      { familyId: family.id, title: "Escolher filme de sexta", description: "Você decide", emoji: "🎞️", kind: "PRIVILEGE", coinsCost: 6, costCents: 0 },
+      { familyId: family.id, title: "Escolher filme de sexta", description: "Você decide", emoji: "film", kind: "PRIVILEGE", coinsCost: 6, costCents: 0 },
       { familyId: family.id, title: "+30min de tela hoje", description: "Limite extra para o dia", emoji: "📱", kind: "PRIVILEGE", coinsCost: 10, costCents: 0 },
       { familyId: family.id, title: "Ficar acordado +1h sexta", description: "Vale 1 sexta-feira", emoji: "🌙", kind: "PRIVILEGE", coinsCost: 14, costCents: 0 },
+
+      // Recompensas de BOSS — versões maiores das digitais/experiências, com desconto
+      { familyId: family.id, title: "Robux R$ 50 (drop de boss)", description: "350 Robux — só liberado ao derrotar o boss", emoji: "robux", kind: "DIGITAL_CODE", provider: "Roblox", coinsCost: 100, costCents: 5000, forBoss: true },
+      { familyId: family.id, title: "V-Bucks R$ 75 (drop de boss)", description: "3000 V-Bucks Fortnite", emoji: "vbucks", kind: "DIGITAL_CODE", provider: "Epic Games", coinsCost: 150, costCents: 7500, forBoss: true },
+      { familyId: family.id, title: "Steam R$ 60 (drop de boss)", description: "Gift card maior em troca da vitória", emoji: "steam", kind: "DIGITAL_CODE", provider: "Steam", coinsCost: 130, costCents: 6000, forBoss: true },
+      { familyId: family.id, title: "Battle.net R$ 100 (drop de boss)", description: "Saldo Battle.net Blizzard turbinado", emoji: "battlenet", kind: "DIGITAL_CODE", provider: "Blizzard", coinsCost: 200, costCents: 10000, forBoss: true },
+      { familyId: family.id, title: "Cinema + pizza (drop de boss)", description: "Programa completo de sexta", emoji: "cinema", kind: "EXPERIENCE", coinsCost: 80, costCents: 6000, forBoss: true },
+      { familyId: family.id, title: "Livro novo até R$ 80 (drop de boss)", description: "Livro físico de até R$ 80", emoji: "books", kind: "PHYSICAL", coinsCost: 100, costCents: 8000, forBoss: true },
     ],
   });
 
@@ -203,6 +215,43 @@ async function main() {
       { childId: theo.id, code: "STREAK_7", title: "Uma semana firme", emoji: "🔥", earnedAt: daysAgo(2) },
       { childId: theo.id, code: "BOSS_HUNTER", title: "Caçador de Boss", emoji: "🐲", earnedAt: daysAgo(5) },
       { childId: theo.id, code: "LEVEL_10", title: "Lenda em formação", emoji: "👑", earnedAt: daysAgo(1) },
+    ],
+  });
+
+  // Boss mensal — admin define o template; pai ativa por filho
+  const now = new Date();
+  const month = now.getMonth() + 1;
+  const year = now.getFullYear();
+  const robloxBoss = await prisma.reward.findFirstOrThrow({ where: { title: "Robux R$ 30" } });
+
+  const orcTemplate = await prisma.bossTemplate.create({
+    data: {
+      month, year,
+      name: "Klinox, o Orc",
+      iconName: "orcboss",
+      defaultMaxHp: 500,
+    },
+  });
+
+  // Lila já ativou o boss (estado existente preservado)
+  await prisma.monthlyBoss.create({
+    data: {
+      childId: lila.id, month, year,
+      templateId: orcTemplate.id,
+      name: orcTemplate.name, iconName: orcTemplate.iconName,
+      maxHp: 500, currentHp: 320,
+      active: true,
+      rewardId: robloxBoss.id,
+    },
+  });
+  // Théo: sem MonthlyBoss → painel do pai mostra o banner de ativação
+
+  // Cartões mock do pai
+  await prisma.paymentCard.createMany({
+    data: [
+      { userId: parent.id, brand: "VISA",       last4: "4242", holderName: "JOSE V SANTOS", expiryMonth: 12, expiryYear: 2028, isPrimary: true },
+      { userId: parent.id, brand: "MASTERCARD", last4: "5555", holderName: "JOSE V SANTOS", expiryMonth: 8,  expiryYear: 2027, isPrimary: false },
+      { userId: parent.id, brand: "ELO",        last4: "9981", holderName: "JOSE V SANTOS", expiryMonth: 3,  expiryYear: 2026, isPrimary: false },
     ],
   });
 

@@ -1,4 +1,5 @@
 import { prisma } from "./prisma";
+import { getRankForLevel } from "./ranks";
 
 // 1 moeda a cada XP_PER_COIN pontos de XP conquistados.
 export const XP_PER_COIN = 5;
@@ -20,7 +21,8 @@ export async function getChildStats(childId: string) {
 
   const earnedCoins = xpToCoins(totalXp);
   const reservedCoins = openRedemptions.reduce((s, r) => s + r.coinsSpent, 0);
-  const availableCoins = Math.max(0, earnedCoins - reservedCoins);
+  const availableCoins = Math.max(0, earnedCoins + child.bonusCoins - reservedCoins);
+  const rank = getRankForLevel(level);
 
-  return { child, totalXp, level, xpInLevel, earnedCoins, availableCoins };
+  return { child, totalXp, level, xpInLevel, earnedCoins, availableCoins, rank };
 }

@@ -37,13 +37,23 @@ export default function AchievementIcon({ emoji, title, locked, hint, descriptio
               }
             : undefined
         }
-        className={`relative rounded-kid-lg p-[18%] flex items-center justify-center aspect-square w-full overflow-hidden transition-transform duration-150 hover:-translate-y-0.5 ${
+        className={`relative rounded-kid-lg p-[18%] flex items-center justify-center aspect-square w-full overflow-hidden transition-transform duration-150 hover:-translate-y-0.5 active:scale-95 kid-tappable ${
           style && !locked ? "" : "bg-white"
         } ${locked ? "grayscale brightness-50 opacity-40" : ""}`}
         aria-label={title}
       >
         {rarity === "LEGENDARY" && !locked && <span className="absolute inset-0 pattern-diagonal-stripes pointer-events-none" />}
         {rarity === "MYTHIC" && !locked && <span className="absolute inset-0 pattern-sunburst pointer-events-none" />}
+        {locked && (
+          <span
+            className="absolute inset-0 animate-shimmer pointer-events-none"
+            style={{
+              backgroundImage:
+                "linear-gradient(110deg, transparent 40%, rgba(255,255,255,0.6) 50%, transparent 60%)",
+              backgroundSize: "200% 100%",
+            }}
+          />
+        )}
         <span className="block w-full aspect-square relative overflow-hidden" style={{ containerType: "inline-size" }}>
           {iconName ? (
             <AppIcon name={iconName} size={128} className="absolute inset-0 !w-full !h-full object-contain" />
@@ -55,44 +65,75 @@ export default function AchievementIcon({ emoji, title, locked, hint, descriptio
 
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-5"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-5 animate-fade-in"
           onClick={() => setOpen(false)}
           role="dialog"
         >
           <div
-            className="bg-white rounded-kid-xl p-6 max-w-[320px] w-full text-center relative"
+            className={`rounded-kid-xl p-[3px] max-w-[320px] w-full animate-bounce-in relative ${style && !locked ? "rarity-border" : ""}`}
+            style={
+              style && !locked
+                ? ({ ["--rarity-color" as string]: style.to } as React.CSSProperties)
+                : undefined
+            }
             onClick={(e) => e.stopPropagation()}
           >
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-kid-sunk text-kid-text-muted font-extrabold flex items-center justify-center hover:bg-kid-tint-violet"
-              aria-label="Fechar"
+            <div
+              className="bg-white rounded-[calc(theme(borderRadius.kid-xl)-3px)] p-6 text-center relative overflow-hidden"
             >
-              ×
-            </button>
-            <div className={`mb-3 flex items-center justify-center ${locked ? "grayscale brightness-50 opacity-40" : ""}`}>
-              {iconName ? <AppIcon name={iconName} size={96} /> : <span className="text-[96px]">{emoji}</span>}
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-kid-sunk text-kid-text-muted font-extrabold flex items-center justify-center hover:bg-kid-tint-violet z-10"
+                aria-label="Fechar"
+              >
+                ×
+              </button>
+              <div
+                className={`mb-3 flex items-center justify-center ${locked ? "grayscale brightness-50 opacity-40" : "animate-pulse-soft"}`}
+                style={{ transformOrigin: "center" }}
+              >
+                {iconName ? <AppIcon name={iconName} size={96} /> : <span className="text-[96px]">{emoji}</span>}
+              </div>
+              {style && !locked && (
+                <span
+                  className={`inline-block ${style.chip} ${style.chipText} font-body font-extrabold text-[10px] tracking-[0.14em] px-3 py-1 rounded-pill mb-2 animate-slide-up`}
+                  style={{ animationDelay: "120ms", animationFillMode: "backwards" }}
+                >
+                  {style.label}
+                </span>
+              )}
+              <h3
+                className="font-heading font-bold text-[20px] text-kid-text-strong leading-tight animate-slide-up"
+                style={{ animationDelay: "220ms", animationFillMode: "backwards" }}
+              >
+                {locked ? "???" : title}
+              </h3>
+              {locked && hint && (
+                <p
+                  className="font-body text-[13px] text-kid-text-soft mt-2 leading-snug animate-slide-up"
+                  style={{ animationDelay: "320ms", animationFillMode: "backwards" }}
+                >
+                  {hint}
+                </p>
+              )}
+              {!locked && description && (
+                <p
+                  className="font-body text-[13px] text-kid-text-soft mt-2 leading-snug animate-slide-up"
+                  style={{ animationDelay: "320ms", animationFillMode: "backwards" }}
+                >
+                  {description}
+                </p>
+              )}
+              {!locked && formattedDate && (
+                <p
+                  className="font-body font-extrabold text-[11px] uppercase tracking-[0.1em] mt-3 text-kid-text-muted animate-slide-up"
+                  style={{ animationDelay: "420ms", animationFillMode: "backwards" }}
+                >
+                  Conquistada em {formattedDate}
+                </p>
+              )}
             </div>
-            {style && !locked && (
-              <span className={`inline-block ${style.chip} ${style.chipText} font-body font-extrabold text-[10px] tracking-[0.14em] px-3 py-1 rounded-pill mb-2`}>
-                {style.label}
-              </span>
-            )}
-            <h3 className="font-heading font-bold text-[20px] text-kid-text-strong leading-tight">
-              {locked ? "???" : title}
-            </h3>
-            {locked && hint && (
-              <p className="font-body text-[13px] text-kid-text-soft mt-2 leading-snug">{hint}</p>
-            )}
-            {!locked && description && (
-              <p className="font-body text-[13px] text-kid-text-soft mt-2 leading-snug">{description}</p>
-            )}
-            {!locked && formattedDate && (
-              <p className="font-body font-extrabold text-[11px] uppercase tracking-[0.1em] mt-3 text-kid-text-muted">
-                Conquistada em {formattedDate}
-              </p>
-            )}
           </div>
         </div>
       )}

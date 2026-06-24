@@ -87,6 +87,16 @@ export default {
         float: "floaty 5.5s ease-in-out infinite",
         "float-sm": "floaty-sm 4s ease-in-out infinite",
         pop: "pop 380ms cubic-bezier(0.34,1.56,0.64,1)",
+        shake: "shake 420ms ease-in-out",
+        "tap-down": "tapDown 180ms cubic-bezier(0.34,1.56,0.64,1)",
+        shimmer: "shimmer 2.2s linear infinite",
+        flash: "flash 700ms ease-out",
+        "bounce-in": "bounceIn 460ms cubic-bezier(0.34,1.56,0.64,1)",
+        "fade-in": "fadeIn 180ms ease-out",
+        "wiggle-once": "wiggle 600ms ease-in-out",
+        "pulse-soft": "pulseSoft 2400ms ease-in-out infinite",
+        "slide-up": "slideUp 420ms cubic-bezier(0.2,0.8,0.3,1)",
+        "border-spin": "borderSpin 4s linear infinite",
       },
       keyframes: {
         wiggle: {
@@ -105,6 +115,44 @@ export default {
           "0%": { transform: "scale(0.6)" },
           "60%": { transform: "scale(1.1)" },
           "100%": { transform: "scale(1)" },
+        },
+        shake: {
+          "0%, 100%": { transform: "translateX(0)" },
+          "20%, 60%": { transform: "translateX(-6px)" },
+          "40%, 80%": { transform: "translateX(6px)" },
+        },
+        tapDown: {
+          "0%, 100%": { transform: "scale(1)" },
+          "50%": { transform: "scale(0.96)" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        flash: {
+          "0%, 100%": { backgroundColor: "transparent" },
+          "30%": { backgroundColor: "rgba(255, 194, 60, 0.35)" },
+        },
+        bounceIn: {
+          "0%": { transform: "scale(0.3)", opacity: "0" },
+          "60%": { transform: "scale(1.05)", opacity: "1" },
+          "100%": { transform: "scale(1)" },
+        },
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        pulseSoft: {
+          "0%, 100%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.08)" },
+        },
+        slideUp: {
+          "0%": { transform: "translateY(12px)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
+        },
+        borderSpin: {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
         },
       },
     },
