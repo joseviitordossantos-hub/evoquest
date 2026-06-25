@@ -30,6 +30,40 @@ async function approveBatch(formData: FormData) {
       damages.push(dmg.damage);
       if (dmg.justDefeated) defeatedBoss = dmg.bossName;
     }
+
+    if (log.mission.isRoutine) {
+      const updated = await prisma.mission.update({
+        where: { id: log.missionId },
+        data: { currentProgress: { increment: 1 } },
+      });
+
+      if (log.mission.routineMode === "FIXED" && log.mission.routineCoinsPerCompletion > 0) {
+        await prisma.child.update({
+          where: { id: log.childId },
+          data: { bonusCoins: { increment: log.mission.routineCoinsPerCompletion } },
+        });
+      }
+
+      if (
+        log.mission.routineMode === "ACCUMULATE" &&
+        updated.currentProgress >= updated.routineGoalCount &&
+        updated.routineGoalRewardId
+      ) {
+        await prisma.redemption.create({
+          data: {
+            childId: log.childId,
+            rewardId: updated.routineGoalRewardId,
+            status: "REQUESTED",
+            coinsSpent: 0,
+            parentNote: `Meta de rotina: ${updated.title}`,
+          },
+        });
+        await prisma.mission.update({
+          where: { id: log.missionId },
+          data: { active: false },
+        });
+      }
+    }
   }
 
   for (const id of rejectIds) {
@@ -86,6 +120,15 @@ export default async function Aprovar({ searchParams }: { searchParams: Promise<
                       <p className="font-heading font-semibold text-[18px] text-kid-text-strong">{log.mission.title}</p>
                       <p className="font-body text-[13px] text-kid-text-soft mt-1">
                         Marcada {new Date(log.markedAt).toLocaleString("pt-BR")} · {log.mission.xpReward} XP
+                        {log.mission.isRoutine && (
+                          <>
+                            {" · "}
+                            <span className="font-extrabold text-kid-violet">ROTINA</span>
+                            {log.mission.routineMode === "ACCUMULATE" && (
+                              <> · {log.mission.currentProgress}/{log.mission.routineGoalCount}</>
+                            )}
+                          </>
+                        )}
                       </p>
                       {log.childNote && (
                         <p className="mt-2 font-body font-bold text-[13px] text-kid-text-strong italic">

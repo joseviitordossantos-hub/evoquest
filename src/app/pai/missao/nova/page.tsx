@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import PaiNav from "@/components/PaiNav";
 
 import XpComplexityPicker from "@/components/XpComplexityPicker";
+import RoutineModePicker from "@/components/RoutineModePicker";
 import AppIcon from "@/components/AppIcon";
 import { emojiToIconName } from "@/lib/iconMap";
 
@@ -19,6 +20,12 @@ async function createMission(formData: FormData) {
   const rewardId = String(formData.get("rewardId") || "");
   const frequency = String(formData.get("frequency")) as "DAILY" | "WEEKLY" | "ONCE";
 
+  const isRoutine = formData.get("isRoutine") === "true";
+  const routineMode = String(formData.get("routineMode") || "") || null;
+  const routineCoinsPerCompletion = Number(formData.get("routineCoinsPerCompletion") || 0);
+  const routineGoalCount = Number(formData.get("routineGoalCount") || 0);
+  const routineGoalRewardId = String(formData.get("routineGoalRewardId") || "") || null;
+
   const parent = await prisma.user.findFirstOrThrow({ where: { role: "PARENT" } });
 
   await prisma.mission.create({
@@ -32,6 +39,11 @@ async function createMission(formData: FormData) {
       rewardId: rewardId || null,
       frequency,
       createdById: parent.id,
+      isRoutine,
+      routineMode,
+      routineCoinsPerCompletion,
+      routineGoalCount,
+      routineGoalRewardId,
     },
   });
 
@@ -135,26 +147,18 @@ export default async function NovaMissao({
               placeholder="Ler 10 páginas"
             />
           </Field>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Field label="Categoria">
-              <select name="category" className="kid-input">
-                <option value="leitura">Leitura</option>
-                <option value="estudo">Estudo</option>
-                <option value="idioma">Idioma</option>
-                <option value="esporte">Esporte</option>
-                <option value="rotina">Rotina</option>
-                <option value="outro">Outro</option>
-              </select>
-            </Field>
-            <Field label="Frequência">
-              <select name="frequency" className="kid-input">
-                <option value="DAILY">Diária</option>
-                <option value="WEEKLY">Semanal</option>
-                <option value="ONCE">Uma vez (meta)</option>
-              </select>
-            </Field>
-          </div>
+          <Field label="Categoria">
+            <select name="category" className="kid-input">
+              <option value="leitura">Leitura</option>
+              <option value="estudo">Estudo</option>
+              <option value="idioma">Idioma</option>
+              <option value="esporte">Esporte</option>
+              <option value="rotina">Rotina</option>
+              <option value="outro">Outro</option>
+            </select>
+          </Field>
           <XpComplexityPicker />
+          <RoutineModePicker rewards={availableRewards.map((r) => ({ id: r.id, title: r.title, emoji: r.emoji, coinsCost: r.coinsCost }))} />
 
           {lockedReward ? (
             <input type="hidden" name="rewardId" value={lockedReward.id} />

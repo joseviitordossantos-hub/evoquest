@@ -7,8 +7,10 @@ import ProfileSummaryCard from "@/components/ProfileSummaryCard";
 import AchievementMiniCard from "@/components/AchievementMiniCard";
 import RewardMiniCard from "@/components/RewardMiniCard";
 import MissionPanel from "@/components/MissionPanel";
+import RoutineCard from "@/components/RoutineCard";
 import LevelUpModal from "@/components/LevelUpModal";
 import { ACHIEVEMENTS } from "@/lib/enums";
+import { getRoutinePeriodStart } from "@/lib/routineHelpers";
 import { getChildStats } from "@/lib/childStats";
 import { getRankForLevel } from "@/lib/ranks";
 
@@ -52,7 +54,14 @@ export default async function JornadaCrianca({ params }: { params: Promise<{ id:
   }
   const newRank = getRankForLevel(stats.level);
 
-  const missionItems = child.missions.map((m) => ({ mission: m, log: m.logs[0] ?? null }));
+  const routines = child.missions.filter((m) => m.isRoutine);
+  const routineItems = routines.map((m) => {
+    const periodStart = getRoutinePeriodStart(m.frequency);
+    const doneThisPeriod = m.logs.some((l) => new Date(l.markedAt) >= periodStart);
+    return { mission: m, doneThisPeriod };
+  });
+  const nonRoutineMissions = child.missions.filter((m) => !m.isRoutine);
+  const missionItems = nonRoutineMissions.map((m) => ({ mission: m, log: m.logs[0] ?? null }));
 
   const sectionLink = (href: string) => (
     <Link href={href} className="font-body font-bold text-[14px] text-kid-text-muted hover:text-kid-violet transition-colors whitespace-nowrap">
@@ -84,6 +93,30 @@ export default async function JornadaCrianca({ params }: { params: Promise<{ id:
               <ProfileSummaryCard childId={childId} />
               <BossHero childId={childId} />
             </div>
+
+            {/* Rotinas */}
+            {routineItems.length > 0 && (
+              <section>
+                <header className="flex items-end justify-between mb-3 px-1">
+                  <h2 className="font-heading font-extrabold text-[20px] text-kid-text-soft">Suas Rotinas</h2>
+                </header>
+                <div
+                  className="-mx-5 px-5 lg:mx-0 lg:px-0 overflow-x-auto scrollbar-hide"
+                  style={{
+                    WebkitMaskImage: "linear-gradient(to right, #000 88%, transparent 100%)",
+                    maskImage: "linear-gradient(to right, #000 88%, transparent 100%)",
+                  }}
+                >
+                  <ul className="flex gap-3 pb-1 w-max">
+                    {routineItems.map((item) => (
+                      <li key={item.mission.id}>
+                        <RoutineCard item={item} />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </section>
+            )}
 
             {/* Últimas conquistas */}
             {recentAchievements.length > 0 && (

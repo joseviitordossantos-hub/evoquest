@@ -70,6 +70,7 @@ async function main() {
       birthDate: new Date("2016-03-10"),
       interests: JSON.stringify(["leitura", "desenho", "minecraft", "inglês"]),
       avatarSeed: "lila",
+      highestLevelClaimed: 4,
       streak: { create: { currentDays: 9, longestDays: 12, lastActiveDate: new Date(), freezesAvailable: 1, freezesUsedThisMonth: 1 } },
     },
   });
@@ -81,6 +82,7 @@ async function main() {
       birthDate: new Date("2014-09-22"),
       interests: JSON.stringify(["futebol", "youtube", "matemática", "roblox"]),
       avatarSeed: "theo",
+      highestLevelClaimed: 4,
       streak: { create: { currentDays: 9, longestDays: 12, lastActiveDate: new Date(), freezesAvailable: 1, freezesUsedThisMonth: 1 } },
     },
   });
@@ -94,6 +96,14 @@ async function main() {
     prisma.mission.create({ data: { childId: lila.id, title: "Ler 1 livro inteiro", category: "leitura", difficulty: "MYTHIC", xpReward: 400, frequency: "ONCE", targetCount: 150, currentProgress: 92, createdById: parent.id, rewardText: "Um livro novo de presente" } }),
   ]);
 
+  // Rotinas da Lila
+  const sorveteReward = await prisma.reward.findFirst({ where: { title: "Sorvete favorito" } });
+  const lilaRoutines = await Promise.all([
+    prisma.mission.create({ data: { childId: lila.id, title: "Escovar os dentes", category: "rotina", difficulty: "COMMON", xpReward: 5, frequency: "DAILY", targetCount: 1, currentProgress: 6, createdById: parent.id, isRoutine: true, routineMode: "FIXED", routineCoinsPerCompletion: 3 } }),
+    prisma.mission.create({ data: { childId: lila.id, title: "Arrumar a cama", category: "rotina", difficulty: "COMMON", xpReward: 5, frequency: "DAILY", targetCount: 1, currentProgress: 3, createdById: parent.id, isRoutine: true, routineMode: "ACCUMULATE", routineGoalCount: 5, routineGoalRewardId: sorveteReward?.id ?? null } }),
+    prisma.mission.create({ data: { childId: lila.id, title: "Beber 5 copos de água", category: "rotina", difficulty: "COMMON", xpReward: 5, frequency: "DAILY", targetCount: 1, currentProgress: 0, createdById: parent.id, isRoutine: true, routineMode: "FIXED", routineCoinsPerCompletion: 2 } }),
+  ]);
+
   // Missões do Théo (espelha as da Lila)
   const theoMissions = await Promise.all([
     prisma.mission.create({ data: { childId: theo.id, title: "Ler 10 páginas", category: "leitura", difficulty: "COMMON", xpReward: 15, frequency: "DAILY", targetCount: 10, currentProgress: 7, createdById: parent.id, rewardText: "1 episódio extra de série" } }),
@@ -101,6 +111,12 @@ async function main() {
     prisma.mission.create({ data: { childId: theo.id, title: "Arrumar o quarto", category: "rotina", difficulty: "COMMON", xpReward: 10, frequency: "DAILY", targetCount: 1, currentProgress: 0, createdById: parent.id } }),
     prisma.mission.create({ data: { childId: theo.id, title: "Desenhar 1 página do sketchbook", category: "outro", difficulty: "LEGENDARY", xpReward: 36, frequency: "DAILY", targetCount: 5, currentProgress: 3, createdById: parent.id } }),
     prisma.mission.create({ data: { childId: theo.id, title: "Ler 1 livro inteiro", category: "leitura", difficulty: "MYTHIC", xpReward: 400, frequency: "ONCE", targetCount: 150, currentProgress: 92, createdById: parent.id, rewardText: "Um livro novo de presente" } }),
+  ]);
+
+  // Rotinas do Théo
+  await Promise.all([
+    prisma.mission.create({ data: { childId: theo.id, title: "Escovar os dentes", category: "rotina", difficulty: "COMMON", xpReward: 5, frequency: "DAILY", targetCount: 1, currentProgress: 4, createdById: parent.id, isRoutine: true, routineMode: "FIXED", routineCoinsPerCompletion: 3 } }),
+    prisma.mission.create({ data: { childId: theo.id, title: "Organizar mochila", category: "rotina", difficulty: "COMMON", xpReward: 5, frequency: "WEEKLY", targetCount: 1, currentProgress: 2, createdById: parent.id, isRoutine: true, routineMode: "ACCUMULATE", routineGoalCount: 4, routineGoalRewardId: sorveteReward?.id ?? null } }),
   ]);
 
   // Histórico de missões aprovadas (Lila)

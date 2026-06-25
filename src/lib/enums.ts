@@ -78,6 +78,17 @@ export const RARITY_STYLE: Record<Rarity, { label: string; chip: string; chipTex
   MYTHIC:    { label: "MYTHIC",    chip: "bg-[#B82332]", chipText: "text-white", fill: "bg-gradient-to-br from-[#FF6675] to-[#B82332]", from: "#FF6675", to: "#B82332" },
 };
 
+export const RoutineMode = {
+  FIXED: "FIXED",
+  ACCUMULATE: "ACCUMULATE",
+} as const;
+export type RoutineModeT = (typeof RoutineMode)[keyof typeof RoutineMode];
+
+export const routineModeLabel: Record<string, string> = {
+  FIXED: "Recompensa fixa",
+  ACCUMULATE: "Acumular para prêmio",
+};
+
 export function fmtBRL(cents: number) {
   return (cents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }

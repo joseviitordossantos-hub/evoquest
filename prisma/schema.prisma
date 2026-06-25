@@ -86,6 +86,13 @@ model Mission {
   createdById     String
   logs            MissionLog[]
   createdAt       DateTime     @default(now())
+
+  isRoutine                 Boolean  @default(false)
+  routineMode               String?  // "FIXED" | "ACCUMULATE"
+  routineCoinsPerCompletion Int      @default(0)
+  routineGoalCount          Int      @default(0)
+  routineGoalRewardId       String?
+  routineGoalReward         Reward?  @relation("RoutineGoalReward", fields: [routineGoalRewardId], references: [id])
 }
 
 model MissionLog {
@@ -142,9 +149,10 @@ model Reward {
   active       Boolean      @default(true)
   featured     Boolean      @default(false)
   forBoss      Boolean      @default(false) // recompensas especiais usadas apenas como drop de boss mensal
-  redemptions  Redemption[]
-  missions     Mission[]
-  bossDrops    MonthlyBoss[]
+  redemptions          Redemption[]
+  missions             Mission[]
+  bossDrops            MonthlyBoss[]
+  routineGoalMissions  Mission[]     @relation("RoutineGoalReward")
 }
 
 model Redemption {

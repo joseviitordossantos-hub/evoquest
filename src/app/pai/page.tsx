@@ -181,6 +181,14 @@ export default async function PaiDashboard() {
                                   <span className="font-body font-extrabold text-[10px] text-kid-text-muted">
                                     {COMPLEXITY_META[m.difficulty as ComplexityT]?.label ?? m.difficulty}
                                   </span>
+                                  {m.isRoutine && (
+                                    <>
+                                      <span className="text-kid-text-muted">·</span>
+                                      <span className="font-body font-extrabold text-[10px] text-[#7C3AED]">
+                                        ROTINA
+                                      </span>
+                                    </>
+                                  )}
                                   {m.targetCount > 1 && col.key === "progress" && (
                                     <>
                                       <span className="text-kid-text-muted">·</span>

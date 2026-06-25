@@ -3,14 +3,16 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { touchStreak } from "@/lib/streak";
 import { getChildStats } from "@/lib/childStats";
+import { getRoutinePeriodStart } from "@/lib/routineHelpers";
 
 export async function markMissionDone(formData: FormData) {
   const missionId = String(formData.get("missionId"));
   const childId = String(formData.get("childId"));
 
-  const start = new Date(); start.setHours(0, 0, 0, 0);
+  const mission = await prisma.mission.findUniqueOrThrow({ where: { id: missionId } });
+  const periodStart = getRoutinePeriodStart(mission.frequency);
   const already = await prisma.missionLog.findFirst({
-    where: { missionId, childId, markedAt: { gte: start } },
+    where: { missionId, childId, markedAt: { gte: periodStart } },
   });
   if (already) return;
 
