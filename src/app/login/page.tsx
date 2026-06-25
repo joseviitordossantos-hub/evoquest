@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useActionState } from "react";
+import { useState, useActionState, useRef } from "react";
 import Link from "next/link";
 import EvoQuestLogo from "@/components/EvoQuestLogo";
 import AppIcon from "@/components/AppIcon";
-import { signIn } from "./actions";
+import { signIn, signInAsChild } from "./actions";
 
 function GoogleIcon() {
   return (
@@ -35,13 +35,54 @@ function EyeIcon({ off }: { off: boolean }) {
   );
 }
 
+function PinInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const refs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
+  const digits = value.padEnd(4, "").split("").slice(0, 4);
+
+  const handleChange = (i: number, char: string) => {
+    if (!/^\d?$/.test(char)) return;
+    const arr = [...digits];
+    arr[i] = char;
+    const next = arr.join("").replace(/ /g, "");
+    onChange(next);
+    if (char && i < 3) refs[i + 1].current?.focus();
+  };
+
+  const handleKeyDown = (i: number, e: React.KeyboardEvent) => {
+    if (e.key === "Backspace" && !digits[i] && i > 0) {
+      refs[i - 1].current?.focus();
+    }
+  };
+
+  return (
+    <div className="flex gap-3 justify-center">
+      {[0, 1, 2, 3].map((i) => (
+        <input
+          key={i}
+          ref={refs[i]}
+          type="text"
+          inputMode="numeric"
+          maxLength={1}
+          value={digits[i]?.trim() ?? ""}
+          onChange={(e) => handleChange(i, e.target.value)}
+          onKeyDown={(e) => handleKeyDown(i, e)}
+          className="w-[58px] h-[64px] bg-kid-base rounded-[14px] text-center font-heading font-bold text-[28px] text-kid-text-strong outline-none focus:ring-2 focus:ring-kid-violet/30 transition-shadow"
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function Login() {
+  const [mode, setMode] = useState<"parent" | "child">("parent");
   const [showPassword, setShowPassword] = useState(false);
-  const [state, formAction, pending] = useActionState(signIn, undefined);
+  const [pin, setPin] = useState("");
+  const [parentState, parentAction, parentPending] = useActionState(signIn, undefined);
+  const [childState, childAction, childPending] = useActionState(signInAsChild, undefined);
 
   return (
     <main className="min-h-screen lg:h-screen lg:overflow-hidden bg-white font-body grid lg:grid-cols-2">
-      {/* ── Promo panel (escondido no mobile) — com margem e cantos arredondados ── */}
+      {/* ── Promo panel (escondido no mobile) ── */}
       <div className="hidden lg:block relative overflow-hidden bg-white m-4 xl:m-5 rounded-[32px]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -49,25 +90,16 @@ export default function Login() {
           alt="EvoQuest"
           className="absolute inset-0 w-full h-full object-cover animate-ken-burns"
         />
-
-        {/* Gradient overlay for text contrast */}
         <div
           className="absolute inset-0"
           style={{
-            background:
-              "linear-gradient(to bottom, rgba(0,0,0,0) 35%, rgba(0,0,0,0.55) 100%)",
+            background: "linear-gradient(to bottom, rgba(0,0,0,0) 35%, rgba(0,0,0,0.55) 100%)",
           }}
         />
-
-        {/* Text overlay */}
         <div className="absolute inset-0 flex flex-col justify-end p-10 xl:p-14">
           <div
             className="flex items-center gap-2 mb-5 animate-slide-up"
-            style={{
-              animationDelay: "300ms",
-              animationDuration: "1100ms",
-              animationFillMode: "backwards",
-            }}
+            style={{ animationDelay: "300ms", animationDuration: "1100ms", animationFillMode: "backwards" }}
           >
             <AppIcon name="star" size={40} />
             <AppIcon name="star" size={52} />
@@ -75,21 +107,13 @@ export default function Login() {
           </div>
           <h2
             className="font-heading font-black text-white text-[56px] xl:text-[68px] leading-[1.02] drop-shadow-lg animate-slide-up"
-            style={{
-              animationDelay: "700ms",
-              animationDuration: "1100ms",
-              animationFillMode: "backwards",
-            }}
+            style={{ animationDelay: "700ms", animationDuration: "1100ms", animationFillMode: "backwards" }}
           >
             Transforme esforço<br />em conquista.
           </h2>
           <p
             className="font-body font-semibold text-white/90 text-[18px] xl:text-[20px] mt-5 max-w-[540px] leading-relaxed drop-shadow animate-slide-up"
-            style={{
-              animationDelay: "1100ms",
-              animationDuration: "1100ms",
-              animationFillMode: "backwards",
-            }}
+            style={{ animationDelay: "1100ms", animationDuration: "1100ms", animationFillMode: "backwards" }}
           >
             Um app para pais incentivarem hábitos saudáveis nos filhos — não pelo prêmio,
             mas pelo orgulho de conquistar.
@@ -97,104 +121,173 @@ export default function Login() {
         </div>
       </div>
 
-      {/* ── Formulário — tela inteira ── */}
+      {/* ── Formulário ── */}
       <div className="flex flex-col justify-center items-center px-5 sm:px-8 py-8 min-h-screen lg:h-screen lg:overflow-y-auto">
         <div className="w-full max-w-[400px]">
-            <Link href="/" className="block w-fit mx-auto">
-              <EvoQuestLogo height={40} />
-            </Link>
+          <Link href="/" className="block w-fit mx-auto">
+            <EvoQuestLogo height={40} />
+          </Link>
 
-            <h1 className="font-heading font-black text-[34px] sm:text-[40px] leading-tight text-kid-text-strong mt-8 text-center">
-              Bem-vindo de volta
-            </h1>
-            <p className="font-body text-[15px] text-kid-text-soft mt-2 text-center">
-              Faça login na sua conta
-            </p>
+          {/* Toggle Responsável / Criança */}
+          <div className="mt-8 bg-kid-base rounded-pill p-1 flex">
+            <button
+              type="button"
+              onClick={() => setMode("parent")}
+              className={`flex-1 h-[44px] rounded-pill font-heading font-bold text-[14px] transition-all ${
+                mode === "parent"
+                  ? "grad-primary text-white shadow-sm"
+                  : "text-kid-text-muted hover:text-kid-text-soft"
+              }`}
+            >
+              Responsável
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("child")}
+              className={`flex-1 h-[44px] rounded-pill font-heading font-bold text-[14px] transition-all ${
+                mode === "child"
+                  ? "grad-primary text-white shadow-sm"
+                  : "text-kid-text-muted hover:text-kid-text-soft"
+              }`}
+            >
+              Criança
+            </button>
+          </div>
 
-            <form action={formAction} className="mt-7 space-y-4">
-              {/* E-mail */}
-              <div className="bg-kid-base rounded-[14px] px-5 h-[58px] flex items-center focus-within:ring-2 focus-within:ring-kid-violet/30 transition-shadow">
-                <input
-                  type="email"
-                  name="email"
-                  required
-                  placeholder="Endereço de e-mail"
-                  className="w-full bg-transparent outline-none font-body font-semibold text-[15px] text-kid-text-strong placeholder:text-kid-text-muted placeholder:font-normal"
-                />
+          {mode === "parent" ? (
+            <>
+              <h1 className="font-heading font-black text-[34px] sm:text-[40px] leading-tight text-kid-text-strong mt-8 text-center">
+                Bem-vindo de volta
+              </h1>
+              <p className="font-body text-[15px] text-kid-text-soft mt-2 text-center">
+                Faça login na sua conta
+              </p>
+
+              <form action={parentAction} className="mt-7 space-y-4">
+                <div className="bg-kid-base rounded-[14px] px-5 h-[58px] flex items-center focus-within:ring-2 focus-within:ring-kid-violet/30 transition-shadow">
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    placeholder="Endereço de e-mail"
+                    className="w-full bg-transparent outline-none font-body font-semibold text-[15px] text-kid-text-strong placeholder:text-kid-text-muted placeholder:font-normal"
+                  />
+                </div>
+
+                <div className="bg-kid-base rounded-[14px] px-5 h-[58px] flex items-center gap-3 focus-within:ring-2 focus-within:ring-kid-violet/30 transition-shadow">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    required
+                    placeholder="Senha"
+                    className="flex-1 bg-transparent outline-none font-body font-semibold text-[15px] text-kid-text-strong placeholder:text-kid-text-muted placeholder:font-normal"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((s) => !s)}
+                    aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                    className="text-kid-text-muted hover:text-kid-violet transition-colors shrink-0"
+                  >
+                    <EyeIcon off={!showPassword} />
+                  </button>
+                </div>
+
+                {parentState?.error && (
+                  <p className="font-body font-semibold text-[14px] text-kid-danger text-center -mb-1">
+                    {parentState.error}
+                  </p>
+                )}
+
+                <div className="flex justify-end">
+                  <Link
+                    href="/recuperar"
+                    className="font-body font-semibold text-[14px] text-kid-text-soft hover:text-kid-violet transition-colors"
+                  >
+                    Esqueceu a senha?
+                  </Link>
+                </div>
+
+                <button type="submit" disabled={parentPending} className="kid-btn w-full !h-[56px]">
+                  {parentPending ? "Entrando..." : "Entrar"}
+                </button>
+              </form>
+
+              <div className="flex items-center gap-4 my-6">
+                <div className="flex-1 h-px bg-kid-sunk" />
+                <span className="font-body font-semibold text-[13px] text-kid-text-muted whitespace-nowrap">
+                  Ou entre com
+                </span>
+                <div className="flex-1 h-px bg-kid-sunk" />
               </div>
 
-              {/* Senha */}
-              <div className="bg-kid-base rounded-[14px] px-5 h-[58px] flex items-center gap-3 focus-within:ring-2 focus-within:ring-kid-violet/30 transition-shadow">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  required
-                  placeholder="Senha"
-                  className="flex-1 bg-transparent outline-none font-body font-semibold text-[15px] text-kid-text-strong placeholder:text-kid-text-muted placeholder:font-normal"
-                />
+              <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
-                  onClick={() => setShowPassword((s) => !s)}
-                  aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
-                  className="text-kid-text-muted hover:text-kid-violet transition-colors shrink-0"
+                  className="h-[54px] rounded-[14px] border border-kid-sunk bg-white inline-flex items-center justify-center gap-2.5 font-body font-bold text-[15px] text-kid-text-strong hover:bg-kid-base transition-colors"
                 >
-                  <EyeIcon off={!showPassword} />
+                  <GoogleIcon /> Google
+                </button>
+                <button
+                  type="button"
+                  className="h-[54px] rounded-[14px] border border-kid-sunk bg-white inline-flex items-center justify-center gap-2.5 font-body font-bold text-[15px] text-kid-text-strong hover:bg-kid-base transition-colors"
+                >
+                  <FacebookIcon /> Facebook
                 </button>
               </div>
 
-              {state?.error && (
-                <p className="font-body font-semibold text-[14px] text-kid-danger text-center -mb-1">
-                  {state.error}
-                </p>
-              )}
-
-              <div className="flex justify-end">
-                <Link
-                  href="/recuperar"
-                  className="font-body font-semibold text-[14px] text-kid-text-soft hover:text-kid-violet transition-colors"
-                >
-                  Esqueceu a senha?
+              <p className="text-center mt-7 font-body font-semibold text-[14px] text-kid-text-soft">
+                Não tem uma conta?{" "}
+                <Link href="/cadastro" className="font-extrabold text-kid-violet hover:underline">
+                  Cadastre-se
                 </Link>
-              </div>
+              </p>
+            </>
+          ) : (
+            <>
+              <h1 className="font-heading font-black text-[34px] sm:text-[40px] leading-tight text-kid-text-strong mt-8 text-center">
+                Olá, aventureiro!
+              </h1>
+              <p className="font-body text-[15px] text-kid-text-soft mt-2 text-center">
+                Entre com o código da sua família
+              </p>
 
-              <button type="submit" disabled={pending} className="kid-btn w-full !h-[56px]">
-                {pending ? "Entrando..." : "Entrar"}
-              </button>
-            </form>
+              <form action={childAction} className="mt-7 space-y-6">
+                <div className="bg-kid-base rounded-[14px] px-5 h-[58px] flex items-center focus-within:ring-2 focus-within:ring-kid-violet/30 transition-shadow">
+                  <input
+                    type="text"
+                    name="familyCode"
+                    required
+                    placeholder="E-mail do responsável"
+                    className="w-full bg-transparent outline-none font-body font-semibold text-[15px] text-kid-text-strong placeholder:text-kid-text-muted placeholder:font-normal"
+                  />
+                </div>
 
-            {/* Divider */}
-            <div className="flex items-center gap-4 my-6">
-              <div className="flex-1 h-px bg-kid-sunk" />
-              <span className="font-body font-semibold text-[13px] text-kid-text-muted whitespace-nowrap">
-                Ou entre com
-              </span>
-              <div className="flex-1 h-px bg-kid-sunk" />
-            </div>
+                <div>
+                  <p className="font-body font-extrabold text-[12px] uppercase tracking-[0.12em] text-kid-text-muted text-center mb-3">
+                    PIN de acesso
+                  </p>
+                  <PinInput value={pin} onChange={setPin} />
+                  <input type="hidden" name="pin" value={pin} />
+                </div>
 
-            {/* Social */}
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                className="h-[54px] rounded-[14px] border border-kid-sunk bg-white inline-flex items-center justify-center gap-2.5 font-body font-bold text-[15px] text-kid-text-strong hover:bg-kid-base transition-colors"
-              >
-                <GoogleIcon /> Google
-              </button>
-              <button
-                type="button"
-                className="h-[54px] rounded-[14px] border border-kid-sunk bg-white inline-flex items-center justify-center gap-2.5 font-body font-bold text-[15px] text-kid-text-strong hover:bg-kid-base transition-colors"
-              >
-                <FacebookIcon /> Facebook
-              </button>
-            </div>
+                {childState?.error && (
+                  <p className="font-body font-semibold text-[14px] text-kid-danger text-center">
+                    {childState.error}
+                  </p>
+                )}
 
-            <p className="text-center mt-7 font-body font-semibold text-[14px] text-kid-text-soft">
-              Não tem uma conta?{" "}
-              <Link href="/cadastro" className="font-extrabold text-kid-violet hover:underline">
-                Cadastre-se
-              </Link>
-            </p>
-          </div>
+                <button type="submit" disabled={childPending} className="kid-btn w-full !h-[56px]">
+                  {childPending ? "Entrando..." : "Entrar"}
+                </button>
+              </form>
+
+              <p className="text-center mt-7 font-body font-semibold text-[14px] text-kid-text-soft">
+                Peça o código e PIN para seu responsável
+              </p>
+            </>
+          )}
         </div>
+      </div>
     </main>
   );
 }
