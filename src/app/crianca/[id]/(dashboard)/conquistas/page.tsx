@@ -17,7 +17,7 @@ export default async function Conquistas({ params }: { params: Promise<{ id: str
   const locked = Object.keys(ACHIEVEMENTS).filter((c) => !earnedCodes.has(c));
 
   return (
-    <div className="max-w-[480px] mx-auto px-5 pt-5 space-y-4 lg:max-w-5xl lg:px-8 lg:pt-8">
+    <div className="max-w-[480px] mx-auto px-5 pt-5 space-y-4 lg:max-w-5xl lg:px-8 lg:pt-8 flex-1 flex flex-col">
       <ProfileSummaryCard childId={childId} />
 
       <header className="mt-6 px-1">

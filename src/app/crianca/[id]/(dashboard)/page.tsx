@@ -61,7 +61,7 @@ export default async function JornadaCrianca({ params }: { params: Promise<{ id:
   );
 
   return (
-    <>
+    <div className="flex-1 flex flex-col">
       {showLevelUp && (
         <LevelUpModal
           childId={childId}
@@ -162,6 +162,6 @@ export default async function JornadaCrianca({ params }: { params: Promise<{ id:
       </div>
 
       <Footer />
-    </>
+    </div>
   );
 }

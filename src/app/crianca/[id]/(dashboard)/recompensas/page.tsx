@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import ProfileSummaryCard from "@/components/ProfileSummaryCard";
 import RewardsBanner from "@/components/RewardsBanner";
@@ -38,11 +39,23 @@ export default async function Loja({ params }: { params: Promise<{ id: string }>
   });
 
   return (
-    <div className="max-w-[480px] mx-auto px-5 pt-5 space-y-4 lg:max-w-none lg:mx-0 lg:px-10 lg:pt-8 lg:space-y-6">
+    <div className="max-w-[480px] mx-auto px-5 pt-5 space-y-4 lg:max-w-none lg:mx-0 lg:px-10 lg:pt-8 lg:space-y-6 flex-1 flex flex-col">
       {/* Desktop: two-column top — ProfileCard + Banner */}
       <div className="lg:grid lg:grid-cols-[466px_1fr] lg:gap-6 lg:items-stretch">
         <ProfileSummaryCard childId={childId} />
         <RewardsBanner />
+      </div>
+
+      {/* Mobile banner */}
+      <div className="lg:hidden kid-card overflow-hidden border border-[#e8e6f2] p-0">
+        <Image
+          src="/banner-recompensas.png"
+          alt="Se torne um herói"
+          width={1200}
+          height={500}
+          className="w-full h-auto"
+          priority
+        />
       </div>
 
       {/* Mobile header */}
@@ -82,7 +95,7 @@ export default async function Loja({ params }: { params: Promise<{ id: string }>
       {/* Desktop: flat "Recompensas disponíveis" section */}
       <section className="hidden lg:block">
         <div className="flex items-baseline justify-between px-1 mb-4">
-          <h2 className="font-heading font-extrabold text-[41px] text-kid-text-soft leading-tight">
+          <h2 className="font-heading font-extrabold text-[36px] text-kid-text-soft leading-tight">
             Recompensas disponíveis
           </h2>
         </div>

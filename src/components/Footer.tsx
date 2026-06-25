@@ -2,7 +2,7 @@ const LINKS = ["Suporte", "Termos de uso", "Privacidade"];
 
 export default function Footer() {
   return (
-    <footer className="bg-[#E8E1F1] border-t border-kid-sunk/60">
+    <footer className="bg-[#E8E1F1] border-t border-kid-sunk/60 mt-auto">
       <div className="max-w-[1500px] mx-auto px-5 lg:px-8 py-5 flex flex-col gap-3 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
         <p className="font-body font-extrabold text-[12px] text-kid-text-muted">
           Transformando o aprendizado em evolução constante

@@ -16,7 +16,7 @@ export default async function CriancaDashboardLayout({
       <CriancaSidebar childId={childId} />
       <div className="flex-1 min-w-0 flex flex-col">
         <ChildTopBar childId={childId} />
-        <div className="flex-1 min-w-0 pb-32 lg:pb-0">{children}</div>
+        <div className="flex-1 min-w-0 pb-32 lg:pb-0 flex flex-col">{children}</div>
       </div>
       <CriancaTabBar childId={childId} />
     </div>
