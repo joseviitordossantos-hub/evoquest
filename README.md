@@ -36,10 +36,12 @@ npm run dev
 - `/pai/resgates` — aprovar, rejeitar (com reembolso de XP), marcar como entregue (debita carteira)
 
 ### Criança (estética gamificada)
-- `/crianca/[id]` — jornada do dia, XP, nível, streak com escudos de gelo + carrossel de últimas conquistas. Mission cards com cores de raridade (fundo + ícone gradiente por complexidade: Comum/Raro/Lendário/Mítico)
-- `/crianca/[id]/recompensas` — loja agrupada, com indicação de quanto falta para cada
-- `/crianca/[id]/conquistas` — grid 4-col de troféus coloridos por raridade (Rare/Epic/Legendary/Mythic), bloqueados em silhueta com pista
+- `/crianca/[id]` — jornada do dia, XP, nível, streak com escudos de gelo + carrossel de últimas conquistas. Mission cards com cores de raridade (fundo + ícone gradiente por complexidade: Comum/Raro/Lendário/Mítico). Boss card com layout horizontal no mobile e vertical no desktop. Seção de recompensas disponíveis oculta no mobile, visível no desktop
+- `/crianca/[id]/recompensas` — desktop: layout duas colunas no topo (ProfileSummaryCard + banner hero com imagem) + grid flat de 5 colunas. Mobile: loja agrupada por tipo (Digital/Experiência/Físico/Privilégio) com grid de 2 colunas
+- `/crianca/[id]/conquistas` — grid responsivo de troféus coloridos por raridade (Rare/Epic/Legendary/Mythic), bloqueados em silhueta com pista. Cards clicáveis com modal de detalhes (ícone, raridade, título, descrição, data)
 - `/crianca/[id]/perfil` — perfil estilo rede social: hero do avatar, stats (missões/seguindo/seguidores), chips de visão geral (streak, XP, liga, nível) e família
+- `ProfileSummaryCard` — componente padronizado usado em todas as páginas da criança (home, conquistas, recompensas). Avatar com scaling mobile (0.8x), stats com sizing desktop +20%
+- `BarFill` — componente de barra de progresso animada. Listras diagonais animam apenas durante transições de largura (via `transitionstart`/`transitionend`), ciclo de 6s, movimento horizontal
 
 ### Sistema
 - Schema Prisma com 12 modelos (família, criança, missões, logs, XP, streak, recompensas, resgates, carteira, transações, conquistas, LGPD)
@@ -54,9 +56,27 @@ npm run dev
 
 Tokens centralizados em `tailwind.config.ts` (cores `kid-*`, raios `kid-sm…kid-xl`, animações `wiggle/float/pop`) e utilitários em `src/app/globals.css` (`pattern-diagonal-stripes`, `scrollbar-hide`).
 
+**Layout Bento grid** — todas as telas seguem o padrão Bento grid: cards de tamanhos variados se encaixam na grade, ocupando o espaço disponível sem sobras. Cards na mesma linha casam de altura via `items-stretch`. Conteúdo interno distribuído com `justify-between` para preencher o bloco.
+
+**Responsividade** — mobile-first com breakpoints `lg:` e `xl:`. Elementos mobile reduzidos em ~20% via CSS `scale()` com wrapper de dimensões explícitas. Layouts mudam de direção (`flex-row` → `lg:flex-col`) conforme o breakpoint.
+
+**Fontes** — Fredoka (heading), Nunito (body), Londrina Solid (display/logo).
+
+**Componentes compartilhados:**
+- `ProfileSummaryCard` — card de perfil padronizado em todas as páginas da criança
+- `BarFill` — barra de progresso com animação de listras diagonais condicionais (paused/running via `animation-play-state`, ativadas por `transitionstart`/`transitionend`)
+- `RewardsBanner` — banner hero com imagem (`/banner-recompensas.png`), visível apenas no desktop
+- `AchievementMiniCard` / `AchievementIcon` — cards de conquista clicáveis com modal via `createPortal`
+
 **Raridade de conquistas** — tokens `kid-{rare,epic,legendary,mythic}-{from,to,shadow}` no Tailwind; estilos compostos em `src/lib/enums.ts › RARITY_STYLE` (gradiente + chip + sombra 3D). Ícones PNG resolvidos via `src/lib/iconMap.ts` (emoji → arquivo em `/public/icons`).
 
-**Raridade de missões** — cada mission card exibe fundo tintado e ícone com gradiente de acordo com a complexidade (COMMON cinza-lilás, RARE azul, LEGENDARY dourado, MYTHIC vermelho). Cores em `RARITY_CARD` dentro de `src/components/MissionCard.tsx`. O badge `ComplexityBadge` usa `COMPLEXITY_META` + `RARITY_STYLE` de `enums.ts`.
+**Raridade de missões** — cada mission card exibe fundo tintado e ícone com gradiente de acordo com a complexidade (COMMON cinza-lilás, RARE azul, LEGENDARY dourado, MYTHIC vermelho). Cores em `RARITY_ROW` dentro de `src/components/MissionPanel.tsx`. O badge `ComplexityBadge` usa `COMPLEXITY_META` + `RARITY_STYLE` de `enums.ts`.
+
+**Animações (`globals.css`):**
+- `barStripesMove` — listras diagonais horizontais, `36.77px` (26×√2) para loop perfeito em -45deg, ciclo 6s
+- `locked-rays` — raios giratórios no boss trancado (`spin_70s`)
+- `rarity-border` — borda rotativa nos modais de conquista
+- `bounce-in` — entrada escalonada nas listas de missões
 
 ## Recompensas pré-cadastradas
 
@@ -77,6 +97,11 @@ Tokens centralizados em `tailwind.config.ts` (cores `kid-*`, raios `kid-sm…kid
 
 **Privilégios** (zero R$):
 - 🎞️ Escolher filme · 📱 +30min tela · 🌙 Ficar acordado · 🆓 Dispensar tarefa
+
+## Componentes eliminados
+
+- `CriancaHeader.tsx` — banner roxo antigo, substituído por `ProfileSummaryCard` em todas as páginas
+- `MissionCard.tsx` — substituído por `MissionPanel.tsx` com `MissionRow` inline (filtros, divisor, scroll)
 
 ## O que ainda falta (próximo turno)
 
