@@ -1,12 +1,12 @@
 import PaiNav from "@/components/PaiNav";
-import Footer from "@/components/Footer";
+
 import { createReward } from "../actions";
 
 export const dynamic = "force-dynamic";
 
 export default function NovaRecompensa() {
   return (
-    <main className="min-h-screen bg-kid-base pattern-dots-violet font-body">
+    <>
       <PaiNav active="recompensas" />
       <div className="px-4 sm:px-6 py-8 sm:py-10 max-w-2xl mx-auto">
         <span className="kid-chip kid-chip-pink">NOVA RECOMPENSA</span>
@@ -118,9 +118,8 @@ export default function NovaRecompensa() {
             </p>
           </div>
         </aside>
-        <Footer />
       </div>
-    </main>
+    </>
   );
 }
 

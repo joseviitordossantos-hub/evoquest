@@ -4,7 +4,7 @@ import PaiNav from "@/components/PaiNav";
 export const dynamic = "force-dynamic";
 import { fmtBRL, redemptionStatusLabel } from "@/lib/enums";
 import { approveRedemption, deliverRedemption, rejectRedemption } from "./actions";
-import Footer from "@/components/Footer";
+
 import AppIcon from "@/components/AppIcon";
 import { emojiToIconName } from "@/lib/iconMap";
 
@@ -20,7 +20,7 @@ export default async function Resgates() {
   const family = await prisma.family.findFirstOrThrow();
 
   return (
-    <main className="min-h-screen bg-kid-base pattern-dots-violet font-body">
+    <>
       <PaiNav active="resgates" />
       <div className="px-4 sm:px-6 py-8 sm:py-10 max-w-5xl mx-auto">
         <span className="kid-chip kid-chip-gold">RESGATES</span>
@@ -151,8 +151,7 @@ export default async function Resgates() {
           )}
         </section>
 
-        <Footer />
       </div>
-    </main>
+    </>
   );
 }

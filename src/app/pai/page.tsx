@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 import PaiNav from "@/components/PaiNav";
-import Footer from "@/components/Footer";
+
 import { COMPLEXITY_META, type ComplexityT } from "@/lib/enums";
 import { getRankForLevel } from "@/lib/ranks";
 import AppIcon from "@/components/AppIcon";
@@ -49,7 +49,7 @@ export default async function PaiDashboard() {
   if (!family) return <p className="p-8">Sem família seed. Rode <code>npm run db:seed</code>.</p>;
 
   return (
-    <main className="min-h-screen bg-kid-base pattern-dots-violet font-body">
+    <>
       <PaiNav active="painel" />
 
       <div className="px-4 py-6 max-w-6xl mx-auto">
@@ -219,8 +219,7 @@ export default async function PaiDashboard() {
             </section>
           );
         })}
-        <Footer />
       </div>
-    </main>
+    </>
   );
 }

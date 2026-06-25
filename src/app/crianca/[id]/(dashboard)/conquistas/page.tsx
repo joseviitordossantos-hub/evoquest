@@ -3,7 +3,7 @@ import ProfileSummaryCard from "@/components/ProfileSummaryCard";
 import AchievementIcon from "@/components/AchievementIcon";
 import EmptyState from "@/components/EmptyState";
 import { ACHIEVEMENTS } from "@/lib/enums";
-import Footer from "@/components/Footer";
+
 
 export const dynamic = "force-dynamic";
 
@@ -73,7 +73,6 @@ export default async function Conquistas({ params }: { params: Promise<{ id: str
           </ul>
         </section>
       )}
-      <Footer />
     </div>
   );
 }

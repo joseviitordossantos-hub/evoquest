@@ -3,7 +3,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getChildStats } from "@/lib/childStats";
 import AppIcon from "@/components/AppIcon";
-import Footer from "@/components/Footer";
+
 
 export const dynamic = "force-dynamic";
 
@@ -205,7 +205,6 @@ export default async function Perfil({ params }: { params: Promise<{ id: string 
             </section>
           )}
         </div>
-        <Footer />
       </div>
     </div>
   );

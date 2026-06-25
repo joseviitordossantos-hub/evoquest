@@ -5,7 +5,7 @@ import PaiNav from "@/components/PaiNav";
 export const dynamic = "force-dynamic";
 import { fmtBRL } from "@/lib/enums";
 import { toggleRewardActive, toggleRewardFeatured, buyRewardStock } from "./actions";
-import Footer from "@/components/Footer";
+
 import AppIcon from "@/components/AppIcon";
 import { emojiToIconName } from "@/lib/iconMap";
 import BuyRewardButton from "@/components/BuyRewardButton";
@@ -323,7 +323,7 @@ export default async function Recompensas({
   const totalShown = freeShown.length + paidInStockShown.length + paidCatalogShown.length;
 
   return (
-    <main className="min-h-screen bg-kid-base pattern-dots-violet font-body">
+    <>
       <PaiNav active="recompensas" />
 
       <div className="px-4 sm:px-6 py-6 sm:py-10 max-w-6xl mx-auto">
@@ -413,8 +413,7 @@ export default async function Recompensas({
           </p>
         )}
 
-        <Footer />
       </div>
-    </main>
+    </>
   );
 }

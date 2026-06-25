@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import PaiNav from "@/components/PaiNav";
-import Footer from "@/components/Footer";
+
 import AppIcon from "@/components/AppIcon";
 import { updateBoss } from "./actions";
 
@@ -23,7 +23,7 @@ export default async function EditarBoss({ params }: { params: Promise<{ id: str
   const monthNames = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
   return (
-    <main className="min-h-screen bg-kid-base pattern-dots-violet font-body">
+    <>
       <PaiNav />
       <div className="px-4 sm:px-6 py-8 sm:py-10 max-w-2xl mx-auto">
         <span className="kid-chip kid-chip-pink">EDITAR BOSS</span>
@@ -97,9 +97,8 @@ export default async function EditarBoss({ params }: { params: Promise<{ id: str
             <a href="/pai" className="kid-btn kid-btn-secondary">Cancelar</a>
           </div>
         </form>
-        <Footer />
       </div>
-    </main>
+    </>
   );
 }
 

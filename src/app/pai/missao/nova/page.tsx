@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import PaiNav from "@/components/PaiNav";
-import Footer from "@/components/Footer";
+
 import XpComplexityPicker from "@/components/XpComplexityPicker";
 import AppIcon from "@/components/AppIcon";
 import { emojiToIconName } from "@/lib/iconMap";
@@ -70,7 +70,7 @@ export default async function NovaMissao({
   const children = family?.children ?? [];
 
   return (
-    <main className="min-h-screen bg-kid-base pattern-dots-violet font-body">
+    <>
       <PaiNav active="painel" />
       <div className="px-4 sm:px-6 py-8 sm:py-10 max-w-2xl mx-auto">
         <span className="kid-chip kid-chip-violet">NOVA MISSÃO</span>
@@ -193,9 +193,8 @@ export default async function NovaMissao({
             <a href="/pai" className="kid-btn kid-btn-secondary">Cancelar</a>
           </div>
         </form>
-        <Footer />
       </div>
-    </main>
+    </>
   );
 }
 

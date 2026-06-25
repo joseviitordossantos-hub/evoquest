@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { fmtBRL } from "@/lib/enums";
 import { getCurrentParent } from "@/lib/auth";
 import PaiNav from "@/components/PaiNav";
-import Footer from "@/components/Footer";
+
 import AppIcon from "@/components/AppIcon";
 import ProfilePhotoUploader from "@/components/ProfilePhotoUploader";
 import PaymentCardItem from "@/components/PaymentCardItem";
@@ -37,7 +37,7 @@ export default async function PerfilPai() {
     .reduce((s, t) => s + Math.abs(t.amountCents), 0);
 
   return (
-    <main className="min-h-screen bg-kid-base pattern-dots-violet font-body">
+    <>
       <PaiNav active="perfil" />
 
       <div className="px-4 sm:px-6 py-6 sm:py-10 max-w-3xl mx-auto space-y-6">
@@ -231,8 +231,7 @@ export default async function PerfilPai() {
           </form>
         </section>
 
-        <Footer />
       </div>
-    </main>
+    </>
   );
 }

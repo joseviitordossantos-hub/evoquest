@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { evaluateAchievements } from "@/lib/achievements";
 import { dealDamageFromMissionLog } from "@/lib/boss";
 import PaiNav from "@/components/PaiNav";
-import Footer from "@/components/Footer";
+
 
 export const dynamic = "force-dynamic";
 
@@ -59,7 +59,7 @@ export default async function Aprovar({ searchParams }: { searchParams: Promise<
   });
 
   return (
-    <main className="min-h-screen bg-kid-base pattern-dots-violet font-body">
+    <>
       <PaiNav active="painel" />
       <div className="px-4 sm:px-6 py-8 sm:py-10 max-w-3xl mx-auto">
         <span className="kid-chip kid-chip-gold">REVISÃO SEMANAL</span>
@@ -112,8 +112,7 @@ export default async function Aprovar({ searchParams }: { searchParams: Promise<
             </button>
           </form>
         )}
-        <Footer />
       </div>
-    </main>
+    </>
   );
 }

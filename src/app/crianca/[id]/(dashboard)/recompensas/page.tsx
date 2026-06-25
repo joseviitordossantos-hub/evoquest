@@ -9,7 +9,7 @@ import { getChildStats } from "@/lib/childStats";
 import AppIcon from "@/components/AppIcon";
 import { emojiToIconName } from "@/lib/iconMap";
 import { rewardKindLabel, rewardKindIconName } from "@/lib/enums";
-import Footer from "@/components/Footer";
+
 
 export const dynamic = "force-dynamic";
 
@@ -140,7 +140,6 @@ export default async function Loja({ params }: { params: Promise<{ id: string }>
       {rewards.length === 0 && (
         <EmptyState emoji="gift" title="Loja vazia" body="Seu responsável vai adicionar prêmios em breve." />
       )}
-      <Footer />
     </div>
   );
 }

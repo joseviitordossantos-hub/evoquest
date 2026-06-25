@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import EmptyState from "@/components/EmptyState";
-import Footer from "@/components/Footer";
+
 import BossHero from "@/components/BossHero";
 import ProfileSummaryCard from "@/components/ProfileSummaryCard";
 import AchievementMiniCard from "@/components/AchievementMiniCard";
@@ -161,7 +161,6 @@ export default async function JornadaCrianca({ params }: { params: Promise<{ id:
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 }

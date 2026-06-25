@@ -1,5 +1,5 @@
 import EmptyState from "@/components/EmptyState";
-import Footer from "@/components/Footer";
+
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +20,6 @@ export default async function ConfiguracoesCrianca() {
         title="Em breve"
         body="Preferências de conta, notificações e privacidade vão aparecer aqui."
       />
-      <Footer />
     </div>
   );
 }
