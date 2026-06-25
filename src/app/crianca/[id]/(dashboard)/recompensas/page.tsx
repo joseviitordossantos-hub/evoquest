@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import ProfileSummaryCard from "@/components/ProfileSummaryCard";
+import RewardsBanner from "@/components/RewardsBanner";
 import RewardCard from "@/components/RewardCard";
 import RedeemStatusPill from "@/components/RedeemStatusPill";
 import EmptyState from "@/components/EmptyState";
@@ -30,11 +31,22 @@ export default async function Loja({ params }: { params: Promise<{ id: string }>
     }),
   ]);
 
-  return (
-    <div className="max-w-[480px] mx-auto px-5 pt-5 space-y-4 lg:max-w-5xl lg:px-8 lg:pt-8">
-      <ProfileSummaryCard childId={childId} />
+  const allRewards = rewards.sort((a, b) => {
+    const aLocked = (a.minLevel ?? 0) > childLevel ? 1 : 0;
+    const bLocked = (b.minLevel ?? 0) > childLevel ? 1 : 0;
+    return aLocked - bLocked;
+  });
 
-      <header className="mt-6 px-1">
+  return (
+    <div className="max-w-[480px] mx-auto px-5 pt-5 space-y-4 lg:max-w-none lg:mx-0 lg:px-10 lg:pt-8 lg:space-y-6">
+      {/* Desktop: two-column top — ProfileCard + Banner */}
+      <div className="lg:grid lg:grid-cols-[466px_1fr] lg:gap-6 lg:items-stretch">
+        <ProfileSummaryCard childId={childId} />
+        <RewardsBanner />
+      </div>
+
+      {/* Mobile header */}
+      <header className="mt-6 px-1 lg:hidden">
         <p className="font-body font-extrabold text-[12px] uppercase tracking-[0.12em] text-kid-text-muted">
           Loja
         </p>
@@ -67,31 +79,50 @@ export default async function Loja({ params }: { params: Promise<{ id: string }>
         </section>
       )}
 
-      {KIND_ORDER.map((k) => {
-        const items = rewards
-          .filter((r) => r.kind === k)
-          .sort((a, b) => {
-            const aLocked = (a.minLevel ?? 0) > childLevel ? 1 : 0;
-            const bLocked = (b.minLevel ?? 0) > childLevel ? 1 : 0;
-            return aLocked - bLocked;
-          });
-        if (items.length === 0) return null;
-        return (
-          <section key={k} className="mt-2">
-            <p className="font-heading font-semibold text-[16px] text-kid-text-strong px-1 mb-2 flex items-center gap-2">
-              <AppIcon name={rewardKindIconName[k]} size={22} />
-              <span>{rewardKindLabel[k]}</span>
-            </p>
-            <ul className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-              {items.map((r) => (
-                <li key={r.id}>
-                  <RewardCard reward={r} childId={childId} availableCoins={availableCoins} childLevel={childLevel} />
-                </li>
-              ))}
-            </ul>
-          </section>
-        );
-      })}
+      {/* Desktop: flat "Recompensas disponíveis" section */}
+      <section className="hidden lg:block">
+        <div className="flex items-baseline justify-between px-1 mb-4">
+          <h2 className="font-heading font-extrabold text-[41px] text-kid-text-soft leading-tight">
+            Recompensas disponíveis
+          </h2>
+        </div>
+        <ul className="grid grid-cols-5 gap-4">
+          {allRewards.map((r) => (
+            <li key={r.id}>
+              <RewardCard reward={r} childId={childId} availableCoins={availableCoins} childLevel={childLevel} />
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* Mobile: grouped by kind */}
+      <div className="lg:hidden">
+        {KIND_ORDER.map((k) => {
+          const items = rewards
+            .filter((r) => r.kind === k)
+            .sort((a, b) => {
+              const aLocked = (a.minLevel ?? 0) > childLevel ? 1 : 0;
+              const bLocked = (b.minLevel ?? 0) > childLevel ? 1 : 0;
+              return aLocked - bLocked;
+            });
+          if (items.length === 0) return null;
+          return (
+            <section key={k} className="mt-2">
+              <p className="font-heading font-semibold text-[16px] text-kid-text-strong px-1 mb-2 flex items-center gap-2">
+                <AppIcon name={rewardKindIconName[k]} size={22} />
+                <span>{rewardKindLabel[k]}</span>
+              </p>
+              <ul className="grid grid-cols-2 gap-3">
+                {items.map((r) => (
+                  <li key={r.id}>
+                    <RewardCard reward={r} childId={childId} availableCoins={availableCoins} childLevel={childLevel} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          );
+        })}
+      </div>
 
       {rewards.length === 0 && (
         <EmptyState emoji="gift" title="Loja vazia" body="Seu responsável vai adicionar prêmios em breve." />

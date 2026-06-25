@@ -61,7 +61,7 @@ export default async function ProfileSummaryCard({ childId }: { childId: string 
           </div>
         </div>
         <div className="min-w-0 flex-1">
-          <p className="font-heading font-bold text-[24px] lg:text-[36px] leading-[1.05] text-kid-text-strong truncate">
+          <p className="font-heading font-extrabold text-[24px] lg:text-[36px] leading-[1.05] text-kid-text-strong truncate">
             {fullName}
           </p>
           <span
